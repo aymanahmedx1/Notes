@@ -15,101 +15,138 @@ class _WorkersState extends State<Workers> {
       _selectedRowIndex = index;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 5,),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text("المندوبين", style: TextStyle(color: Colors.grey , fontWeight: FontWeight.bold),)
-              ],
-            ),
-            Row(
-              children: [
-                ElevatedButton(onPressed: (){
-                 Navigator.push(context,  MaterialPageRoute(builder: (context) => AddWorker()));
-                }, child: const Row(children: [Text("جديد") , Icon(Icons.add)],))
-              ],
-            ) ,
-            Expanded(
-              child: Scrollbar( /// Scroll Bar
-                trackVisibility: true, // SHow
-                interactive: true, // Interact
-                thickness: 10, // Width Of Scroll bar
-                controller: controller, // Controll scroll bar location
-                thumbVisibility: true, // show all time
-                child: SingleChildScrollView( // scroll list
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: SafeArea(
+          child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 5,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "المندوبين",
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Row(
+                        children: [Text("الرئيسيه"), Icon(Icons.home)],
+                      )),
+                  const SizedBox(
+                    width: 30,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => AddWorker()));
+                      },
+                      child: const Row(
+                        children: [Text("جديد"), Icon(Icons.add)],
+                      )),
+                ],
+              ),
+              Expanded(
+                child: Scrollbar(
+                  /// Scroll Bar
+                  trackVisibility: true,
+                  // SHow
+                  interactive: true,
+                  // Interact
+                  thickness: 10,
+                  // Width Of Scroll bar
                   controller: controller,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child:Container(
-                      width: double.infinity,
-                      child: DataTable(
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'الشركه',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'ملاحظه',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'تاريخ',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ],
-                        rows:
-                         List.generate(300, (index) {
-                          return  DataRow(
-                           onLongPress: () {
-
-
-                           },
-                            color:  WidgetStateProperty.resolveWith<Color>((Set<MaterialState> states) {
-                              // Color for the row
-                              if(_selectedRowIndex == index){
-                                return Colors.lightGreen ;
-                              }
-                              return index % 2 == 0 ? Colors.grey.shade200 : Colors.white;
-                            }),
-                             cells: <DataCell>[
-                               DataCell(Text('الشركه')),
-                               DataCell(Text("$index")),
-                               DataCell(Text('2024-10-1')),
-                             ],
-                           );
-                         },)
-
-                      ),
-                    )
+                  // Controll scroll bar location
+                  thumbVisibility: true,
+                  // show all time
+                  child: SingleChildScrollView(
+                    // scroll list
+                    controller: controller,
+                    child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: double.infinity,
+                          child: DataTable(
+                              columns: const <DataColumn>[
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'الشركه',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'ملاحظه',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'تاريخ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              rows: List.generate(
+                                300,
+                                (index) {
+                                  return DataRow(
+                                    onLongPress: () {},
+                                    color:
+                                        WidgetStateProperty.resolveWith<Color>(
+                                            (Set<MaterialState> states) {
+                                      // Color for the row
+                                      if (_selectedRowIndex == index) {
+                                        return Colors.lightGreen;
+                                      }
+                                      return index % 2 == 0
+                                          ? Colors.grey.shade200
+                                          : Colors.white;
+                                    }),
+                                    cells: <DataCell>[
+                                      DataCell(Text('الشركه')),
+                                      DataCell(Text("$index")),
+                                      DataCell(Text('2024-10-1')),
+                                    ],
+                                  );
+                                },
+                              )),
+                        )),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    ));
+      )),
+    );
   }
 }
 // Table(
