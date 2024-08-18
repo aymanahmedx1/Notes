@@ -1,5 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
+import 'package:notes/Models/CompanyModel.dart';
+import 'package:notes/data/CompanyDB.dart';
+import 'package:notes/screens/AddCompnay.dart';
 import 'package:notes/screens/AddWorker.dart';
+import 'package:notes/screens/CompanyProfileScreen.dart';
 
 class Workers extends StatefulWidget {
   @override
@@ -57,11 +63,16 @@ class _WorkersState extends State<Workers> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AddWorker()));
+                                builder: (context) => AddCompnay())).then(
+                          (value) {
+                            setState(() {});
+                          },
+                        );
                       },
                       child: const Row(
-                        children: [Text("جديد"), Icon(Icons.add)],
+                        children: [Text("اضافة شركة"), Icon(Icons.add)],
                       )),
+
                 ],
               ),
               Expanded(
@@ -77,68 +88,118 @@ class _WorkersState extends State<Workers> {
                   // Controll scroll bar location
                   thumbVisibility: true,
                   // show all time
-                  child: SingleChildScrollView(
-                    // scroll list
-                    controller: controller,
-                    child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: double.infinity,
-                          child: DataTable(
-                              columns: const <DataColumn>[
-                                DataColumn(
-                                  label: Expanded(
-                                    child: Text(
-                                      'الشركه',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Expanded(
-                                    child: Text(
-                                      'ملاحظه',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Expanded(
-                                    child: Text(
-                                      'تاريخ',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              rows: List.generate(
-                                300,
-                                (index) {
-                                  return DataRow(
-                                    onLongPress: () {},
-                                    color:
-                                        WidgetStateProperty.resolveWith<Color>(
-                                            (Set<MaterialState> states) {
-                                      // Color for the row
-                                      if (_selectedRowIndex == index) {
-                                        return Colors.lightGreen;
-                                      }
-                                      return index % 2 == 0
-                                          ? Colors.grey.shade200
-                                          : Colors.white;
-                                    }),
-                                    cells: <DataCell>[
-                                      DataCell(Text('الشركه')),
-                                      DataCell(Text("$index")),
-                                      DataCell(Text('2024-10-1')),
+                  child: FutureBuilder(
+                    future: CompanyDB().getAll(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<CompanyModel> data =
+                            snapshot.data as List<CompanyModel>;
+                        return SingleChildScrollView(
+                          // scroll list
+                          controller: controller,
+                          child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                width: double.infinity,
+                                child: DataTable(
+                                    columns: const <DataColumn>[
+                                      DataColumn(
+                                        label: Expanded(
+                                          child: Text(
+                                            'الشركه',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Expanded(
+                                          child: Text(
+                                            'ملاحظه',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Expanded(
+                                          child: Text(
+                                            'تاريخ',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
+                                      DataColumn(
+                                        label: Expanded(
+                                          child: Text(
+                                            'المزيد',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ),
                                     ],
-                                  );
-                                },
+                                    rows: List.generate(
+                                      data.length,
+                                      (index) {
+                                        return DataRow(
+                                          onLongPress: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        AddCompnay(
+                                                          company: data[index],
+                                                        ))).then(
+                                              (value) {
+                                                setState(() {});
+                                              },
+                                            );
+                                          },
+                                          color: WidgetStateProperty
+                                              .resolveWith<Color>(
+                                                  (Set<MaterialState> states) {
+                                            // Color for the row
+                                            if (_selectedRowIndex == index) {
+                                              return Colors.lightGreen;
+                                            }
+                                            return index % 2 == 0
+                                                ? Colors.grey.shade200
+                                                : Colors.white;
+                                          }),
+                                          cells: <DataCell>[
+                                            DataCell(Text(data[index].name)),
+                                            DataCell(Text(data[index].notes)),
+                                            DataCell(Text(data[index].date)),
+                                            DataCell(ElevatedButton(
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            CompanyProfileScreen(model: data[index],)));
+                                              },
+                                              child: const Icon(
+                                                Icons.search_rounded,
+                                                size: 30,
+                                              ),
+                                            )),
+                                          ],
+                                        );
+                                      },
+                                    )),
                               )),
-                        )),
+                        );
+                      } else {
+                        return SingleChildScrollView(
+                          controller: controller,
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                    },
                   ),
                 ),
               ),
@@ -149,61 +210,3 @@ class _WorkersState extends State<Workers> {
     );
   }
 }
-// Table(
-//
-// border: TableBorder.all(),
-// columnWidths: const <int, TableColumnWidth>{
-// 0: FlexColumnWidth(),
-// 1: FlexColumnWidth(),
-// 2: FlexColumnWidth(),
-// },
-// defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-// children: [
-// const TableRow(
-// children: [
-// TableCell(
-// verticalAlignment: TableCellVerticalAlignment.middle,
-// child: Padding(
-// padding: EdgeInsets.all(8.0),
-// child: Text("الشركه" , textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),),
-// ),
-// ),
-// TableCell(
-// verticalAlignment: TableCellVerticalAlignment.middle,
-// child: Padding(
-// padding: EdgeInsets.all(8.0),
-// child: Text("ملاحظه" , textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),),
-// ),
-// ),
-// TableCell(
-// verticalAlignment: TableCellVerticalAlignment.middle,
-// child: Padding(
-// padding: EdgeInsets.all(8.0),
-// child: Text("تاريخ" , textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),),
-// ),
-// ),
-// ],
-// ),
-// ...List.generate(
-// 300,
-// (index) {
-// return TableRow(
-// children: [
-// TableCell(
-// verticalAlignment: TableCellVerticalAlignment.top,
-// child: Text("اسم الشركه"),
-// ),
-// TableCell(
-// verticalAlignment: TableCellVerticalAlignment.top,
-// child: Text("ملاحظه"),
-// ),
-// TableCell(
-// verticalAlignment: TableCellVerticalAlignment.top,
-// child: Text("تاريخ"),
-// ),
-// ],
-// );
-// },
-// )
-// ],
-// ),

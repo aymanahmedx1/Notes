@@ -6,6 +6,7 @@ import 'package:notes/screens/workers.dart';
 class Landingscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return SafeArea(
         child: Scaffold(
       body: Container(
