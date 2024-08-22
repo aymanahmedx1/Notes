@@ -3,7 +3,7 @@ class CompanyModel {
   String name ;
   String notes ;
   String date ;
-  CompanyModel(this.id, this.name,this.notes , this.date);
+  CompanyModel({required this.id,required  this.name,required this.notes ,required this.date});
   @override
   String toString() {
     return "$id ,$name , $notes , $date";

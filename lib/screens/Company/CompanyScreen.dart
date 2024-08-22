@@ -1,27 +1,19 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:notes/Models/CompanyModel.dart';
 import 'package:notes/data/CompanyDB.dart';
-import 'package:notes/screens/Company/AddWorker.dart';
+import 'package:notes/screens/Company/Widgets/CompanyDialogs.dart';
 
-import 'AddCompnay.dart';
 import 'CompanyProfileScreen.dart';
 
-class Workers extends StatefulWidget {
+class CompanyScreen extends StatefulWidget {
   @override
-  State<Workers> createState() => _WorkersState();
+  State<CompanyScreen> createState() => _WorkersState();
 }
 
-class _WorkersState extends State<Workers> {
+class _WorkersState extends State<CompanyScreen> {
   final ScrollController controller = ScrollController();
-  int? _selectedRowIndex;
 
-  void _onRowSelected(int index) {
-    setState(() {
-      _selectedRowIndex = index;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,53 +21,25 @@ class _WorkersState extends State<Workers> {
       textDirection: TextDirection.rtl,
       child: SafeArea(
           child: Scaffold(
+            appBar: AppBar(
+              title:  const Text(
+                "المندوبين",
+                style: TextStyle(
+                    fontWeight: FontWeight.bold),
+              ),
+              actions: [ElevatedButton(
+                  onPressed: () async {
+                    await CompanyDialogs().createOrUpdate(context, null);
+                    setState(() {});
+                  },
+                  child: const Row(
+                    children: [Text("اضافة شركة"), Icon(Icons.add)],
+                  ))],
+            ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              const SizedBox(
-                height: 5,
-              ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "المندوبين",
-                    style: TextStyle(
-                        color: Colors.grey, fontWeight: FontWeight.bold),
-                  )
-                ],
-              ),
-              Row(
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Row(
-                        children: [Text("الرئيسيه"), Icon(Icons.home)],
-                      )),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => AddCompnay())).then(
-                          (value) {
-                            setState(() {});
-                          },
-                        );
-                      },
-                      child: const Row(
-                        children: [Text("اضافة شركة"), Icon(Icons.add)],
-                      )),
-
-                ],
-              ),
               Expanded(
                 child: Scrollbar(
                   /// Scroll Bar
@@ -146,19 +110,20 @@ class _WorkersState extends State<Workers> {
                                       (index) {
                                         return DataRow(
                                           onLongPress: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        AddCompnay(
-                                                          company: data[index],
-                                                        ))).then(
-                                              (value) {
-                                                setState(() {});
-                                              },
-                                            );
-                                          },
+                                            CompanyDialogs().createOrUpdate(context, data[index]);
 
+                                            // Navigator.push(
+                                            //     context,
+                                            //     MaterialPageRoute(
+                                            //         builder: (context) =>
+                                            //             AddCompnay(
+                                            //               company: data[index],
+                                            //             ))).then(
+                                            //   (value) {
+                                            //     setState(() {});
+                                            //   },
+                                            // );
+                                          },
                                           cells: <DataCell>[
                                             DataCell(Text(data[index].name)),
                                             DataCell(Text(data[index].notes)),
@@ -169,7 +134,10 @@ class _WorkersState extends State<Workers> {
                                                     context,
                                                     MaterialPageRoute(
                                                         builder: (context) =>
-                                                            CompanyProfileScreen(model: data[index],)));
+                                                            CompanyProfileScreen(
+                                                              model:
+                                                                  data[index],
+                                                            )));
                                               },
                                               child: const Icon(
                                                 Icons.search_rounded,

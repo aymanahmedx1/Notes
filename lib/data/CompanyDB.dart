@@ -22,7 +22,7 @@ class CompanyDB {
     List<CompanyModel> list = [];
     for (var record in res) {
       list.add(CompanyModel(
-          record['id'], record['name'], record['note'], record['date']));
+         id: record['id'],name: record['name'],notes:  record['note'],date: record['date']));
     }
     return list;
   }

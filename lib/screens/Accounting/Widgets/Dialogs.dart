@@ -5,6 +5,7 @@ import '../../../Models/SectionModel.dart';
 import '../../../data/SectionDB.dart';
 
 class AccountingDialog {
+
   createSection(BuildContext context, SectionModel? model) async {
     final TextEditingController textController =
         TextEditingController(text: "");

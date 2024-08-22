@@ -23,6 +23,8 @@ class _AccountingscreenState extends State<Accountingscreen> {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.sizeOf(context).width;
+    double height = MediaQuery.sizeOf(context).height;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: SafeArea(
@@ -55,15 +57,14 @@ class _AccountingscreenState extends State<Accountingscreen> {
                       child: const Row(
                         children: [Text("جديد"), Icon(Icons.add)],
                       )),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  const SizedBox(
-                    width: 30,
-                  ),
+                ],
+              ),
+              const SizedBox(height: 10,),
+              Row(
+                children: [
                   Text("التاريخ من "),
                   Container(
-                    width: 300,
+                    width: (width / 8) * 3,
                     height: 40,
                     child: TextFormField(
                         textAlign: TextAlign.center,
@@ -78,7 +79,7 @@ class _AccountingscreenState extends State<Accountingscreen> {
                   ),
                   Text("الي "),
                   Container(
-                    width: 300,
+                    width: (width / 8) * 3,
                     height: 40,
                     child: TextFormField(
                       textAlign: TextAlign.center,
@@ -200,14 +201,13 @@ class _AccountingscreenState extends State<Accountingscreen> {
       children: [
         ElevatedButton(
           onPressed: () async {
-         String? res =    await AccountingDialog().addExpenseOnSection(context, section);
-            setState(() {
-
-            });
-          if(res!=null){
-            ScaffoldMessenger.of(context)
-                .showSnackBar(snackBar("تم الاضافه بنجاح"));
-          }
+            String? res =
+                await AccountingDialog().addExpenseOnSection(context, section);
+            setState(() {});
+            if (res != null) {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(snackBar("تم الاضافه بنجاح"));
+            }
           },
           child: const Icon(Icons.add),
         ),
@@ -228,7 +228,10 @@ class _AccountingscreenState extends State<Accountingscreen> {
   }
 
   snackBar(String text) => SnackBar(
-    backgroundColor: Colors.white,
-        content: Text(text,style: const TextStyle(color: Colors.deepOrange),),
+        backgroundColor: Colors.white,
+        content: Text(
+          text,
+          style: const TextStyle(color: Colors.deepOrange),
+        ),
       );
 }

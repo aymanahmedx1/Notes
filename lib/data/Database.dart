@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -10,9 +12,13 @@ class DatabaseHelper {
   }
 
   initDatabase() async {
-    var databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'notes.db');
-    return await openDatabase(path, onCreate: _onCreate, version: 1);
+    try {
+      var databasesPath = await getDatabasesPath();
+      String path = join(databasesPath, 'notes.db');
+      return await openDatabase(path, onCreate: _onCreate, version: 1);
+    } catch (e) {
+      log(e.toString());
+    }
   }
 
   delete() async {
@@ -22,15 +28,23 @@ class DatabaseHelper {
   }
 
   _onCreate(Database db, int versoin) async {
-    await db.execute('''CREATE TABLE "company" (
-                        "id"	INTEGER,
-                        "name"	TEXT,
-                        "note"	TEXT,
-                        "date"	TEXT,
-                        PRIMARY KEY("id" AUTOINCREMENT)
-                          );
-                          
-                          CREATE TABLE "worker" (
+    await db.execute('''
+                          CREATE TABLE "expense" (
+                            "id"	INTEGER,
+                            "reason"	TEXT,
+                            "amount"	REAL,
+                            "note"	TEXT,
+                            "section" INTEGER ,
+                            "date" TEXT , 
+                            PRIMARY KEY("id" AUTOINCREMENT)
+                          );''');
+    await db.execute('''  CREATE TABLE "section" (
+                            "id"	INTEGER,
+                            "name"	TEXT,
+                            "total"	REAL,
+                            PRIMARY KEY("id" AUTOINCREMENT)
+                          );''');
+    await db.execute(''' CREATE TABLE "worker" (
                             "id"	INTEGER,
                             "name"	TEXT,
                             "phone"	TEXT,
@@ -40,29 +54,19 @@ class DatabaseHelper {
                             "out" TEXT,
                             "note" TEXT,
                             PRIMARY KEY("id" AUTOINCREMENT)
-                          );
-                          
-                          CREATE TABLE "section" (
-                            "id"	INTEGER,
-                            "name"	TEXT,
-                            "total"	REAL,
-                            PRIMARY KEY("id" AUTOINCREMENT)
-                          );
-                          CREATE TABLE "expense" (
-                            "id"	INTEGER,
-                            "reason"	TEXT,
-                            "amount"	REAL,
-                            "note"	TEXT,
-                            "section" INTEGER ,
-                            "date" TEXT , 
-                            PRIMARY KEY("id" AUTOINCREMENT)
-                          );
-                          ''');
+                          );''');
+    await db.execute('''CREATE TABLE "company" (
+                        "id"	INTEGER,
+                        "name"	TEXT,
+                        "note"	TEXT,
+                        "date"	TEXT,
+                        PRIMARY KEY("id" AUTOINCREMENT)
+                          );''');
   }
 
-  readData(String Sql ,List<dynamic> list ) async {
+  readData(String Sql, List<dynamic> list) async {
     Database db = await database;
-    return await db.rawQuery(Sql,list);
+    return await db.rawQuery(Sql, list);
     //return list ;
   }
 

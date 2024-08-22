@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:notes/screens/Accounting/AccountingScreen.dart';
 import 'package:notes/screens/MoneyTransactionScreen.dart';
-import 'package:notes/screens/Company/workers.dart';
+import 'package:notes/screens/Company/CompanyScreen.dart';
+import 'package:notes/screens/TestScreen.dart';
 
 class Landingscreen extends StatelessWidget {
   @override
@@ -22,7 +23,7 @@ class Landingscreen extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Workers()));
+                        MaterialPageRoute(builder: (context) => CompanyScreen()));
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -119,6 +120,33 @@ class Landingscreen extends StatelessWidget {
                   color: Colors.teal,
                   width: 200,
                   height: 200,
+                  child:  InkWell(
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => TestScreen()));
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      color: Colors.teal,
+                      width: 200,
+                      height: 200,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "حركة الاموال",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                          Icon(
+                            Icons.person,
+                            size: 30,
+                            color: Colors.white,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
