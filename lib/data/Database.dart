@@ -29,18 +29,40 @@ class DatabaseHelper {
                         "date"	TEXT,
                         PRIMARY KEY("id" AUTOINCREMENT)
                           );
+                          
                           CREATE TABLE "worker" (
                             "id"	INTEGER,
                             "name"	TEXT,
                             "phone"	TEXT,
                             "company"	INTEGER,
+                            "drug"	TEXT,
+                            "total" TEXT,
+                            "out" TEXT,
+                            "note" TEXT,
                             PRIMARY KEY("id" AUTOINCREMENT)
-                          );''');
+                          );
+                          
+                          CREATE TABLE "section" (
+                            "id"	INTEGER,
+                            "name"	TEXT,
+                            "total"	REAL,
+                            PRIMARY KEY("id" AUTOINCREMENT)
+                          );
+                          CREATE TABLE "expense" (
+                            "id"	INTEGER,
+                            "reason"	TEXT,
+                            "amount"	REAL,
+                            "note"	TEXT,
+                            "section" INTEGER ,
+                            "date" TEXT , 
+                            PRIMARY KEY("id" AUTOINCREMENT)
+                          );
+                          ''');
   }
 
-  readData(String Sql) async {
+  readData(String Sql ,List<dynamic> list ) async {
     Database db = await database;
-    return await db.rawQuery(Sql);
+    return await db.rawQuery(Sql,list);
     //return list ;
   }
 

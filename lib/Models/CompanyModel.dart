@@ -15,5 +15,9 @@ class WorkerModel{
   String name ;
   String phone ;
   int company ;
-  WorkerModel(this.id, this.name,this.phone , this.company);
+  String drug ;
+  String total ;
+  String out ;
+  String note ;
+  WorkerModel({ required this.id, required this.name,required this.phone ,required this.company ,required this.total ,required this.out ,required this.note , required this.drug});
 }

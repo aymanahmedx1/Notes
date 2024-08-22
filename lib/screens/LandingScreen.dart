@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notes/screens/AccountingScreen.dart';
+import 'package:notes/screens/Accounting/AccountingScreen.dart';
 import 'package:notes/screens/MoneyTransactionScreen.dart';
-import 'package:notes/screens/workers.dart';
+import 'package:notes/screens/Company/workers.dart';
 
 class Landingscreen extends StatelessWidget {
   @override

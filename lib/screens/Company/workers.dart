@@ -3,9 +3,10 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:notes/Models/CompanyModel.dart';
 import 'package:notes/data/CompanyDB.dart';
-import 'package:notes/screens/AddCompnay.dart';
-import 'package:notes/screens/AddWorker.dart';
-import 'package:notes/screens/CompanyProfileScreen.dart';
+import 'package:notes/screens/Company/AddWorker.dart';
+
+import 'AddCompnay.dart';
+import 'CompanyProfileScreen.dart';
 
 class Workers extends StatefulWidget {
   @override
@@ -157,17 +158,7 @@ class _WorkersState extends State<Workers> {
                                               },
                                             );
                                           },
-                                          color: WidgetStateProperty
-                                              .resolveWith<Color>(
-                                                  (Set<MaterialState> states) {
-                                            // Color for the row
-                                            if (_selectedRowIndex == index) {
-                                              return Colors.lightGreen;
-                                            }
-                                            return index % 2 == 0
-                                                ? Colors.grey.shade200
-                                                : Colors.white;
-                                          }),
+
                                           cells: <DataCell>[
                                             DataCell(Text(data[index].name)),
                                             DataCell(Text(data[index].notes)),

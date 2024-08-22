@@ -7,6 +7,6 @@ void main(){
   sqfliteFfiInit();
   sqfliteFfiInit();
   databaseFactoryOrNull = databaseFactoryFfi;
-  //DatabaseHelper().delete();
+  DatabaseHelper().delete();
   runApp(Appstart());
 }
