@@ -17,28 +17,13 @@ class AccountingDetailsScreen extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: SafeArea(
           child: Scaffold(
+            appBar: AppBar(
+              title: Text(" تفاصيل القسم  ${model.name}"),
+            ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              const SizedBox(
-                height: 5,
-              ),
-              Pageheader(name: " تفاصيل القسم  ${model.name}"),
-              Row(
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Row(
-                        children: [Text("رجوع"), Icon(Icons.arrow_back)],
-                      )),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                ],
-              ),
               Expanded(
                 child: Scrollbar(
                   /// Scroll Bar

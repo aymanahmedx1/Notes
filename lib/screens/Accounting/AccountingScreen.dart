@@ -29,37 +29,23 @@ class _AccountingscreenState extends State<Accountingscreen> {
       textDirection: TextDirection.rtl,
       child: SafeArea(
           child: Scaffold(
+            appBar: AppBar(
+              title: Text("الحسابات"),
+              actions: [
+                ElevatedButton(
+                    onPressed: () async {
+                      await AccountingDialog().createSection(context, null);
+                      setState(() {});
+                    },
+                    child: const Row(
+                      children: [Text("جديد"), Icon(Icons.add)],
+                    )),
+              ],
+            ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              const SizedBox(
-                height: 5,
-              ),
-              const Pageheader(name: "الحسابات"),
-              Row(
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Row(
-                        children: [Text("الرئيسيه"), Icon(Icons.home)],
-                      )),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  ElevatedButton(
-                      onPressed: () async {
-                        await AccountingDialog().createSection(context, null);
-                        setState(() {});
-                      },
-                      child: const Row(
-                        children: [Text("جديد"), Icon(Icons.add)],
-                      )),
-                ],
-              ),
-              const SizedBox(height: 10,),
               Row(
                 children: [
                   Text("التاريخ من "),
