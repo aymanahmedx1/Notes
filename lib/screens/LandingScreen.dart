@@ -6,6 +6,7 @@ import 'package:notes/screens/Company/CompanyScreen.dart';
 import 'package:notes/screens/TestScreen.dart';
 
 class Landingscreen extends StatelessWidget {
+  static const String rout = "LandingScreen";
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -25,10 +26,7 @@ class Landingscreen extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => CompanyScreen()));
+                    Navigator.pushNamed(context, CompanyScreen.rout);
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -57,10 +55,7 @@ class Landingscreen extends StatelessWidget {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Accountingscreen()));
+                    Navigator.pushNamed(context, Accountingscreen.rout);
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -95,10 +90,7 @@ class Landingscreen extends StatelessWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => Moneytransactionscreen()));
+                    Navigator.pushNamed(context, Moneytransactionscreen.rout);
                   },
                   child: Container(
                     alignment: Alignment.center,
@@ -129,16 +121,13 @@ class Landingscreen extends StatelessWidget {
                   color: Colors.teal,
                   width: 200,
                   height: 200,
-                  // child: InkWell(
-                  //     onTap: () {
-                  //       // Navigator.push(
-                  //       //     context,
-                  //       //     MaterialPageRoute(
-                  //       //         builder: (context) => TestScreen()));
-                  //     },
-                  //     child: Text(
-                  //       "حركة الاموال",
-                  //     )),
+                  child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, "test");
+                      },
+                      child: Text(
+                        "حركة الاموال",
+                      )),
                 ),
               ],
             ),

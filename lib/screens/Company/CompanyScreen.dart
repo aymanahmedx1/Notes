@@ -1,171 +1,196 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:notes/Models/CompanyModel.dart';
-import 'package:notes/data/CompanyDB.dart';
-import 'package:notes/screens/Company/Widgets/CompanyDialogs.dart';
-
+import 'package:notes/CustomWidgets/NoDataWidget.dart';
+import 'package:notes/Providers/CompanyProvider.dart';
+import 'package:provider/provider.dart';
 import 'CompanyProfileScreen.dart';
 
-class CompanyScreen extends StatefulWidget {
-  @override
-  State<CompanyScreen> createState() => _WorkersState();
-}
-
-class _WorkersState extends State<CompanyScreen> {
+class CompanyScreen extends StatelessWidget {
+  static const String rout = "CompanyScreen";
   final ScrollController controller = ScrollController();
-
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title:  const Text(
-                "المندوبين",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold),
-              ),
-              actions: [ElevatedButton(
-                  onPressed: () async {
-                    await CompanyDialogs().createOrUpdate(context, null);
-                    setState(() {});
-                  },
-                  child: const Row(
-                    children: [Text("اضافة شركة"), Icon(Icons.add)],
-                  ))],
-            ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Expanded(
-                child: Scrollbar(
-                  /// Scroll Bar
-                  trackVisibility: true,
-                  // SHow
-                  interactive: true,
-                  // Interact
-                  thickness: 10,
-                  // Width Of Scroll bar
-                  controller: controller,
-                  // Controll scroll bar location
-                  thumbVisibility: true,
-                  // show all time
-                  child: FutureBuilder(
-                    future: CompanyDB().getAll(),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<CompanyModel> data =
-                            snapshot.data as List<CompanyModel>;
-                        return SingleChildScrollView(
-                          // scroll list
-                          controller: controller,
-                          child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                width: double.infinity,
-                                child: DataTable(
-                                    columns: const <DataColumn>[
-                                      DataColumn(
-                                        label: Expanded(
-                                          child: Text(
-                                            'الشركه',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Expanded(
-                                          child: Text(
-                                            'ملاحظه',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Expanded(
-                                          child: Text(
-                                            'تاريخ',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Expanded(
-                                          child: Text(
-                                            'المزيد',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                    rows: List.generate(
-                                      data.length,
-                                      (index) {
-                                        return DataRow(
-                                          onLongPress: () {
-                                            CompanyDialogs().createOrUpdate(context, data[index]);
-
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (context) =>
-                                            //             AddCompnay(
-                                            //               company: data[index],
-                                            //             ))).then(
-                                            //   (value) {
-                                            //     setState(() {});
-                                            //   },
-                                            // );
-                                          },
-                                          cells: <DataCell>[
-                                            DataCell(Text(data[index].name)),
-                                            DataCell(Text(data[index].notes)),
-                                            DataCell(Text(data[index].date)),
-                                            DataCell(ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            CompanyProfileScreen(
-                                                              model:
-                                                                  data[index],
-                                                            )));
-                                              },
-                                              child: const Icon(
-                                                Icons.search_rounded,
-                                                size: 30,
-                                              ),
-                                            )),
-                                          ],
-                                        );
-                                      },
-                                    )),
-                              )),
-                        );
-                      } else {
-                        return SingleChildScrollView(
-                          controller: controller,
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ],
-          ),
+    return SafeArea(
+        child: Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          "المندوبين",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-      )),
-    );
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                Provider.of<CompanyProvider>(context, listen: false)
+                    .createOrUpdate(context, null);
+              },
+              child: const Row(
+                children: [Text("اضافة شركة"), Icon(Icons.add)],
+              ))
+        ],
+      ),
+      body: Consumer<CompanyProvider>(
+        builder: (context, companyProvider, child) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 50, child: Text("بحث")),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                      width: 300,
+                      height: 70,
+                      child: TextFormField(
+                        onChanged: (value) =>
+                            companyProvider.companyFilter(value),
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.text,
+                        decoration: const InputDecoration(
+                          hintText: "اسم الشركة",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Expanded(
+                  child: companyProvider.filterdCompanyModels.isEmpty
+                      ? NoDataWidget()
+                      : Scrollbar(
+                          /// Scroll Bar
+                          trackVisibility: true,
+                          // SHow
+                          interactive: true,
+                          // Interact
+                          thickness: 10,
+                          // Width Of Scroll bar
+                          controller: controller,
+                          // Controll scroll bar location
+                          thumbVisibility: true,
+                          // show all time
+                          child: SingleChildScrollView(
+                            // scroll list
+                            controller: controller,
+                            child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  width: double.infinity,
+                                  child: DataTable(
+                                      columns: const <DataColumn>[
+                                        DataColumn(
+                                          label: Expanded(
+                                            child: Text(
+                                              'م',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                        DataColumn(
+                                          label: Expanded(
+                                            child: Text(
+                                              'الشركه',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                        DataColumn(
+                                          label: Expanded(
+                                            child: Text(
+                                              'ملاحظه',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                        DataColumn(
+                                          label: Expanded(
+                                            child: Text(
+                                              'تاريخ',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                        DataColumn(
+                                          label: Expanded(
+                                            child: Text(
+                                              'المزيد',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                      rows: List.generate(
+                                        companyProvider
+                                            .filterdCompanyModels.length,
+                                        (index) {
+                                          return DataRow(
+                                            onLongPress: () {
+                                              Provider.of<CompanyProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .createOrUpdate(
+                                                      context,
+                                                      companyProvider
+                                                              .filterdCompanyModels[
+                                                          index]);
+                                            },
+                                            cells: <DataCell>[
+                                              DataCell(Text("${index + 1}")),
+                                              DataCell(Text(companyProvider
+                                                  .filterdCompanyModels[index]
+                                                  .name)),
+                                              DataCell(Text(companyProvider
+                                                  .filterdCompanyModels[index]
+                                                  .notes)),
+                                              DataCell(Text(companyProvider
+                                                  .filterdCompanyModels[index]
+                                                  .date)),
+                                              DataCell(ElevatedButton(
+                                                onPressed: () {
+                                                  Provider.of<CompanyProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .fillWorkerList(
+                                                          companyProvider
+                                                              .filterdCompanyModels[
+                                                                  index]
+                                                              .id,
+                                                          0);
+                                                  Navigator.pushNamed(
+                                                    context,
+                                                    CompanyProfileScreen.rout,
+                                                    arguments: companyProvider
+                                                            .filterdCompanyModels[
+                                                        index],
+                                                  );
+                                                },
+                                                child: const Icon(
+                                                  Icons.search_rounded,
+                                                  size: 30,
+                                                ),
+                                              )),
+                                            ],
+                                          );
+                                        },
+                                      )),
+                                )),
+                          ),
+                        ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    ));
   }
 }

@@ -41,177 +41,174 @@ class _AddsectionscreenState extends State<Addsectionscreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-        child: Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 5,
-                ),
-                const Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "اضافه مندوب",
-                      style: TextStyle(
-                          color: Colors.grey, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-                Row(
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Row(
-                          children: [
-                            Icon(Icons.arrow_back),
-                            Text("رجوع"),
-                          ],
-                        ))
-                  ],
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                Expanded(
-                  child: Form(
-                    key: formKey,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              const SizedBox(
+                height: 5,
+              ),
+              const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "اضافه مندوب",
+                    style: TextStyle(
+                        color: Colors.grey, fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+              Row(
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Row(
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                  width: labelWidth, child: Text("الشركة ")),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              SizedBox(
-                                width: 300,
-                                height: 70,
-                                child: TextFormField(
-                                  controller: nameController,
-                                  enabled: false,
-                                  textAlign: TextAlign.center,
-
-                                  keyboardType: TextInputType.text,
-                                  decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        borderSide: const BorderSide(
-                                            color: Colors.indigo, width: 3)),
-                                    disabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        borderSide: const BorderSide(
-                                            color: Colors.indigo, width: 3)),
-                                    errorBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        borderSide: const BorderSide(
-                                            color: Colors.red, width: 3)),
-                                    border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        borderSide: const BorderSide(
-                                            color: Colors.indigo, width: 3)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        borderSide: const BorderSide(
-                                            color: Colors.green, width: 3)),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ), // Company Row
-                          const SizedBox(
-                            height: 15,
-                          ),
-
-                          const SizedBox(
-                            height: 15,
-                          ),
-                          ElevatedButton(
-                              onPressed: () async {
-                                await save();
-                              },
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 30, vertical: 10),
-                                child: Column(
-                                  children: [Icon(Icons.save), Text("حفظ")],
-                                ),
-                              ))
+                          Icon(Icons.arrow_back),
+                          Text("رجوع"),
                         ],
-                      ),
+                      ))
+                ],
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              Expanded(
+                child: Form(
+                  key: formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                                width: labelWidth, child: Text("الشركة ")),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: 300,
+                              height: 70,
+                              child: TextFormField(
+                                controller: nameController,
+                                enabled: false,
+                                textAlign: TextAlign.center,
+
+                                keyboardType: TextInputType.text,
+                                decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 20),
+                                  enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: const BorderSide(
+                                          color: Colors.indigo, width: 3)),
+                                  disabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: const BorderSide(
+                                          color: Colors.indigo, width: 3)),
+                                  errorBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: const BorderSide(
+                                          color: Colors.red, width: 3)),
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: const BorderSide(
+                                          color: Colors.indigo, width: 3)),
+                                  focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(20),
+                                      borderSide: const BorderSide(
+                                          color: Colors.green, width: 3)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ), // Company Row
+                        const SizedBox(
+                          height: 15,
+                        ),
+
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        ElevatedButton(
+                            onPressed: () async {
+                              await save();
+                            },
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 30, vertical: 10),
+                              child: Column(
+                                children: [Icon(Icons.save), Text("حفظ")],
+                              ),
+                            ))
+                      ],
                     ),
                   ),
                 ),
-                // Expanded(
-                //   child: Scrollbar(
-                //     /// Scroll Bar
-                //     trackVisibility: true,
-                //     // SHow
-                //     interactive: true,
-                //     // Interact
-                //     thickness: 10,
-                //     // Width Of Scroll bar
-                //     thumbVisibility: true,
-                //     // show all time
-                //     controller: controller,
-                //     child: SingleChildScrollView(
-                //       // scroll list
-                //       controller: controller,
-                //       child: Padding(
-                //           padding: const EdgeInsets.all(8.0),
-                //           child: Container(
-                //             width: double.infinity,
-                //             child: DataTable(
-                //                 columns: const <DataColumn>[
-                //                   DataColumn(
-                //                     label: Expanded(
-                //                       child: Text(
-                //                         'الادويه',
-                //                         style: TextStyle(
-                //                             fontWeight: FontWeight.bold),
-                //                       ),
-                //                     ),
-                //                   ),
-                //                 ],
-                //                 rows: List.generate(
-                //                   5,
-                //                       (index) {
-                //                     return DataRow(
-                //                       onLongPress: () {},
-                //                       color: WidgetStateProperty.resolveWith<
-                //                           Color>((Set<MaterialState> states) {
-                //                         // Color for the row
-                //                         return index % 2 == 0
-                //                             ? Colors.grey.shade200
-                //                             : Colors.white;
-                //                       }),
-                //                       cells: <DataCell>[
-                //                         DataCell(Text('علاج')),
-                //                       ],
-                //                     );
-                //                   },
-                //                 )),
-                //           )),
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
+              ),
+              // Expanded(
+              //   child: Scrollbar(
+              //     /// Scroll Bar
+              //     trackVisibility: true,
+              //     // SHow
+              //     interactive: true,
+              //     // Interact
+              //     thickness: 10,
+              //     // Width Of Scroll bar
+              //     thumbVisibility: true,
+              //     // show all time
+              //     controller: controller,
+              //     child: SingleChildScrollView(
+              //       // scroll list
+              //       controller: controller,
+              //       child: Padding(
+              //           padding: const EdgeInsets.all(8.0),
+              //           child: Container(
+              //             width: double.infinity,
+              //             child: DataTable(
+              //                 columns: const <DataColumn>[
+              //                   DataColumn(
+              //                     label: Expanded(
+              //                       child: Text(
+              //                         'الادويه',
+              //                         style: TextStyle(
+              //                             fontWeight: FontWeight.bold),
+              //                       ),
+              //                     ),
+              //                   ),
+              //                 ],
+              //                 rows: List.generate(
+              //                   5,
+              //                       (index) {
+              //                     return DataRow(
+              //                       onLongPress: () {},
+              //                       color: WidgetStateProperty.resolveWith<
+              //                           Color>((Set<MaterialState> states) {
+              //                         // Color for the row
+              //                         return index % 2 == 0
+              //                             ? Colors.grey.shade200
+              //                             : Colors.white;
+              //                       }),
+              //                       cells: <DataCell>[
+              //                         DataCell(Text('علاج')),
+              //                       ],
+              //                     );
+              //                   },
+              //                 )),
+              //           )),
+              //     ),
+              //   ),
+              // ),
+            ],
           ),
         ),
       ),

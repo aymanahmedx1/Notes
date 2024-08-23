@@ -1,203 +1,222 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:notes/CustomWidgets/CustomButton.dart';
+import 'package:notes/CustomWidgets/NoDataWidget.dart';
 import 'package:notes/Models/CompanyModel.dart';
-import 'package:notes/data/CompanyDB.dart';
+import 'package:notes/Providers/CompanyProvider.dart';
 import 'package:notes/screens/Company/Widgets/CompanyDialogs.dart';
-import 'AddWorker.dart';
+import 'package:provider/provider.dart';
 
-class CompanyProfileScreen extends StatefulWidget {
-  late CompanyModel model;
-
-  CompanyProfileScreen({required this.model});
-
-  @override
-  State<CompanyProfileScreen> createState() => _CompanyProfileScreenState();
-}
-
-class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
+class CompanyProfileScreen extends StatelessWidget {
+  static const String rout = "CompanyProfileScreen";
   final ScrollController controller = ScrollController();
+
   final TextEditingController searchController =
       TextEditingController(text: "");
-  List<WorkerModel> models = [];
-
-  List<WorkerModel> filter = [];
-
-  @override
-  void initState() {
-    getData();
-  }
-
-  Future<void> getData() async {
-    models = [];
-    filter = [];
-    models = await CompanyDB().getAllWorkers(widget.model.id);
-    filter = List<WorkerModel>.from(models);
-    setState(() {});
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Row(
-                children: [
-                  Text(
-                    "تفاصيل شركة ",
+    //double width = context.size!.width ;
+    final companyModel =
+        ModalRoute.of(context)!.settings.arguments as CompanyModel;
+    return Consumer<CompanyProvider>(
+      builder: (context, companyProvider, child) {
+        return SafeArea(
+            child: Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                const Text(
+                  "تفاصيل شركة ",
+                ),
+                Text(
+                  companyModel.name,
+                  style: const TextStyle(
+                    color: Colors.deepOrange,
                   ),
-                  Text(
-                    widget.model.name,
-                    style: const TextStyle(
-                        color: Colors.deepOrange,
-                       ),
-                  )
-                ],
-              ),
-              actions: [
-                ElevatedButton(
-                    onPressed: () async {
-                    await CompanyDialogs().createWorkerDialog(context, widget.model, null);
-                    await getData();
-
-                    },
-                    child: const Row(
-                      children: [Text("اضافه مندوب"), Icon(Icons.add)],
-                    ))
+                )
               ],
             ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 10,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(width: 50, child: Text("بحث")),
-                const SizedBox(
-                  width: 10,
-                ),
-                SizedBox(
-                  width: 300,
-                  height: 70,
-                  child: TextFormField(
-                    onChanged: (value) {
-                      if (value != "") {
-                        filter.clear();
-                        filter = models
-                            .where((i) =>
-                        i.drug.contains(value) ||
-                            i.name.contains(value))
-                            .toList();
-                      } else {
-                        filter = new List<WorkerModel>.from(models);
-                      }
-                      setState(() {});
-                    },
-                    textAlign: TextAlign.center,
-                    controller: searchController,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                      hintText: "اسم المندوب او العلاج",
+            actions: [
+              ElevatedButton(
+                  onPressed: () async {
+                    companyProvider.createWorker(context, companyModel, null);
+                  },
+                  child: const Row(
+                    children: [Text("اضافه مندوب"), Icon(Icons.add)],
+                  ))
+            ],
+          ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const SizedBox(width: 50, child: Text("بحث")),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  SizedBox(
+                    width: 300,
+                    height: 70,
+                    child: TextFormField(
+                      onChanged: (value) {
+                        companyProvider.workerFilter(value);
+                      },
+                      textAlign: TextAlign.center,
+                      controller: searchController,
+                      keyboardType: TextInputType.text,
+                      decoration: const InputDecoration(
+                        hintText: "اسم المندوب او العلاج",
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-            Expanded(
-                child: SingleChildScrollView(
-                  // scroll list
-                  controller: controller,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: DataTable(
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'الاسم',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'الجوال',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'الادوية',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'العدد الكلي',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'العدد المنصرف',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Expanded(
-                              child: Text(
-                                'ملاحظه',
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ],
-                        rows: List.generate(
-                          filter.length,
-                              (index) {
-                            return DataRow(
-                              onLongPress: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => AddWorker(
-                                          selectedModel: widget.model,
-                                          model: filter[index],
-                                        ))).then(
-                                      (value) {
-                                    setState(() {});
-                                  },
-                                );
-                              },
-                              cells: <DataCell>[
-                                DataCell(Text(filter[index].name)),
-                                DataCell(Text(filter[index].phone)),
-                                DataCell(Text(filter[index].drug)),
-                                DataCell(Text(filter[index].total)),
-                                DataCell(Text(filter[index].out)),
-                                DataCell(Text(filter[index].note)),
+                ],
+              ),
+              Expanded(
+                  child: companyProvider.filter.isEmpty
+                      ? NoDataWidget()
+                      : SingleChildScrollView(
+                          // scroll list
+                          controller: controller,
+                          child: DataTable(
+                              columns: const <DataColumn>[
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'الاسم',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'الجوال',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'الادوية',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      softWrap: true,
+                                      'العدد الكلي',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      textAlign: TextAlign.center,
+                                      softWrap: true,
+                                      'العدد المنصرف',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'ملاحظه',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                               ],
-                            );
-                          },
-                        )),
-                  ),
-                ))
-          ],
-        ),
-      )),
+                              rows: List.generate(
+                                companyProvider.filter.length,
+                                (index) {
+                                  return DataRow(
+                                    onLongPress: () {
+                                      if (companyProvider.filter[index].out >=
+                                          companyProvider.filter[index].total) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  "اختر اجراء للمتابعه"),
+                                              actions: [
+                                                CustomButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    companyProvider
+                                                        .createWorker(
+                                                            context,
+                                                            companyModel,
+                                                            companyProvider
+                                                                .filter[index]);
+                                                  },
+                                                  text: "تعديل",
+                                                  icon: Icons.edit,
+                                                ),
+                                                CustomButton(
+                                                  onPressed: () {
+                                                    companyProvider
+                                                        .markWorkerAsFinish(
+                                                            companyProvider
+                                                                .filter[index]);
+                                                    Navigator.pop(context);
+                                                  },
+                                                  text: "انتهي",
+                                                  icon: Icons.check,
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        companyProvider.createWorker(
+                                            context,
+                                            companyModel,
+                                            companyProvider.filter[index]);
+                                      }
+                                    },
+                                    cells: <DataCell>[
+                                      DataCell(Text(
+                                          companyProvider.filter[index].name)),
+                                      DataCell(Text(
+                                          companyProvider.filter[index].phone)),
+                                      DataCell(Text(
+                                          companyProvider.filter[index].drug)),
+                                      DataCell(Text(
+                                          "${companyProvider.filter[index].total}")),
+                                      DataCell(Text(
+                                          "${companyProvider.filter[index].out}")),
+                                      DataCell(Text(
+                                          companyProvider.filter[index].note)),
+                                    ],
+                                  );
+                                },
+                              )),
+                        ))
+            ],
+          ),
+        ));
+      },
     );
   }
-
 }

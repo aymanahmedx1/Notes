@@ -50,9 +50,11 @@ class DatabaseHelper {
                             "phone"	TEXT,
                             "company"	INTEGER,
                             "drug"	TEXT,
-                            "total" TEXT,
-                            "out" TEXT,
+                            "total" INTEGER,
+                            "out" INTEGER,
                             "note" TEXT,
+                            "date" TEXT , 
+                            "finish" INTEGER , 
                             PRIMARY KEY("id" AUTOINCREMENT)
                           );''');
     await db.execute('''CREATE TABLE "company" (

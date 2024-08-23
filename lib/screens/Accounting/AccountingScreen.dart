@@ -10,6 +10,8 @@ import 'package:notes/screens/Accounting/Widgets/Dialogs.dart';
 import 'AccountingDetailsScreen.dart';
 
 class Accountingscreen extends StatefulWidget {
+  static const String rout = "Accountingscreen";
+
   @override
   State<Accountingscreen> createState() => _AccountingscreenState();
 }
@@ -25,161 +27,158 @@ class _AccountingscreenState extends State<Accountingscreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.sizeOf(context).width;
     double height = MediaQuery.sizeOf(context).height;
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text("الحسابات"),
-              actions: [
-                ElevatedButton(
-                    onPressed: () async {
-                      await AccountingDialog().createSection(context, null);
-                      setState(() {});
-                    },
-                    child: const Row(
-                      children: [Text("جديد"), Icon(Icons.add)],
-                    )),
-              ],
-            ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  Text("التاريخ من "),
-                  Container(
-                    width: (width / 8) * 3,
-                    height: 40,
-                    child: TextFormField(
-                        textAlign: TextAlign.center,
-                        controller: dateFromController,
-                        keyboardType: TextInputType.datetime,
-                        decoration: const InputDecoration(
-                          hintText: "2024/8/14",
-                        )),
-                  ),
-                  const SizedBox(
-                    width: 30,
-                  ),
-                  Text("الي "),
-                  Container(
-                    width: (width / 8) * 3,
-                    height: 40,
-                    child: TextFormField(
+    return SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text("الحسابات"),
+            actions: [
+              ElevatedButton(
+                  onPressed: () async {
+                    await AccountingDialog().createSection(context, null);
+                    setState(() {});
+                  },
+                  child: const Row(
+                    children: [Text("جديد"), Icon(Icons.add)],
+                  )),
+            ],
+          ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Text("التاريخ من "),
+                Container(
+                  width: (width / 8) * 3,
+                  height: 40,
+                  child: TextFormField(
                       textAlign: TextAlign.center,
-                      controller: dateToController,
+                      controller: dateFromController,
                       keyboardType: TextInputType.datetime,
                       decoration: const InputDecoration(
                         hintText: "2024/8/14",
-                      ),
+                      )),
+                ),
+                const SizedBox(
+                  width: 30,
+                ),
+                Text("الي "),
+                Container(
+                  width: (width / 8) * 3,
+                  height: 40,
+                  child: TextFormField(
+                    textAlign: TextAlign.center,
+                    controller: dateToController,
+                    keyboardType: TextInputType.datetime,
+                    decoration: const InputDecoration(
+                      hintText: "2024/8/14",
                     ),
                   ),
-                ],
-              ),
-              Expanded(
-                child: Scrollbar(
-                  /// Scroll Bar
-                  trackVisibility: true,
-                  // SHow
-                  interactive: true,
-                  // Interact
-                  thickness: 10,
-                  // Width Of Scroll bar
+                ),
+              ],
+            ),
+            Expanded(
+              child: Scrollbar(
+                /// Scroll Bar
+                trackVisibility: true,
+                // SHow
+                interactive: true,
+                // Interact
+                thickness: 10,
+                // Width Of Scroll bar
+                controller: controller,
+                // Controll scroll bar location
+                thumbVisibility: true,
+                // show all time
+                child: SingleChildScrollView(
+                  // scroll list
                   controller: controller,
-                  // Controll scroll bar location
-                  thumbVisibility: true,
-                  // show all time
-                  child: SingleChildScrollView(
-                    // scroll list
-                    controller: controller,
-                    child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: double.infinity,
-                          child: FutureBuilder(
-                              future: SectionDB().getAllSections(),
-                              builder: (context, snap) {
-                                if (snap.hasData) {
-                                  List<SectionModel> list =
-                                      snap.data as List<SectionModel>;
-                                  return DataTable(
-                                      columns: const [
-                                        DataColumn(
-                                          label: Expanded(
-                                            child: Text(
-                                              'No',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                  child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        width: double.infinity,
+                        child: FutureBuilder(
+                            future: SectionDB().getAllSections(),
+                            builder: (context, snap) {
+                              if (snap.hasData) {
+                                List<SectionModel> list =
+                                    snap.data as List<SectionModel>;
+                                return DataTable(
+                                    columns: const [
+                                      DataColumn(
+                                        label: Expanded(
+                                          child: Text(
+                                            'No',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                        DataColumn(
-                                          label: Expanded(
-                                            child: Text(
-                                              'القسم',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                      ),
+                                      DataColumn(
+                                        label: Expanded(
+                                          child: Text(
+                                            'القسم',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                        DataColumn(
-                                          label: Expanded(
-                                            child: Text(
-                                              'المصروف',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                      ),
+                                      DataColumn(
+                                        label: Expanded(
+                                          child: Text(
+                                            'المصروف',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                        DataColumn(
-                                          label: Expanded(
-                                            child: Text(
-                                              'العمليات',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
+                                      ),
+                                      DataColumn(
+                                        label: Expanded(
+                                          child: Text(
+                                            'العمليات',
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold),
                                           ),
                                         ),
-                                      ],
-                                      rows: List.generate(
-                                        list.length,
-                                        (index) {
-                                          return DataRow(
-                                            onLongPress: () async {
-                                              await AccountingDialog()
-                                                  .createSection(
-                                                      context, list[index]);
-                                              setState(() {});
-                                            },
-                                            cells: <DataCell>[
-                                              DataCell(SizedBox(
-                                                width: 20,
-                                                child: Text("$index"),
-                                              )),
-                                              DataCell(Text(list[index].name)),
-                                              DataCell(
-                                                  Text("${list[index].total}")),
-                                              DataCell(
-                                                  makeOperationRow(list[index]))
-                                            ],
-                                          );
-                                        },
-                                      ));
-                                } else {
-                                  return Center(child: Text("لا توجد بيانات"));
-                                }
-                              }),
-                        )),
-                  ),
+                                      ),
+                                    ],
+                                    rows: List.generate(
+                                      list.length,
+                                      (index) {
+                                        return DataRow(
+                                          onLongPress: () async {
+                                            await AccountingDialog()
+                                                .createSection(
+                                                    context, list[index]);
+                                            setState(() {});
+                                          },
+                                          cells: <DataCell>[
+                                            DataCell(SizedBox(
+                                              width: 20,
+                                              child: Text("$index"),
+                                            )),
+                                            DataCell(Text(list[index].name)),
+                                            DataCell(
+                                                Text("${list[index].total}")),
+                                            DataCell(
+                                                makeOperationRow(list[index]))
+                                          ],
+                                        );
+                                      },
+                                    ));
+                              } else {
+                                return Center(child: Text("لا توجد بيانات"));
+                              }
+                            }),
+                      )),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      )),
-    );
+      ),
+    ));
   }
 
   Widget makeOperationRow(SectionModel section) {

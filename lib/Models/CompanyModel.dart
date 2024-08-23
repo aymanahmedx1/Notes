@@ -16,8 +16,10 @@ class WorkerModel{
   String phone ;
   int company ;
   String drug ;
-  String total ;
-  String out ;
+  int total ;
+  int out ;
   String note ;
-  WorkerModel({ required this.id, required this.name,required this.phone ,required this.company ,required this.total ,required this.out ,required this.note , required this.drug});
+  String date ;
+  int finish  ;
+  WorkerModel({ required this.id, required this.name,required this.phone ,required this.company ,required this.total ,required this.out ,required this.note , required this.drug , required this.date , required this.finish});
 }

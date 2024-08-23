@@ -1,6 +1,9 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:notes/CustomWidgets/CutomTextInput.dart';
 import 'package:notes/Models/CompanyModel.dart';
-import 'package:notes/data/CompanyDB.dart';
+import 'package:notes/Providers/CompanyProvider.dart';
+import 'package:provider/provider.dart';
 
 import '../../../Commons/Helpers.dart';
 import '../../../CustomWidgets/CustomButton.dart';
@@ -10,11 +13,14 @@ class CompanyDialogs {
   final TextEditingController nameController = TextEditingController(text: "");
   final TextEditingController phoneController = TextEditingController(text: "");
   final TextEditingController drugController = TextEditingController(text: "");
-  final TextEditingController totalController = TextEditingController(text: "0");
+  final TextEditingController totalController =
+      TextEditingController(text: "0");
   final TextEditingController noteController = TextEditingController(text: "");
   final TextEditingController outController = TextEditingController(text: "0");
+  final TextEditingController dateController = TextEditingController(text: "");
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final ScrollController controller = ScrollController();
+
   createOrUpdate(BuildContext context, CompanyModel? model) async {
     final TextEditingController companyNameController =
         TextEditingController(text: "");
@@ -23,39 +29,24 @@ class CompanyDialogs {
 
     if (model != null) {
       companyNameController.text = model.name;
+      noteController.text = model.notes;
     }
     await showDialog<String>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Directionality(
-              textDirection: TextDirection.rtl, child: Text("اضافه شركة")),
+          title: const Text("اضافه شركة"),
           content: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  width: 300,
-                  height: 70,
-                  child: TextFormField(
-                    controller: companyNameController,
-                    enabled: true,
-                    autofocus: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(hintText: "اسم شركة"),
-                  ),
+                CustomTextInput(
+                  label: "اسم شركة",
+                  controller: companyNameController,
                 ),
-                SizedBox(
-                  width: 300,
-                  height: 70,
-                  child: TextFormField(
-                    controller: noteController,
-                    enabled: true,
-                    autofocus: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(hintText: "ملاحظة"),
-                  ),
+                heightSizedBox,
+                CustomTextInput(
+                  label: "ملاحظة ",
+                  controller: noteController,
                 ),
               ],
             ),
@@ -67,15 +58,16 @@ class CompanyDialogs {
                 if (model != null) {
                   model.name = companyNameController.text;
                   model.notes = noteController.text;
-                  await CompanyDB().update(model);
+                  Provider.of<CompanyProvider>(context,listen: false).updateCompany(model);
                 } else {
                   var m = CompanyModel(
                       id: 0,
                       name: companyNameController.text,
                       notes: noteController.text,
                       date: formattedDate());
-                  await CompanyDB().add(m);
+                  Provider.of<CompanyProvider>(context,listen: false).addCompany(m);
                 }
+                log("message");
                 Navigator.of(context).pop("1");
               },
               text: "حفظ",
@@ -86,274 +78,136 @@ class CompanyDialogs {
     );
   }
 
-  createWorkerDialog(BuildContext context ,CompanyModel selectedModel ,   WorkerModel? model)async {
-   await showDialog(context: context, builder: (context) {
-      return AlertDialog(
-        title: Text("اضافه مندوب"),
-        content: SingleChildScrollView(
-          child: Form(
-            key: formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: labelWidth, child: Text("الشركة ")),
-                    const SizedBox(
-                      width: 10,
+  createWorkerDialog(BuildContext context, CompanyModel companyModel,
+      WorkerModel? workerModel) async {
+    if (workerModel != null) {
+      nameController.text = workerModel.name;
+      phoneController.text = workerModel.phone;
+      drugController.text = workerModel.drug;
+      totalController.text = workerModel.total.toString();
+      noteController.text = workerModel.note;
+      outController.text = workerModel.out.toString();
+      dateController.text = workerModel.date;
+    } else {
+      dateController.text = formattedDate();
+    }
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("اضافه مندوب"),
+          content: SingleChildScrollView(
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CustomTextInput(
+                    width: 1000,
+                    label: 'الشركة',
+                    controller:
+                        TextEditingController(text: companyModel.name),
+                    enabled: false,
+                  ),
+                  heightSizedBox,
+                  CustomTextInput(
+                    label: 'المندوب',
+                    controller: nameController,
+                    validateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == "") {
+                        return "الاسم مطلوب";
+                      } else if (value!.length < 3) {
+                        return "ادخل اسم صالح";
+                      }
+                      return null;
+                    },
+                  ),
+                  heightSizedBox,
+                  CustomTextInput(
+                    label: 'رقمه',
+                    controller: phoneController,
+                    validateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == "") {
+                        return "الرقم مطلوب";
+                      } else if (value!.length < 3) {
+                        return "ادخل رقم صالح";
+                      }
+                      return null;
+                    },
+                  ),
+                  heightSizedBox,
+                  CustomTextInput(
+                    label: 'الادوية',
+                    controller: drugController,
+                    validateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == "") {
+                        return "ادخل اسم صالح";
+                      }
+                      return null;
+                    },
+                  ),
+                  heightSizedBox,
+                  CustomTextInput(
+                    label: 'العدد الكلي',
+                    controller: totalController,
+                    textInputType: TextInputType.number,
+                  ),
+                  heightSizedBox,
+                  CustomTextInput(
+                    label: 'العدد المصروف',
+                    controller: outController,
+                    textInputType: TextInputType.number,
+                    validateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value != null) {
+                        if ((int.tryParse(value) ?? 0) >
+                            (int.tryParse(totalController.text) ?? 0)) {
+                          return "الرقم المنصرف يجب ان يكون اصغر من الاجمالي";
+                        }
+                      }
+                      return null;
+                    },
+                  ),
+                  heightSizedBox,
+                  CustomTextInput(
+                    label: 'ملاحظة',
+                    controller: noteController,
+                  ),
+                  heightSizedBox,
+                  CustomTextInput(
+                    label: 'التاريخ',
+                    controller: dateController,
+                    textInputType: TextInputType.datetime,
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  SizedBox(
+                    width: 300,
+                    child: CustomButton(
+                      onPressed: () {
+                        saveWorker(context, companyModel, workerModel);
+                        Navigator.of(context).pop();
+                      },
+                      icon: Icons.save,
+                      text: "حفظ",
                     ),
-                    SizedBox(
-                      width: 300,
-                      height: 70,
-                      child: TextFormField(
-                        initialValue: selectedModel!.name,
-                        enabled: false,
-                        textAlign: TextAlign.center,
-                        keyboardType: TextInputType.text,
-                      ),
-                    ),
-                  ],
-                ), // Company Row
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: labelWidth, child: Text("المندوب")),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 300,
-                      height: 70,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        controller: nameController,
-                        keyboardType: TextInputType.text,
-                        autovalidateMode:
-                        AutovalidateMode.onUserInteraction,
-                        onChanged: (value) {
-                          // valueChanged(value);
-                        },
-                        validator: (value) {
-                          if (value == "") {
-                            return "الاسم مطلوب";
-                          } else if (value!.length < 3) {
-                            return "ادخل اسم صالح";
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          hintText: "المندوب",
-                        ),
-                      ),
-                    ),
-                  ],
-                ), // Name Row
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: labelWidth,
-                      child: Text("رقمه"),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 300,
-                      height: 70,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        controller: phoneController,
-                        keyboardType: TextInputType.text,
-                        autovalidateMode:
-                        AutovalidateMode.onUserInteraction,
-                        onChanged: (value) {
-                          // valueChanged(value);
-                        },
-                        validator: (value) {
-                          if (value == "") {
-                            return "الرقم مطلوب";
-                          } else if (value!.length < 3) {
-                            return "ادخل رقم صالح";
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          hintText: "رقمه",
-                        ),
-                      ),
-                    ),
-                  ],
-                ), // Phone
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: labelWidth,
-                        child: const Text("الادوية")),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 300,
-                      height: 70,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        controller: drugController,
-                        keyboardType: TextInputType.text,
-                        autovalidateMode:
-                        AutovalidateMode.onUserInteraction,
-                        onChanged: (value) {
-                          // valueChanged(value);
-                          //
-                        },
-                        validator: (value) {
-                          if (value == "") {
-                            return "الاسم مطلوب";
-                          } else if (value!.length < 3) {
-                            return "ادخل اسم صالح";
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                          hintText: "الادوية",
-                        ),
-                      ),
-                    ),
-                  ],
-                ), //Drug
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: labelWidth,
-                        child: Text("العدد الكلي")),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 300,
-                      height: 70,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        controller: totalController,
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          hintText: "العدد الكلي",
-                        ),
-                      ),
-                    ),
-                  ],
-                ), // Total
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: labelWidth,
-                        child: const Text("العدد المصروف")),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 300,
-                      height: 70,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        controller: outController,
-                        keyboardType: TextInputType.text,
-                        decoration: const InputDecoration(
-                          hintText: "العدد المصروف",
-                        ),
-                      ),
-                    ),
-                  ],
-                ), // out
-                const SizedBox(
-                  height: 15,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                        width: labelWidth, child: Text("ملاحظة")),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                      width: 300,
-                      height: 70,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        controller: noteController,
-                        keyboardType: TextInputType.text,
-                        autovalidateMode:
-                        AutovalidateMode.onUserInteraction,
-                        onChanged: (value) {
-                          // valueChanged(value);
-                          //
-                        },
-                        validator: (value) {
-                          if (value == "") {
-                            return "الاسم مطلوب";
-                          } else if (value!.length < 3) {
-                            return "ادخل اسم صالح";
-                          }
-                          return null;
-                        },
-                        decoration: const InputDecoration(
-                          hintText: "ملاحظة",
-                        ),
-                      ),
-                    ),
-                  ],
-                ), //notes
-                const SizedBox(
-                  height: 50,
-                ),
-                CustomButton(
-                  onPressed: ()async{
-                    await saveWorker(selectedModel,model);
-                    Navigator.of(context).pop();
-                  },
-                  icon: Icons.save,
-                  text: "حفظ",
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      );
-    },);
+        );
+      },
+    );
   }
 
-
-  saveWorker(CompanyModel selectedModel , WorkerModel? model) async {
+  saveWorker(
+      BuildContext context, CompanyModel selectedModel, WorkerModel? model) {
     if (formKey.currentState!.validate()) {
       var toSave = WorkerModel(
           id: 0,
@@ -361,15 +215,23 @@ class CompanyDialogs {
           phone: phoneController.text,
           company: selectedModel.id,
           note: noteController.text,
-          out: outController.text,
-          total: totalController.text,
-          drug: drugController.text);
+          out: int.parse(outController.text),
+          total: int.parse(totalController.text),
+          drug: drugController.text,
+          date: dateController.text,
+        finish: 0
+      );
       if (model == null) {
-        await CompanyDB().addWorker(toSave);
+        Provider.of<CompanyProvider>(context, listen: false).saveWorker(toSave);
       } else {
         toSave.id = model.id;
-        await CompanyDB().updateWorker(toSave);
+        Provider.of<CompanyProvider>(context, listen: false)
+            .updateWorker(toSave);
       }
     }
   }
+
+  var heightSizedBox = const SizedBox(
+    height: 15,
+  );
 }

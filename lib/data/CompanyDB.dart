@@ -29,13 +29,13 @@ class CompanyDB {
 
   addWorker(WorkerModel model) async {
     await db.insertData(
-        ''' insert into worker (name,phone,company,total,out,note,drug) values (?,?,?,?,?,?,?) ''',
-        [model.name, model.phone, model.company,model.total,model.out , model.note,model.drug]);
+        ''' insert into worker (name,phone,company,total,out,note,drug,date,finish) values (?,?,?,?,?,?,?,?,?) ''',
+        [model.name, model.phone, model.company,model.total,model.out , model.note,model.drug,model.date,0]);
   }
 
-  getAllWorkers(int company) async {
+  getAllWorkers(int company , int finish) async {
    try{
-     List<Map> res = await db.readData('''  select * from  worker where  company = ?''' ,[company]);
+     List<Map> res = await db.readData('''  select * from  worker where  company = ? and finish = ?''' ,[company,finish]);
      List<WorkerModel> list = [];
      for (var record in res) {
        list.add(WorkerModel(
@@ -47,6 +47,8 @@ class CompanyDB {
          out: record['out'],
          note: record['note'],
          drug:  record['drug'],
+         date:  record['date'],
+         finish: record['finish']
        ));
      }
      return list;
@@ -56,8 +58,14 @@ class CompanyDB {
   }
 
   updateWorker(WorkerModel model)async{
-    await db.insertData(
-        ''' update worker set name= ? ,phone= ? ,company= ?,total= ?,out= ?,note= ?,drug= ? where id = ? ''',
-        [model.name, model.phone, model.company,model.total,model.out , model.note,model.drug ,model.id]);
+    await db.updateData(
+        ''' update worker set name= ? ,phone= ? ,company= ?,total= ?,out= ?,note= ?,drug= ?,date=? where id = ? ''',
+        [model.name, model.phone, model.company,model.total,model.out , model.note,model.drug,model.date ,model.id]);
+  }
+
+  markWorkerFinish(WorkerModel model)async {
+    await db.updateData(
+        ''' update worker set finish = true where id = ? ''',
+        [model.id]);
   }
 }

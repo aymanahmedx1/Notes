@@ -17,8 +17,7 @@ class AccountingDialog {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Directionality(
-              textDirection: TextDirection.rtl, child: Text("اضافه قسم")),
+          title: Text("اضافه قسم"),
           content: SizedBox(
             width: 300,
             height: 70,
@@ -69,18 +68,15 @@ class AccountingDialog {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Row(
-              children: [
-                const Text("اضافه مصروف"),
-                Text(
-                  " ${section.name} ",
-                  style: const TextStyle(
-                      color: Colors.deepOrange, fontWeight: FontWeight.bold),
-                )
-              ],
-            ),
+          title: Row(
+            children: [
+              const Text("اضافه مصروف"),
+              Text(
+                " ${section.name} ",
+                style: const TextStyle(
+                    color: Colors.deepOrange, fontWeight: FontWeight.bold),
+              )
+            ],
           ),
           content: SingleChildScrollView(
             child: Column(
