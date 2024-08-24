@@ -6,12 +6,18 @@ class SectionModel {
   double total;
 
   SectionModel({required this.id, required this.name, required this.total});
+  @override
+  String toString() {
+    // TODO: implement toString
+    return " $id , $name , $total ";
+  }
 }
 
 class ExpenseModel {
   int id;
 
   int section;
+  ExpenseType expenseType;
   String reason;
 
   double amount;
@@ -25,5 +31,16 @@ class ExpenseModel {
       required this.reason,
       required this.amount,
       required this.note,
-      required this.date});
+      required this.date,
+      required this.expenseType
+      });
+  @override
+  String toString() {
+    // TODO: implement toString
+    return "$id , $section , $reason , $amount , $note , $date";
+  }
+}
+enum ExpenseType{
+  moneyIn,
+  moneyOut
 }

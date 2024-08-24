@@ -36,8 +36,8 @@ class SectionDB {
 
   addExpense(ExpenseModel ex) async {
     await db.insertData(
-        ''' insert into expense (reason,amount,note , section ,date) values (?,?,?,?,?) ''',
-        [ex.reason, ex.amount, ex.note, ex.section , ex.date]);
+        ''' insert into expense (reason,amount,note , section ,date,expense_type) values (?,?,?,?,?,?) ''',
+        [ex.reason, ex.amount, ex.note, ex.section , ex.date,ex.expenseType.index]);
   }
 
   getSectionDetails(SectionModel model) async {
@@ -52,7 +52,8 @@ class SectionDB {
           section: model.id,
           amount: record['amount'],
           note: record['note'],
-          date: record['date']
+          date: record['date'],
+          expenseType: record['expense_type']
         ));
       }
       return list;

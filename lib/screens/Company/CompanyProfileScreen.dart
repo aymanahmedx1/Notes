@@ -173,6 +173,9 @@ class CompanyProfileScreen extends StatelessWidget {
                                                   text: "تعديل",
                                                   icon: Icons.edit,
                                                 ),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
                                                 CustomButton(
                                                   onPressed: () {
                                                     companyProvider

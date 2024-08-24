@@ -1,198 +1,188 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:notes/Commons/Helpers.dart';
 import 'package:notes/CustomWidgets/CustomButton.dart';
-import 'package:notes/CustomWidgets/PageHeader.dart';
+import 'package:notes/CustomWidgets/CustomDatePicker.dart';
+import 'package:notes/CustomWidgets/CutomTextInput.dart';
 import 'package:notes/Models/SectionModel.dart';
+import 'package:notes/Providers/AccountingProvider.dart';
 import 'package:notes/data/SectionDB.dart';
 import 'package:notes/screens/Accounting/Widgets/Dialogs.dart';
+import 'package:provider/provider.dart';
 
 import 'AccountingDetailsScreen.dart';
 
-class Accountingscreen extends StatefulWidget {
+class Accountingscreen extends StatelessWidget {
   static const String rout = "Accountingscreen";
 
-  @override
-  State<Accountingscreen> createState() => _AccountingscreenState();
-}
-
-class _AccountingscreenState extends State<Accountingscreen> {
   final ScrollController controller = ScrollController();
+
   final TextEditingController dateFromController =
       TextEditingController(text: "");
+
   final TextEditingController dateToController =
       TextEditingController(text: "");
 
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.sizeOf(context).width;
-    double height = MediaQuery.sizeOf(context).height;
     return SafeArea(
         child: Scaffold(
-          appBar: AppBar(
-            title: Text("الحسابات"),
-            actions: [
-              ElevatedButton(
-                  onPressed: () async {
-                    await AccountingDialog().createSection(context, null);
-                    setState(() {});
-                  },
-                  child: const Row(
-                    children: [Text("جديد"), Icon(Icons.add)],
-                  )),
-            ],
-          ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Row(
+      appBar: AppBar(
+        title: const Text("الاقسام"),
+        centerTitle: true,
+        actions: [
+          ElevatedButton(
+              onPressed: () async {
+                await AccountingDialog().createSection(context, null);
+              },
+              child: const Row(
+                children: [Text("جديد"), Icon(Icons.add)],
+              )),
+        ],
+      ),
+      body: Consumer<AccountingProvider>(
+        builder: (context, accountingProvider, child) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
               children: [
-                Text("التاريخ من "),
-                Container(
-                  width: (width / 8) * 3,
-                  height: 40,
-                  child: TextFormField(
-                      textAlign: TextAlign.center,
-                      controller: dateFromController,
-                      keyboardType: TextInputType.datetime,
-                      decoration: const InputDecoration(
-                        hintText: "2024/8/14",
-                      )),
+                Row(
+                  children: [
+                    SizedBox(
+                        width: width / 12 * 4,
+                        child: CustomDatePicker(
+                          label: "التاريخ من",
+                          controller: dateFromController,
+                        )),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    SizedBox(
+                        width: width / 12 * 4,
+                        child: CustomDatePicker(
+                          label: "التاريخ الي",
+                          controller: dateToController,
+                        )),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    CustomButton(
+                      text: "بحث",
+                      onPressed: () {},
+                      icon: Icons.search,
+                    )
+                  ],
                 ),
-                const SizedBox(
-                  width: 30,
-                ),
-                Text("الي "),
-                Container(
-                  width: (width / 8) * 3,
-                  height: 40,
-                  child: TextFormField(
-                    textAlign: TextAlign.center,
-                    controller: dateToController,
-                    keyboardType: TextInputType.datetime,
-                    decoration: const InputDecoration(
-                      hintText: "2024/8/14",
+                Expanded(
+                  child: Scrollbar(
+                    /// Scroll Bar
+                    trackVisibility: true,
+                    // SHow
+                    interactive: true,
+                    // Interact
+                    thickness: 10,
+                    // Width Of Scroll bar
+                    controller: controller,
+                    // Controll scroll bar location
+                    thumbVisibility: true,
+                    // show all time
+                    child: SingleChildScrollView(
+                      // scroll list
+                      controller: controller,
+                      child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            width: double.infinity,
+                            child: DataTable(
+                                columns: const [
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
+                                        'م',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
+                                        'القسم',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
+                                        'المصروف',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
+                                        'العمليات',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                rows: List.generate(
+                                  accountingProvider
+                                      .filteredAccountingList.length,
+                                  (index) {
+                                    return DataRow(
+                                      onLongPress: () {
+                                        AccountingDialog().createSection(
+                                            context,
+                                            accountingProvider
+                                                .filteredAccountingList[index]);
+                                      },
+                                      cells: <DataCell>[
+                                        DataCell(SizedBox(
+                                          width: 20,
+                                          child: Text("${index + 1}"),
+                                        )),
+                                        DataCell(Text(accountingProvider
+                                            .filteredAccountingList[index]
+                                            .name)),
+                                        DataCell(Text(formatNumber(
+                                            accountingProvider
+                                                .filteredAccountingList[index]
+                                                .total))),
+                                        DataCell(makeOperationRow(
+                                            context,
+                                            accountingProvider
+                                                .filteredAccountingList[index]))
+                                      ],
+                                    );
+                                  },
+                                )),
+                          )),
                     ),
                   ),
                 ),
               ],
             ),
-            Expanded(
-              child: Scrollbar(
-                /// Scroll Bar
-                trackVisibility: true,
-                // SHow
-                interactive: true,
-                // Interact
-                thickness: 10,
-                // Width Of Scroll bar
-                controller: controller,
-                // Controll scroll bar location
-                thumbVisibility: true,
-                // show all time
-                child: SingleChildScrollView(
-                  // scroll list
-                  controller: controller,
-                  child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: double.infinity,
-                        child: FutureBuilder(
-                            future: SectionDB().getAllSections(),
-                            builder: (context, snap) {
-                              if (snap.hasData) {
-                                List<SectionModel> list =
-                                    snap.data as List<SectionModel>;
-                                return DataTable(
-                                    columns: const [
-                                      DataColumn(
-                                        label: Expanded(
-                                          child: Text(
-                                            'No',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Expanded(
-                                          child: Text(
-                                            'القسم',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Expanded(
-                                          child: Text(
-                                            'المصروف',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                      DataColumn(
-                                        label: Expanded(
-                                          child: Text(
-                                            'العمليات',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                    rows: List.generate(
-                                      list.length,
-                                      (index) {
-                                        return DataRow(
-                                          onLongPress: () async {
-                                            await AccountingDialog()
-                                                .createSection(
-                                                    context, list[index]);
-                                            setState(() {});
-                                          },
-                                          cells: <DataCell>[
-                                            DataCell(SizedBox(
-                                              width: 20,
-                                              child: Text("$index"),
-                                            )),
-                                            DataCell(Text(list[index].name)),
-                                            DataCell(
-                                                Text("${list[index].total}")),
-                                            DataCell(
-                                                makeOperationRow(list[index]))
-                                          ],
-                                        );
-                                      },
-                                    ));
-                              } else {
-                                return Center(child: Text("لا توجد بيانات"));
-                              }
-                            }),
-                      )),
-                ),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     ));
   }
 
-  Widget makeOperationRow(SectionModel section) {
+  Widget makeOperationRow(BuildContext context, SectionModel section) {
     return Row(
       children: [
         ElevatedButton(
-          onPressed: () async {
-            String? res =
-                await AccountingDialog().addExpenseOnSection(context, section);
-            setState(() {});
-            if (res != null) {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(snackBar("تم الاضافه بنجاح"));
-            }
+          onPressed: () {
+            Provider.of<AccountingProvider>(context, listen: false)
+                .showAddExpenseDialog(context, section, ExpenseType.moneyIn);
           },
           child: const Icon(Icons.add),
         ),
@@ -201,6 +191,18 @@ class _AccountingscreenState extends State<Accountingscreen> {
         ),
         ElevatedButton(
           onPressed: () {
+            Provider.of<AccountingProvider>(context, listen: false)
+                .showAddExpenseDialog(context, section , ExpenseType.moneyOut);
+          },
+          child: const Icon(Icons.remove),
+        ),
+        const SizedBox(
+          width: 5,
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Provider.of<AccountingProvider>(context, listen: false)
+                .fillExpenseList(section);
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -208,15 +210,8 @@ class _AccountingscreenState extends State<Accountingscreen> {
           },
           child: const Icon(Icons.search),
         ),
+
       ],
     );
   }
-
-  snackBar(String text) => SnackBar(
-        backgroundColor: Colors.white,
-        content: Text(
-          text,
-          style: const TextStyle(color: Colors.deepOrange),
-        ),
-      );
 }

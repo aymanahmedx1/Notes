@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:notes/CustomWidgets/CustomAutoComplete.dart';
+import 'package:notes/CustomWidgets/CustomDatePicker.dart';
+import 'package:notes/CustomWidgets/CutomTextInput.dart';
+import 'package:notes/CustomWidgets/Spacers.dart';
+import 'package:notes/Providers/AccountingProvider.dart';
+import 'package:provider/provider.dart';
 
+import '../../../Commons/Helpers.dart';
 import '../../../CustomWidgets/CustomButton.dart';
 import '../../../Models/SectionModel.dart';
 import '../../../data/SectionDB.dart';
 
 class AccountingDialog {
-
   createSection(BuildContext context, SectionModel? model) async {
     final TextEditingController textController =
         TextEditingController(text: "");
@@ -17,18 +23,10 @@ class AccountingDialog {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text("اضافه قسم"),
-          content: SizedBox(
-            width: 300,
-            height: 70,
-            child: TextFormField(
-              controller: textController,
-              enabled: true,
-              autofocus: true,
-              textAlign: TextAlign.center,
-              keyboardType: TextInputType.text,
-              decoration: const InputDecoration(hintText: "اسم القسم"),
-            ),
+          title: const Text("اضافه قسم"),
+          content: CustomTextInput(
+            label: "اسم القسم",
+            controller: textController,
           ),
           actions: [
             CustomButton(
@@ -36,9 +34,13 @@ class AccountingDialog {
               onPressed: () async {
                 if (model != null) {
                   model.name = textController.text;
-                  await SectionDB().updateSection(model);
+                  Provider.of<AccountingProvider>(context, listen: false)
+                      .updateSection(model);
                 } else {
-                  await saveNewSection(textController.text);
+                  var section =
+                      SectionModel(total: 0, id: 0, name: textController.text);
+                  Provider.of<AccountingProvider>(context, listen: false)
+                      .addSection(section);
                 }
                 Navigator.of(context).pop("1");
               },
@@ -50,12 +52,15 @@ class AccountingDialog {
     );
   }
 
-  saveNewSection(String section) async {
-    var Section = SectionModel(total: 0, id: 0, name: section);
-    await SectionDB().addSection(Section);
-  }
-
-  addExpenseOnSection(BuildContext context, SectionModel section) async {
+  addExpenseOnSection(
+      BuildContext context, SectionModel section, ExpenseType type) async {
+    String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
+    List<String> reasonList =
+        Provider.of<AccountingProvider>(context, listen: false)
+            .filteredExpenseList
+            .map((e) => e.reason)
+            .toSet()
+            .toList();
     final TextEditingController noteController =
         TextEditingController(text: "");
     final TextEditingController amountController =
@@ -64,13 +69,14 @@ class AccountingDialog {
         TextEditingController(text: "");
     final TextEditingController dateController =
         TextEditingController(text: "");
+    dateController.text = formattedDate();
     await showDialog<String>(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Row(
             children: [
-              const Text("اضافه مصروف"),
+              Text(label),
               Text(
                 " ${section.name} ",
                 style: const TextStyle(
@@ -81,54 +87,27 @@ class AccountingDialog {
           content: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
-                  width: 300,
-                  height: 70,
-                  child: TextFormField(
-                    controller: reasonController,
-                    enabled: true,
-                    autofocus: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(hintText: "السبب"),
-                  ),
+                CustomAutoComplete(
+                  controller: reasonController,
+                  label: "السبب",
+                  options: reasonList,
                 ),
-                SizedBox(
-                  width: 300,
-                  height: 70,
-                  child: TextFormField(
-                    controller: amountController,
-                    enabled: true,
-                    autofocus: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: "المبلغ"),
-                  ),
+                heightSpace,
+                CustomTextInput(
+                  label: "المبلغ",
+                  controller: amountController,
                 ),
-                SizedBox(
-                  width: 300,
-                  height: 70,
-                  child: TextFormField(
-                    controller: dateController,
-                    enabled: true,
-                    autofocus: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(hintText: "التاريخ"),
-                  ),
+                heightSpace,
+                CustomDatePicker(
+                  label: "التاريخ",
+                  controller: dateController,
                 ),
-                SizedBox(
-                  width: 300,
-                  height: 70,
-                  child: TextFormField(
-                    controller: noteController,
-                    enabled: true,
-                    autofocus: true,
-                    textAlign: TextAlign.center,
-                    keyboardType: TextInputType.text,
-                    decoration: const InputDecoration(hintText: "ملاحظات"),
-                  ),
+                heightSpace,
+                CustomTextInput(
+                  label: "ملاحظات",
+                  controller: noteController,
                 ),
+                heightSpace,
               ],
             ),
           ),
@@ -142,9 +121,11 @@ class AccountingDialog {
                     amount: double.parse(amountController.text),
                     reason: reasonController.text,
                     section: section.id,
-                    date: dateController.text);
-                await SectionDB().addExpense(ex);
-                await SectionDB().updateAmount(section, ex.amount, true);
+                    date: dateController.text,
+                    expenseType: type);
+                Provider.of<AccountingProvider>(context, listen: false)
+                    .addNewExpense(ex, section, ex.amount, true);
+
                 Navigator.of(context).pop("1");
               },
               text: "حفظ",

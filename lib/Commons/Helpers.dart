@@ -1,4 +1,11 @@
- formattedDate() {
+import 'package:intl/intl.dart';
+
+formattedDate() {
   DateTime currentDate = DateTime.now();
-  return "${currentDate.year}-${currentDate.month}-${currentDate.day}";
+  return DateFormat('yyyy-MM-dd').format(currentDate);
+}
+
+formatNumber(number) {
+  String formattedNumber = NumberFormat('###,###').format(number);
+  return formattedNumber;
 }

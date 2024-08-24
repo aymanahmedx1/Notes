@@ -36,6 +36,7 @@ class DatabaseHelper {
                             "note"	TEXT,
                             "section" INTEGER ,
                             "date" TEXT , 
+                            "expense_type" INTEGER ,
                             PRIMARY KEY("id" AUTOINCREMENT)
                           );''');
     await db.execute('''  CREATE TABLE "section" (

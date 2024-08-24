@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 class CustomTheme {
   // If you want to modify both themes at once, modify the colors below.
 
-  static const Color _primaryColor = Color(0xFFffffff);
+  static const Color _primaryColor = Color(0xFF000000);
   static const Color _primaryInverseColor = Color(0xFF4E432F);
-  static const Color _onSurfaceColor = Color(0xFFffffff);
+  static const Color _onSurfaceColor = Color(0xFF000000);
   static const Color _onSurfaceVariant = Color(0xFFFF6578);
   static const Color _onPrimaryColor = Color(0xFFA5E179);
-  static const Color _surfaceColor = Color(0xFF4E432F);
-  static const Color _backgroundColor = Color(0xFF373C4B);
+  static const Color _surfaceColor = Color(0xFF646464);
+  static const Color _backgroundColor = Color(0xFFffffff);
   static const Color _onSecondaryColor = Color(0xFFE1E3E4);
   static const Color _onBackgroundColor = Color(0xFF828A9A);
   static const Color _secondaryColor = Color(0xFF55393D);
@@ -22,6 +22,7 @@ class CustomTheme {
 
   static final ThemeData lightTheme = ThemeData(
     useMaterial3: true,
+    disabledColor: _primaryColor,
     colorScheme: ColorScheme.fromSeed(
       brightness: Brightness.light,
       seedColor: _primaryColor,
@@ -47,7 +48,7 @@ class CustomTheme {
       hintStyle: const TextStyle(color: Colors.grey),
       enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.white, width: 3)),
+          borderSide: const BorderSide(color: Colors.blueGrey, width: 3)),
       disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: Colors.grey, width: 3)),
@@ -56,11 +57,15 @@ class CustomTheme {
           borderSide: const BorderSide(color: Colors.red, width: 3)),
       border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
-          borderSide: const BorderSide(color: Colors.white, width: 3)),
+          borderSide: const BorderSide(color: Colors.blueGrey, width: 3)),
       focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: Colors.deepOrange, width: 3)),
     ),
+    dialogTheme:const DialogTheme(
+      backgroundColor: _backgroundColor,
+    ),
+    datePickerTheme:const DatePickerThemeData(backgroundColor:_backgroundColor ),
   );
 
   // If you want to modify the dark theme only, modify the colors below.

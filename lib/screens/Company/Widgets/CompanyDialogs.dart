@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:notes/CustomWidgets/CustomDatePicker.dart';
 import 'package:notes/CustomWidgets/CutomTextInput.dart';
 import 'package:notes/Models/CompanyModel.dart';
 import 'package:notes/Providers/CompanyProvider.dart';
@@ -58,14 +59,16 @@ class CompanyDialogs {
                 if (model != null) {
                   model.name = companyNameController.text;
                   model.notes = noteController.text;
-                  Provider.of<CompanyProvider>(context,listen: false).updateCompany(model);
+                  Provider.of<CompanyProvider>(context, listen: false)
+                      .updateCompany(model);
                 } else {
                   var m = CompanyModel(
                       id: 0,
                       name: companyNameController.text,
                       notes: noteController.text,
                       date: formattedDate());
-                  Provider.of<CompanyProvider>(context,listen: false).addCompany(m);
+                  Provider.of<CompanyProvider>(context, listen: false)
+                      .addCompany(m);
                 }
                 log("message");
                 Navigator.of(context).pop("1");
@@ -106,8 +109,7 @@ class CompanyDialogs {
                   CustomTextInput(
                     width: 1000,
                     label: 'الشركة',
-                    controller:
-                        TextEditingController(text: companyModel.name),
+                    controller: TextEditingController(text: companyModel.name),
                     enabled: false,
                   ),
                   heightSizedBox,
@@ -178,10 +180,9 @@ class CompanyDialogs {
                     controller: noteController,
                   ),
                   heightSizedBox,
-                  CustomTextInput(
-                    label: 'التاريخ',
+                  CustomDatePicker(
                     controller: dateController,
-                    textInputType: TextInputType.datetime,
+                    label: "التاريخ",
                   ),
                   const SizedBox(
                     height: 30,
@@ -219,8 +220,7 @@ class CompanyDialogs {
           total: int.parse(totalController.text),
           drug: drugController.text,
           date: dateController.text,
-        finish: 0
-      );
+          finish: 0);
       if (model == null) {
         Provider.of<CompanyProvider>(context, listen: false).saveWorker(toSave);
       } else {

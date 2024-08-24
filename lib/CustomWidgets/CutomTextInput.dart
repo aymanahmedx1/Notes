@@ -8,6 +8,7 @@ class CustomTextInput extends StatelessWidget {
   final String label;
   final String? Function(String? value)? validator;
   final String? Function(String? value)? valueChange;
+  final void Function()? onTab;
   AutovalidateMode? validateMode = AutovalidateMode.disabled;
   TextEditingController? controller = TextEditingController(text: "");
 
@@ -19,7 +20,9 @@ class CustomTextInput extends StatelessWidget {
     this.enabled,
     this.textInputType,
     this.valueChange,
-    required this.label});
+    this.onTab,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +30,9 @@ class CustomTextInput extends StatelessWidget {
       width: double.infinity,
       height: height,
       child: TextFormField(
+        style: const TextStyle(color: Colors.black),
         onChanged: valueChange,
+        onTap: onTab,
         textDirection: TextDirection.rtl,
         controller: controller,
         validator: validator,
