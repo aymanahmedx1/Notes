@@ -1,15 +1,19 @@
 class SectionModel {
   int id;
-
   String name;
+  double totalIn;
+  double totalOut;
 
-  double total;
+  SectionModel(
+      {required this.id,
+      required this.name,
+      required this.totalIn,
+      required this.totalOut});
 
-  SectionModel({required this.id, required this.name, required this.total});
   @override
   String toString() {
     // TODO: implement toString
-    return " $id , $name , $total ";
+    return "id $id ,name $name ,totalIn $totalIn ,totalOut $totalOut ";
   }
 }
 
@@ -24,6 +28,7 @@ class ExpenseModel {
 
   String note;
   String date;
+  SectionModel? sectionModel;
 
   ExpenseModel(
       {required this.id,
@@ -32,15 +37,14 @@ class ExpenseModel {
       required this.amount,
       required this.note,
       required this.date,
-      required this.expenseType
-      });
+      required this.expenseType,
+      this.sectionModel});
+
   @override
   String toString() {
     // TODO: implement toString
     return "$id , $section , $reason , $amount , $note , $date";
   }
 }
-enum ExpenseType{
-  moneyIn,
-  moneyOut
-}
+
+enum ExpenseType { moneyIn, moneyOut }

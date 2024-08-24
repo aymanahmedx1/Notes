@@ -8,8 +8,9 @@ class SectionDB {
   DatabaseHelper db = new DatabaseHelper();
 
   addSection(SectionModel model) async {
-    await db.insertData(''' insert into section (name,total) values (?,?) ''',
-        [model.name, model.total]);
+    await db.insertData(
+        ''' insert into section (name,totalIn,totalOut) values (?,?,?) ''',
+        [model.name, model.totalIn, model.totalOut]);
   }
 
   updateSection(SectionModel model) async {
@@ -17,10 +18,10 @@ class SectionDB {
         [model.name, model.id]);
   }
 
-  updateAmount(SectionModel model, double amount, bool isPlus) async {
-    String op = isPlus ? "+" : "-";
+  updateAmount(SectionModel model, double amount , ExpenseType type) async {
+    String colName = type == ExpenseType.moneyIn ?"totalIn":"totalOut" ;
     await db.updateData(
-        " update section set total = total $op ?  where id = ?  ",
+        " update section set $colName = $colName + ?  where id = ?  ",
         [amount, model.id]);
   }
 
@@ -29,7 +30,14 @@ class SectionDB {
     List<SectionModel> list = [];
     for (var record in res) {
       list.add(SectionModel(
-          id: record['id'], name: record['name'], total: record['total']));
+        id: record['id'],
+        name: record['name'],
+        totalIn: record['totalIn'],
+        totalOut: record['totalOut'],
+      ));
+    }
+    for(var i in  list){
+      log(i.toString());
     }
     return list;
   }
@@ -37,7 +45,14 @@ class SectionDB {
   addExpense(ExpenseModel ex) async {
     await db.insertData(
         ''' insert into expense (reason,amount,note , section ,date,expense_type) values (?,?,?,?,?,?) ''',
-        [ex.reason, ex.amount, ex.note, ex.section , ex.date,ex.expenseType.index]);
+        [
+          ex.reason,
+          ex.amount,
+          ex.note,
+          ex.section,
+          ex.date,
+          ex.expenseType.index
+        ]);
   }
 
   getSectionDetails(SectionModel model) async {
@@ -53,7 +68,29 @@ class SectionDB {
           amount: record['amount'],
           note: record['note'],
           date: record['date'],
-          expenseType: record['expense_type']
+          expenseType: ExpenseType.values[record['expense_type']],
+        ));
+      }
+      return list;
+    } catch (e) {
+      log("$e");
+    }
+  }
+
+  getAllSectionDetails() async{
+    try {
+      List<Map> res = await db.readData(
+          '''  select * from  expense ''', []);
+      List<ExpenseModel> list = [];
+      for (var record in res) {
+        list.add(ExpenseModel(
+          id: record['id'],
+          reason: record['reason'],
+          section: record['section'],
+          amount: record['amount'],
+          note: record['note'],
+          date: record['date'],
+          expenseType: ExpenseType.values[record['expense_type']],
         ));
       }
       return list;

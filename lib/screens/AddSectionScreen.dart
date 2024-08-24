@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:notes/Models/SectionModel.dart';
 import 'package:notes/data/SectionDB.dart';
 
-
 class Addsectionscreen extends StatefulWidget {
   @override
   State<Addsectionscreen> createState() => _AddsectionscreenState();
-  SectionModel? model ;
+  SectionModel? model;
 }
 
 class _AddsectionscreenState extends State<Addsectionscreen> {
@@ -17,14 +16,12 @@ class _AddsectionscreenState extends State<Addsectionscreen> {
 
   save() async {
     if (formKey.currentState!.validate()) {
-      var toSave = new SectionModel(
-          id: 0,
-          name: nameController.text, total: 0,);
-      if(widget.model == null ){
+      var toSave = SectionModel(
+          id: 0, name: nameController.text, totalIn: 0, totalOut: 0);
+      if (widget.model == null) {
         await SectionDB().addSection(toSave);
-
-      }else{
-        toSave.id = widget.model!.id ;
+      } else {
+        toSave.id = widget.model!.id;
         await SectionDB().updateSection(toSave);
       }
       Navigator.of(context).pop();
@@ -34,7 +31,7 @@ class _AddsectionscreenState extends State<Addsectionscreen> {
   @override
   void initState() {
     super.initState();
-    if(widget.model !=null){
+    if (widget.model != null) {
       nameController.text = widget.model!.name;
     }
   }
@@ -90,8 +87,7 @@ class _AddsectionscreenState extends State<Addsectionscreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            SizedBox(
-                                width: labelWidth, child: Text("الشركة ")),
+                            SizedBox(width: labelWidth, child: Text("الشركة ")),
                             const SizedBox(
                               width: 10,
                             ),
@@ -102,7 +98,6 @@ class _AddsectionscreenState extends State<Addsectionscreen> {
                                 controller: nameController,
                                 enabled: false,
                                 textAlign: TextAlign.center,
-
                                 keyboardType: TextInputType.text,
                                 decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(

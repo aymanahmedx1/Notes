@@ -1,40 +1,42 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:notes/Commons/Helpers.dart';
-import 'package:notes/CustomWidgets/CustomAutoComplete.dart';
-import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/Models/SectionModel.dart';
-import 'package:notes/Providers/AccountingProvider.dart';
+import 'package:notes/Providers/MoneyTransactionProvider.dart';
 import 'package:provider/provider.dart';
+
+import '../../Commons/Helpers.dart';
+import '../../CustomWidgets/CustomAutoComplete.dart';
 import '../../CustomWidgets/CustomButton.dart';
 import '../../CustomWidgets/CustomDatePicker.dart';
-import '../../data/SectionDB.dart';
+import '../../CustomWidgets/Spacers.dart';
 
-class AccountingDetailsScreen extends StatelessWidget {
-  final SectionModel model;
-
+class Moneytransactionscreen extends StatelessWidget {
+  static const String rout = "Moneytransactionscreen";
   final ScrollController controller = ScrollController();
+  final TextEditingController companyController =
+      TextEditingController(text: "");
+
   final TextEditingController dateFromController =
       TextEditingController(text: formattedDate());
 
   final TextEditingController dateToController =
       TextEditingController(text: formattedDate());
-  final TextEditingController filterController = TextEditingController();
-
-  AccountingDetailsScreen(this.model);
+  final TextEditingController filterController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
+    Provider.of<MoneyTransactionProvider>(context, listen: false).fillList();
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(" تفاصيل القسم  ${model.name}"),
+        title: const Text(
+          "حركة الاموال ",
+        ),
         centerTitle: true,
       ),
-      body: Consumer<AccountingProvider>(
-        builder: (context, accountingProvider, child) {
+      body: Consumer<MoneyTransactionProvider>(
+        builder: (context, moneyTransactionProvider, child) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -64,13 +66,13 @@ class AccountingDetailsScreen extends StatelessWidget {
                     SizedBox(
                       width: width / 12 * 8.1,
                       child: CustomAutoComplete(
-                        options: Provider.of<AccountingProvider>(context,
+                        options: Provider.of<MoneyTransactionProvider>(context,
                                 listen: false)
                             .expenseList
-                            .map((e) => e.reason)
+                            .map((e) => e.sectionModel!.name)
                             .toSet()
                             .toList(),
-                        label: "فلتر السبب",
+                        label: "فلتر القسم",
                         controller: filterController,
                       ),
                     ),
@@ -78,10 +80,8 @@ class AccountingDetailsScreen extends StatelessWidget {
                     CustomButton(
                       text: "بحث",
                       onPressed: () {
-                        accountingProvider.filterExpenseList(
-                            dateFromController.text,
-                            dateToController.text,
-                            filterController.text);
+                        moneyTransactionProvider.filter(dateFromController.text,
+                            dateToController.text, filterController.text);
                       },
                       icon: Icons.search,
                     )
@@ -105,14 +105,14 @@ class AccountingDetailsScreen extends StatelessWidget {
                       controller: controller,
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: SizedBox(
                             width: double.infinity,
                             child: DataTable(
                                 columns: const [
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'No',
+                                        'م',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -121,7 +121,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'السبب',
+                                        'تاريخ',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -130,7 +130,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'المبلغ',
+                                        'القسم',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -139,7 +139,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'التاريخ',
+                                        'مصروف',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -148,7 +148,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'ملاحظات',
+                                        'مستلم',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -156,28 +156,49 @@ class AccountingDetailsScreen extends StatelessWidget {
                                   ),
                                 ],
                                 rows: List.generate(
-                                  accountingProvider.filteredExpenseList.length,
+                                  moneyTransactionProvider
+                                      .filteredExpenseList.length,
                                   (index) {
                                     return DataRow(
                                       onLongPress: () {},
+                                      color: WidgetStateProperty.resolveWith<
+                                          Color>((Set<WidgetState> states) {
+                                        return index % 2 == 0
+                                            ? Colors.grey.shade200
+                                            : Colors.white;
+                                      }),
                                       cells: <DataCell>[
-                                        DataCell(Text("${index + 1}")),
-                                        DataCell(Text(
-                                            overflow: TextOverflow.ellipsis,
-                                            accountingProvider
-                                                .filteredExpenseList[index]
-                                                .reason)),
-                                        DataCell(Text(
-                                          "${formatNumber(accountingProvider.filteredExpenseList[index].amount)}",
-                                          overflow: TextOverflow.ellipsis,
+                                        DataCell(SizedBox(
+                                          width: 20,
+                                          child: Text("${index + 1}"),
                                         )),
-                                        DataCell(Text(
-                                            overflow: TextOverflow.ellipsis,
-                                            accountingProvider
-                                                .filteredExpenseList[index]
-                                                .date)),
-                                        DataCell(Text(accountingProvider
-                                            .filteredExpenseList[index].note))
+
+                                        DataCell(Text(moneyTransactionProvider
+                                            .filteredExpenseList[index].date)),
+                                        DataCell(Text(moneyTransactionProvider
+                                            .filteredExpenseList[index]
+                                            .sectionModel!
+                                            .name)),
+                                        DataCell(Text(formatNumber(
+                                            moneyTransactionProvider
+                                                        .filteredExpenseList[
+                                                            index]
+                                                        .expenseType ==
+                                                    ExpenseType.moneyOut
+                                                ? moneyTransactionProvider
+                                                    .filteredExpenseList[index]
+                                                    .amount
+                                                : 0))),
+                                        DataCell(Text(formatNumber(
+                                            moneyTransactionProvider
+                                                        .filteredExpenseList[
+                                                            index]
+                                                        .expenseType ==
+                                                    ExpenseType.moneyOut
+                                                ? 0
+                                                : moneyTransactionProvider
+                                                    .filteredExpenseList[index]
+                                                    .amount))),
                                       ],
                                     );
                                   },

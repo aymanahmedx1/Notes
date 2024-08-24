@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:notes/Commons/AppDrawer.dart';
 import 'package:notes/screens/Accounting/AccountingScreen.dart';
-import 'package:notes/screens/MoneyTransactionScreen.dart';
+import 'package:notes/screens/MoneyTransactions/MoneyTransactionScreen.dart';
 import 'package:notes/screens/Company/CompanyScreen.dart';
-import 'package:notes/screens/TestScreen.dart';
 
 class Landingscreen extends StatelessWidget {
   static const String rout = "LandingScreen";
@@ -12,7 +10,7 @@ class Landingscreen extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text("الرئيسيه"),
+        title: const Text("الرئيسيه"),
       ),
       body: Container(
         alignment: Alignment.center,
@@ -33,7 +31,7 @@ class Landingscreen extends StatelessWidget {
                     color: Colors.green,
                     width: 200,
                     height: 200,
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -50,7 +48,7 @@ class Landingscreen extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 InkWell(
@@ -62,7 +60,7 @@ class Landingscreen extends StatelessWidget {
                     color: Colors.blue,
                     width: 200,
                     height: 200,
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -97,7 +95,7 @@ class Landingscreen extends StatelessWidget {
                     color: Colors.teal,
                     width: 200,
                     height: 200,
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -125,7 +123,7 @@ class Landingscreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(context, "test");
                       },
-                      child: Text(
+                      child: const Text(
                         "حركة الاموال",
                       )),
                 ),

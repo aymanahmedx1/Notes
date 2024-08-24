@@ -37,8 +37,11 @@ class AccountingDialog {
                   Provider.of<AccountingProvider>(context, listen: false)
                       .updateSection(model);
                 } else {
-                  var section =
-                      SectionModel(total: 0, id: 0, name: textController.text);
+                  var section = SectionModel(
+                      totalIn: 0,
+                      totalOut: 0,
+                      id: 0,
+                      name: textController.text);
                   Provider.of<AccountingProvider>(context, listen: false)
                       .addSection(section);
                 }

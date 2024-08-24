@@ -38,8 +38,9 @@ class AccountingProvider with ChangeNotifier {
     fillAccountingList();
   }
 
-  void showAddExpenseDialog(BuildContext context, SectionModel section , ExpenseType type) async {
-    await AccountingDialog().addExpenseOnSection(context, section,type);
+  void showAddExpenseDialog(
+      BuildContext context, SectionModel section, ExpenseType type) async {
+    await AccountingDialog().addExpenseOnSection(context, section, type);
     fillAccountingList();
   }
 
@@ -57,9 +58,18 @@ class AccountingProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addNewExpense(ExpenseModel ex, SectionModel section, double amount, bool isPlus )async {
+  void addNewExpense(
+      ExpenseModel ex, SectionModel section, double amount, bool isPlus) async {
     await SectionDB().addExpense(ex);
-    await SectionDB().updateAmount(section, ex.amount, isPlus);
-    fillAccountingList() ;
+    await SectionDB().updateAmount(section, ex.amount, ex.expenseType);
+    fillAccountingList();
+  }
+
+  void filterAccounts(String? value) {
+    filteredAccountingList = [];
+    filteredAccountingList = _accountingList
+        .where((element) => element.name.contains(value ?? ""))
+        .toList();
+    notifyListeners();
   }
 }

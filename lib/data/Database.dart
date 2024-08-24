@@ -42,7 +42,8 @@ class DatabaseHelper {
     await db.execute('''  CREATE TABLE "section" (
                             "id"	INTEGER,
                             "name"	TEXT,
-                            "total"	REAL,
+                            "totalIn"	REAL,
+                            "totalOut"	REAL,
                             PRIMARY KEY("id" AUTOINCREMENT)
                           );''');
     await db.execute(''' CREATE TABLE "worker" (

@@ -1,15 +1,12 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:notes/Commons/Helpers.dart';
-import 'package:notes/CustomWidgets/CustomButton.dart';
-import 'package:notes/CustomWidgets/CustomDatePicker.dart';
 import 'package:notes/CustomWidgets/CutomTextInput.dart';
+import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/Models/SectionModel.dart';
 import 'package:notes/Providers/AccountingProvider.dart';
-import 'package:notes/data/SectionDB.dart';
 import 'package:notes/screens/Accounting/Widgets/Dialogs.dart';
 import 'package:provider/provider.dart';
-
 import 'AccountingDetailsScreen.dart';
 
 class Accountingscreen extends StatelessWidget {
@@ -17,10 +14,7 @@ class Accountingscreen extends StatelessWidget {
 
   final ScrollController controller = ScrollController();
 
-  final TextEditingController dateFromController =
-      TextEditingController(text: "");
-
-  final TextEditingController dateToController =
+  final TextEditingController filterController =
       TextEditingController(text: "");
 
   @override
@@ -51,27 +45,15 @@ class Accountingscreen extends StatelessWidget {
                   children: [
                     SizedBox(
                         width: width / 12 * 4,
-                        child: CustomDatePicker(
-                          label: "التاريخ من",
-                          controller: dateFromController,
+                        child: CustomTextInput(
+                          label: "فلتر اسم الشركة",
+                          controller: filterController,
+                          valueChange: (value) {
+                            Provider.of<AccountingProvider>(context,
+                                    listen: false)
+                                .filterAccounts(value);
+                          },
                         )),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    SizedBox(
-                        width: width / 12 * 4,
-                        child: CustomDatePicker(
-                          label: "التاريخ الي",
-                          controller: dateToController,
-                        )),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    CustomButton(
-                      text: "بحث",
-                      onPressed: () {},
-                      icon: Icons.search,
-                    )
                   ],
                 ),
                 Expanded(
@@ -126,6 +108,15 @@ class Accountingscreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
+                                        'قبض',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
                                         'العمليات',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
@@ -145,17 +136,18 @@ class Accountingscreen extends StatelessWidget {
                                                 .filteredAccountingList[index]);
                                       },
                                       cells: <DataCell>[
-                                        DataCell(SizedBox(
-                                          width: 20,
-                                          child: Text("${index + 1}"),
-                                        )),
+                                        DataCell(Text("${index + 1}")),
                                         DataCell(Text(accountingProvider
                                             .filteredAccountingList[index]
                                             .name)),
                                         DataCell(Text(formatNumber(
                                             accountingProvider
                                                 .filteredAccountingList[index]
-                                                .total))),
+                                                .totalOut))),
+                                        DataCell(Text(formatNumber(
+                                            accountingProvider
+                                                .filteredAccountingList[index]
+                                                .totalIn))),
                                         DataCell(makeOperationRow(
                                             context,
                                             accountingProvider
@@ -179,28 +171,23 @@ class Accountingscreen extends StatelessWidget {
   Widget makeOperationRow(BuildContext context, SectionModel section) {
     return Row(
       children: [
-        ElevatedButton(
-          onPressed: () {
+        InkWell(
+            onTap: () {
+              Provider.of<AccountingProvider>(context, listen: false)
+                  .showAddExpenseDialog(context, section, ExpenseType.moneyIn);
+            },
+            child: const Icon(Icons.add)),
+        widthSpace,
+        InkWell(
+          onTap: () {
             Provider.of<AccountingProvider>(context, listen: false)
-                .showAddExpenseDialog(context, section, ExpenseType.moneyIn);
-          },
-          child: const Icon(Icons.add),
-        ),
-        const SizedBox(
-          width: 5,
-        ),
-        ElevatedButton(
-          onPressed: () {
-            Provider.of<AccountingProvider>(context, listen: false)
-                .showAddExpenseDialog(context, section , ExpenseType.moneyOut);
+                .showAddExpenseDialog(context, section, ExpenseType.moneyOut);
           },
           child: const Icon(Icons.remove),
         ),
-        const SizedBox(
-          width: 5,
-        ),
-        ElevatedButton(
-          onPressed: () {
+        widthSpace,
+        InkWell(
+          onTap: () {
             Provider.of<AccountingProvider>(context, listen: false)
                 .fillExpenseList(section);
             Navigator.push(
@@ -210,7 +197,6 @@ class Accountingscreen extends StatelessWidget {
           },
           child: const Icon(Icons.search),
         ),
-
       ],
     );
   }
