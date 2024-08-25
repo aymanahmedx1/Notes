@@ -46,7 +46,7 @@ class Accountingscreen extends StatelessWidget {
                     SizedBox(
                         width: width / 12 * 4,
                         child: CustomTextInput(
-                          label: "فلتر اسم الشركة",
+                          label: "فلتر القسم ",
                           controller: filterController,
                           valueChange: (value) {
                             Provider.of<AccountingProvider>(context,

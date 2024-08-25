@@ -14,8 +14,7 @@ class CompanyDialogs {
   final TextEditingController nameController = TextEditingController(text: "");
   final TextEditingController phoneController = TextEditingController(text: "");
   final TextEditingController drugController = TextEditingController(text: "");
-  final TextEditingController totalController =
-      TextEditingController(text: "0");
+  final TextEditingController totalController = TextEditingController(text: "");
   final TextEditingController noteController = TextEditingController(text: "");
   final TextEditingController outController = TextEditingController(text: "0");
   final TextEditingController dateController = TextEditingController(text: "");
@@ -70,7 +69,6 @@ class CompanyDialogs {
                   Provider.of<CompanyProvider>(context, listen: false)
                       .addCompany(m);
                 }
-                log("message");
                 Navigator.of(context).pop("1");
               },
               text: "حفظ",
@@ -118,7 +116,7 @@ class CompanyDialogs {
                     controller: nameController,
                     validateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
-                      if (value == "") {
+                      if (value == null || value == "") {
                         return "الاسم مطلوب";
                       } else if (value!.length < 3) {
                         return "ادخل اسم صالح";
@@ -130,19 +128,10 @@ class CompanyDialogs {
                   CustomTextInput(
                     label: 'رقمه',
                     controller: phoneController,
-                    validateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value == "") {
-                        return "الرقم مطلوب";
-                      } else if (value!.length < 3) {
-                        return "ادخل رقم صالح";
-                      }
-                      return null;
-                    },
                   ),
                   heightSizedBox,
                   CustomTextInput(
-                    label: 'الادوية',
+                    label: 'المنتجات',
                     controller: drugController,
                     validateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
@@ -157,6 +146,17 @@ class CompanyDialogs {
                     label: 'العدد الكلي',
                     controller: totalController,
                     textInputType: TextInputType.number,
+                    validateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return "الرقم مطلوب";
+                      } else if (int.tryParse(value) == null) {
+                        return "ادخل رقم صالح";
+                      } else if (int.parse(value) < 1) {
+                        return "ادخل رقم صالح";
+                      }
+                      return null;
+                    },
                   ),
                   heightSizedBox,
                   CustomTextInput(
@@ -191,8 +191,11 @@ class CompanyDialogs {
                     width: 300,
                     child: CustomButton(
                       onPressed: () {
-                        saveWorker(context, companyModel, workerModel);
-                        Navigator.of(context).pop();
+                        bool res =
+                            saveWorker(context, companyModel, workerModel);
+                        if (res) {
+                          Navigator.of(context).pop();
+                        }
                       },
                       icon: Icons.save,
                       text: "حفظ",
@@ -207,7 +210,7 @@ class CompanyDialogs {
     );
   }
 
-  saveWorker(
+  bool saveWorker(
       BuildContext context, CompanyModel selectedModel, WorkerModel? model) {
     if (formKey.currentState!.validate()) {
       var toSave = WorkerModel(
@@ -228,6 +231,9 @@ class CompanyDialogs {
         Provider.of<CompanyProvider>(context, listen: false)
             .updateWorker(toSave);
       }
+      return true;
+    } else {
+      return false;
     }
   }
 

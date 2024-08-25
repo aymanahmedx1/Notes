@@ -18,11 +18,14 @@ class CompanyDB {
   }
 
   getAll() async {
-    List<Map> res = await db.readData('''  select * from  company''',[]);
+    List<Map> res = await db.readData('''  select * from  company''', []);
     List<CompanyModel> list = [];
     for (var record in res) {
       list.add(CompanyModel(
-         id: record['id'],name: record['name'],notes:  record['note'],date: record['date']));
+          id: record['id'],
+          name: record['name'],
+          notes: record['note'],
+          date: record['date']));
     }
     return list;
   }
@@ -30,42 +33,71 @@ class CompanyDB {
   addWorker(WorkerModel model) async {
     await db.insertData(
         ''' insert into worker (name,phone,company,total,out,note,drug,date,finish) values (?,?,?,?,?,?,?,?,?) ''',
-        [model.name, model.phone, model.company,model.total,model.out , model.note,model.drug,model.date,0]);
+        [
+          model.name,
+          model.phone,
+          model.company,
+          model.total,
+          model.out,
+          model.note,
+          model.drug,
+          model.date,
+          0
+        ]);
   }
 
-  getAllWorkers(int company , int finish) async {
-   try{
-     List<Map> res = await db.readData('''  select * from  worker where  company = ? and finish = ?''' ,[company,finish]);
-     List<WorkerModel> list = [];
-     for (var record in res) {
-       list.add(WorkerModel(
-         id: record['id'],
-         name: record['name'],
-         phone: record['phone'],
-         company: record['company'],
-         total: record['total'],
-         out: record['out'],
-         note: record['note'],
-         drug:  record['drug'],
-         date:  record['date'],
-         finish: record['finish']
-       ));
-     }
-     return list;
-   }catch (e) {
-     log("$e");
-   }
+  getAllWorkers(int company, int finish) async {
+    try {
+      List<Map> res = await db.readData(
+          '''  select * from  worker where  company = ? and finish = ?''',
+          [company, finish]);
+      List<WorkerModel> list = [];
+      for (var record in res) {
+        list.add(WorkerModel(
+            id: record['id'],
+            name: record['name'],
+            phone: record['phone'],
+            company: record['company'],
+            total: record['total'],
+            out: record['out'],
+            note: record['note'],
+            drug: record['drug'],
+            date: record['date'],
+            finish: record['finish']));
+      }
+      return list;
+    } catch (e) {
+      log("$e");
+    }
   }
 
-  updateWorker(WorkerModel model)async{
+  updateWorker(WorkerModel model) async {
     await db.updateData(
         ''' update worker set name= ? ,phone= ? ,company= ?,total= ?,out= ?,note= ?,drug= ?,date=? where id = ? ''',
-        [model.name, model.phone, model.company,model.total,model.out , model.note,model.drug,model.date ,model.id]);
+        [
+          model.name,
+          model.phone,
+          model.company,
+          model.total,
+          model.out,
+          model.note,
+          model.drug,
+          model.date,
+          model.id
+        ]);
   }
 
-  markWorkerFinish(WorkerModel model)async {
+  markWorkerFinish(WorkerModel model) async {
     await db.updateData(
-        ''' update worker set finish = true where id = ? ''',
-        [model.id]);
+        ''' update worker set finish = true where id = ? ''', [model.id]);
+  }
+
+  deleteWorkers(CompanyModel companymodel) async {
+    await db
+        .deleteData("delete from worker where company = ?", [companymodel.id]);
+  }
+
+  deleteCompany(CompanyModel companymodel) async {
+    await db.deleteData("delete from company where id = ?", [companymodel.id]);
   }
 }

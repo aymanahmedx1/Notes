@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
+import 'package:notes/CustomWidgets/CustomButton.dart';
 import 'package:notes/CustomWidgets/NoDataWidget.dart';
+import 'package:notes/CustomWidgets/Spacers.dart';
+import 'package:notes/Models/CompanyModel.dart';
 import 'package:notes/Providers/CompanyProvider.dart';
 import 'package:provider/provider.dart';
 import 'CompanyProfileScreen.dart';
@@ -14,6 +17,7 @@ class CompanyScreen extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text(
           "المندوبين",
           style: TextStyle(fontWeight: FontWeight.bold),
@@ -154,29 +158,49 @@ class CompanyScreen extends StatelessWidget {
                                               DataCell(Text(companyProvider
                                                   .filterdCompanyModels[index]
                                                   .date)),
-                                              DataCell(ElevatedButton(
-                                                onPressed: () {
-                                                  Provider.of<CompanyProvider>(
+                                              DataCell(Row(
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      Provider.of<CompanyProvider>(
+                                                              context,
+                                                              listen: false)
+                                                          .fillWorkerList(
+                                                              companyProvider
+                                                                  .filterdCompanyModels[
+                                                                      index]
+                                                                  .id,
+                                                              0);
+                                                      Navigator.pushNamed(
+                                                        context,
+                                                        CompanyProfileScreen
+                                                            .rout,
+                                                        arguments: companyProvider
+                                                                .filterdCompanyModels[
+                                                            index],
+                                                      );
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.search_rounded,
+                                                      size: 30,
+                                                    ),
+                                                  ),
+                                                  widthSpace,
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      showDeleteDialog(
                                                           context,
-                                                          listen: false)
-                                                      .fillWorkerList(
                                                           companyProvider
-                                                              .filterdCompanyModels[
-                                                                  index]
-                                                              .id,
-                                                          0);
-                                                  Navigator.pushNamed(
-                                                    context,
-                                                    CompanyProfileScreen.rout,
-                                                    arguments: companyProvider
-                                                            .filterdCompanyModels[
-                                                        index],
-                                                  );
-                                                },
-                                                child: const Icon(
-                                                  Icons.search_rounded,
-                                                  size: 30,
-                                                ),
+                                                                  .filterdCompanyModels[
+                                                              index]);
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.delete,
+                                                      size: 30,
+                                                      color: Colors.white,
+                                                    ),
+                                                  )
+                                                ],
                                               )),
                                             ],
                                           );
@@ -192,5 +216,36 @@ class CompanyScreen extends StatelessWidget {
         },
       ),
     ));
+  }
+
+  void showDeleteDialog(BuildContext context, CompanyModel companymodel) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          icon: const Icon(Icons.dangerous , size: 40, color: Colors.red,),
+          actions: [
+            CustomButton(
+              icon: Icons.check,
+              onPressed: () {
+                Provider.of<CompanyProvider>(context,listen: false)
+                    .deleteCompany(companymodel);
+                Navigator.pop(context);
+              },
+              text: "تاكيد",
+            ),
+            heightSpace ,
+            CustomButton(
+              icon: Icons.cancel,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              text: "رجوع",
+            )
+          ],
+          title: const Text("هل انت متاكد من حذف الشركه والمندوبين التابعين لها ؟"),
+        );
+      },
+    );
   }
 }

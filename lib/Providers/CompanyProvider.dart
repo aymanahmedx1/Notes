@@ -90,4 +90,10 @@ class CompanyProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void deleteCompany(CompanyModel companymodel) async{
+    await  CompanyDB().deleteWorkers(companymodel);
+    await  CompanyDB().deleteCompany(companymodel);
+    fillCompanyList();
+  }
 }

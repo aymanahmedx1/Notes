@@ -24,7 +24,10 @@ class CompanyProfileScreen extends StatelessWidget {
         return SafeArea(
             child: Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
                   "تفاصيل شركة ",
@@ -90,6 +93,15 @@ class CompanyProfileScreen extends StatelessWidget {
                                 DataColumn(
                                   label: Expanded(
                                     child: Text(
+                                      'م',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
                                       'الاسم',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
@@ -108,7 +120,7 @@ class CompanyProfileScreen extends StatelessWidget {
                                 DataColumn(
                                   label: Expanded(
                                     child: Text(
-                                      'الادوية',
+                                      'المنتجات',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -199,6 +211,7 @@ class CompanyProfileScreen extends StatelessWidget {
                                       }
                                     },
                                     cells: <DataCell>[
+                                      DataCell(Text("${index+1}")),
                                       DataCell(Text(
                                           companyProvider.filter[index].name)),
                                       DataCell(Text(

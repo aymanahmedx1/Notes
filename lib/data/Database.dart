@@ -85,4 +85,10 @@ class DatabaseHelper {
     int result = await db.rawUpdate(Sql, list);
     return result;
   }
+
+  deleteData(String Sql, List<dynamic> list) async {
+    Database db = await database;
+    int result = await db.rawDelete(Sql, list);
+    return result;
+  }
 }
