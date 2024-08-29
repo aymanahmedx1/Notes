@@ -61,6 +61,9 @@ class AccountingDialog {
     List<String> reasonList =
         Provider.of<AccountingProvider>(context, listen: false)
             .filteredExpenseList
+            .where(
+              (element) => element.expenseType == type,
+            )
             .map((e) => e.reason)
             .toSet()
             .toList();
@@ -99,6 +102,7 @@ class AccountingDialog {
                 CustomTextInput(
                   label: "المبلغ",
                   controller: amountController,
+                  textInputType: TextInputType.number,
                 ),
                 heightSpace,
                 CustomDatePicker(

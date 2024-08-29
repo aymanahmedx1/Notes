@@ -17,9 +17,9 @@ class CustomButton extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(text , style: TextStyle(fontWeight: FontWeight.w600 ,fontSize: 16),),
+            Text(text , style: const TextStyle(fontWeight: FontWeight.w600 ,fontSize: 16 ,color: Colors.white),),
             const SizedBox(width: 10,),
-            Icon(icon)
+            Icon(icon,color: Colors.white, size: 25,)
           ],
         ),
       ),

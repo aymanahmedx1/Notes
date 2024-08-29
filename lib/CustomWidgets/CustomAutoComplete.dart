@@ -5,9 +5,13 @@ class CustomAutoComplete extends StatelessWidget {
 
   final TextEditingController controller;
   final String label;
+  final String? Function(String? value)? valueChange;
 
   const CustomAutoComplete(
-      {required this.controller, required this.options, required this.label});
+      {required this.controller,
+      required this.options,
+      required this.label,
+      this.valueChange});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +27,7 @@ class CustomAutoComplete extends StatelessWidget {
       fieldViewBuilder:
           (context, textEditingController, focusNode, onFieldSubmitted) {
         return TextField(
-          onChanged: (value) => controller.text = value,
+          onChanged: valueChange ?? (value) => controller.text = value,
           controller: textEditingController,
           onEditingComplete: onFieldSubmitted,
           focusNode: focusNode,

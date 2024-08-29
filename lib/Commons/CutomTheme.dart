@@ -62,10 +62,11 @@ class CustomTheme {
           borderRadius: BorderRadius.circular(10),
           borderSide: const BorderSide(color: Colors.deepOrange, width: 3)),
     ),
-    dialogTheme:const DialogTheme(
+    dialogTheme: const DialogTheme(
       backgroundColor: _backgroundColor,
     ),
-    datePickerTheme:const DatePickerThemeData(backgroundColor:_backgroundColor ),
+    datePickerTheme:
+        const DatePickerThemeData(backgroundColor: _backgroundColor),
   );
 
   // If you want to modify the dark theme only, modify the colors below.
@@ -89,5 +90,11 @@ class CustomTheme {
       error: _errorColor,
       onError: _onErrorColor,
     ),
+  );
+
+  static const textMoreStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 16,
+
   );
 }

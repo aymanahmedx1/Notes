@@ -11,6 +11,8 @@ class CompanyProvider with ChangeNotifier {
   List<CompanyModel> filterdCompanyModels = [];
   List<WorkerModel> workersModel = [];
   List<WorkerModel> filter = [];
+  List<WorkerModel> finishedWorkersModel = [];
+  List<WorkerModel> finishedFilter = [];
 
   CompanyProvider() {
     fillCompanyList();
@@ -31,6 +33,27 @@ class CompanyProvider with ChangeNotifier {
     workersModel = await CompanyDB().getAllWorkers(companyID, finish);
     filter = List<WorkerModel>.from(workersModel);
     filter.sort((a, b) => (a.total - a.out).compareTo(b.total - b.out));
+    notifyListeners();
+  }
+
+  fillFinishedWorkerList(int companyID, int finish) async {
+    finishedWorkersModel = await CompanyDB().getAllWorkers(companyID, finish);
+    finishedFilter = List<WorkerModel>.from(finishedWorkersModel);
+    finishedFilter.sort((a, b) => (a.total - a.out).compareTo(b.total - b.out));
+    notifyListeners();
+  }
+
+  filteredWorkerFilter(String value) {
+    if (value != "") {
+      finishedFilter.clear();
+      finishedFilter = finishedWorkersModel
+          .where((i) => i.drug.contains(value) || i.name.contains(value))
+          .toList();
+      finishedFilter
+          .sort((a, b) => (a.total - a.out).compareTo(b.total - b.out));
+    } else {
+      finishedFilter = new List<WorkerModel>.from(finishedWorkersModel);
+    }
     notifyListeners();
   }
 
@@ -91,9 +114,14 @@ class CompanyProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void deleteCompany(CompanyModel companymodel) async{
-    await  CompanyDB().deleteWorkers(companymodel);
-    await  CompanyDB().deleteCompany(companymodel);
+  void deleteCompany(CompanyModel companymodel) async {
+    await CompanyDB().deleteWorkers(companymodel);
+    await CompanyDB().deleteCompany(companymodel);
     fillCompanyList();
+  }
+
+  void deleteWorker(WorkerModel workerModel) async{
+    await CompanyDB().deleteWorker(workerModel);
+    fillWorkerList(workerModel.company, 0);
   }
 }

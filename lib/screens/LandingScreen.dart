@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/screens/Accounting/AccountingScreen.dart';
 import 'package:notes/screens/MoneyTransactions/MoneyTransactionScreen.dart';
 import 'package:notes/screens/Company/CompanyScreen.dart';
@@ -39,6 +40,7 @@ class Landingscreen extends StatelessWidget {
                           "المندوبين",
                           style: TextStyle(color: Colors.white),
                         ),
+                        widthSpace,
                         Icon(
                           Icons.person,
                           size: 30,
@@ -65,11 +67,12 @@ class Landingscreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
-                          "الحسابات",
+                          "الاقسام",
                           style: TextStyle(color: Colors.white),
                         ),
+                        widthSpace,
                         Icon(
-                          Icons.person,
+                          Icons.edit_calendar,
                           size: 30,
                           color: Colors.white,
                         )
@@ -103,29 +106,15 @@ class Landingscreen extends StatelessWidget {
                           "حركة الاموال",
                           style: TextStyle(color: Colors.white),
                         ),
+                        widthSpace,
                         Icon(
-                          Icons.person,
+                          Icons.money_off,
                           size: 30,
                           color: Colors.white,
                         )
                       ],
                     ),
                   ),
-                ),
-                SizedBox(
-                  width: 10,
-                ),
-                Container(
-                  color: Colors.teal,
-                  width: 200,
-                  height: 200,
-                  child: InkWell(
-                      onTap: () {
-                        Navigator.pushNamed(context, "test");
-                      },
-                      child: const Text(
-                        "حركة الاموال",
-                      )),
                 ),
               ],
             ),

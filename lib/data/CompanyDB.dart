@@ -100,4 +100,8 @@ class CompanyDB {
   deleteCompany(CompanyModel companymodel) async {
     await db.deleteData("delete from company where id = ?", [companymodel.id]);
   }
+
+  deleteWorker(WorkerModel workerModel) async {
+    await db.deleteData("delete from worker where id = ?", [workerModel.id]);
+  }
 }

@@ -23,14 +23,14 @@ class CompanyScreen extends StatelessWidget {
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
-          ElevatedButton(
-              onPressed: () {
-                Provider.of<CompanyProvider>(context, listen: false)
-                    .createOrUpdate(context, null);
-              },
-              child: const Row(
-                children: [Text("اضافة شركة"), Icon(Icons.add)],
-              ))
+          CustomButton(
+            onPressed: () {
+              Provider.of<CompanyProvider>(context, listen: false)
+                  .createOrUpdate(context, null);
+            },
+            text: "اضافة شركة",
+            icon: Icons.add,
+          )
         ],
       ),
       body: Consumer<CompanyProvider>(
@@ -181,8 +181,9 @@ class CompanyScreen extends StatelessWidget {
                                                       );
                                                     },
                                                     child: const Icon(
-                                                      Icons.search_rounded,
+                                                      Icons.more_horiz,
                                                       size: 30,
+                                                      color: Colors.white,
                                                     ),
                                                   ),
                                                   widthSpace,
@@ -194,10 +195,14 @@ class CompanyScreen extends StatelessWidget {
                                                                   .filterdCompanyModels[
                                                               index]);
                                                     },
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor: Colors.white,
+                                                      elevation: 5 ,
+                                                    ),
                                                     child: const Icon(
                                                       Icons.delete,
-                                                      size: 30,
-                                                      color: Colors.white,
+                                                      size: 25,
+                                                      color: Colors.red,
                                                     ),
                                                   )
                                                 ],
@@ -223,18 +228,22 @@ class CompanyScreen extends StatelessWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          icon: const Icon(Icons.dangerous , size: 40, color: Colors.red,),
+          icon: const Icon(
+            Icons.dangerous,
+            size: 40,
+            color: Colors.red,
+          ),
           actions: [
             CustomButton(
               icon: Icons.check,
               onPressed: () {
-                Provider.of<CompanyProvider>(context,listen: false)
+                Provider.of<CompanyProvider>(context, listen: false)
                     .deleteCompany(companymodel);
                 Navigator.pop(context);
               },
               text: "تاكيد",
             ),
-            heightSpace ,
+            heightSpace,
             CustomButton(
               icon: Icons.cancel,
               onPressed: () {
@@ -243,7 +252,8 @@ class CompanyScreen extends StatelessWidget {
               text: "رجوع",
             )
           ],
-          title: const Text("هل انت متاكد من حذف الشركه والمندوبين التابعين لها ؟"),
+          title: const Text(
+              "هل انت متاكد من حذف الشركه والمندوبين التابعين لها ؟"),
         );
       },
     );

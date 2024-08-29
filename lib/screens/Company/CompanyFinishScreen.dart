@@ -1,14 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:notes/CustomWidgets/CustomButton.dart';
-import 'package:notes/CustomWidgets/NoDataWidget.dart';
-import 'package:notes/CustomWidgets/Spacers.dart';
-import 'package:notes/Models/CompanyModel.dart';
-import 'package:notes/Providers/CompanyProvider.dart';
-import 'package:notes/screens/Company/CompanyFinishScreen.dart';
 import 'package:provider/provider.dart';
+import '../../CustomWidgets/CustomButton.dart';
+import 'package:flutter/material.dart';
+import '../../CustomWidgets/NoDataWidget.dart';
+import '../../Models/CompanyModel.dart';
+import '../../Providers/CompanyProvider.dart';
 
-class CompanyProfileScreen extends StatelessWidget {
-  static const String rout = "CompanyProfileScreen";
+class CompanyFinishScreen extends StatelessWidget {
+  static const String rout = "CompanyFinishScreen";
   final ScrollController controller = ScrollController();
 
   final TextEditingController searchController =
@@ -19,6 +17,8 @@ class CompanyProfileScreen extends StatelessWidget {
     //double width = context.size!.width ;
     final companyModel =
         ModalRoute.of(context)!.settings.arguments as CompanyModel;
+    Provider.of<CompanyProvider>(context, listen: false)
+        .fillFinishedWorkerList(companyModel.id, 1);
     return Consumer<CompanyProvider>(
       builder: (context, companyProvider, child) {
         return SafeArea(
@@ -30,7 +30,7 @@ class CompanyProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  "تفاصيل شركة ",
+                  "تفاصيل منتهي شركة ",
                 ),
                 Text(
                   companyModel.name,
@@ -40,36 +40,6 @@ class CompanyProfileScreen extends StatelessWidget {
                 )
               ],
             ),
-            actions: [
-              PopupMenuButton<String>(
-                iconSize: 30,
-                itemBuilder: (context) {
-                  return [
-                    PopupMenuItem(
-                      child: CustomButton(
-                        text: "اضافه مندوب",
-                        icon: Icons.add,
-                        onPressed: () async {
-                          Navigator.pop(context);
-                          companyProvider.createWorker(
-                              context, companyModel, null);
-                        },
-                      ),
-                    ),
-                    PopupMenuItem(
-                        child: CustomButton(
-                            text: "المنتهي",
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.pushNamed(
-                                  context, CompanyFinishScreen.rout,
-                                  arguments: companyModel);
-                            },
-                            icon: Icons.check)),
-                  ];
-                },
-              ),
-            ],
           ),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -104,7 +74,7 @@ class CompanyProfileScreen extends StatelessWidget {
                 ],
               ),
               Expanded(
-                  child: companyProvider.filter.isEmpty
+                  child: companyProvider.finishedFilter.isEmpty
                       ? NoDataWidget()
                       : SingleChildScrollView(
                           // scroll list
@@ -180,77 +150,23 @@ class CompanyProfileScreen extends StatelessWidget {
                                 ),
                               ],
                               rows: List.generate(
-                                companyProvider.filter.length,
+                                companyProvider.finishedFilter.length,
                                 (index) {
                                   return DataRow(
-                                    onLongPress: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: const Text(
-                                                "اختر اجراء للمتابعه"),
-                                            actions: [
-                                              CustomButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                  companyProvider.createWorker(
-                                                      context,
-                                                      companyModel,
-                                                      companyProvider
-                                                          .filter[index]);
-                                                },
-                                                text: "تعديل",
-                                                icon: Icons.edit,
-                                              ),
-                                              heightSpace,
-                                              CustomButton(
-                                                  text: "حذف",
-                                                  onPressed: () {
-                                                    companyProvider
-                                                        .deleteWorker(
-                                                            companyProvider
-                                                                .filter[index]);
-                                                    Navigator.pop(context);
-                                                  },
-                                                  icon: Icons.delete),
-                                              heightSpace,
-                                              companyProvider
-                                                          .filter[index].out >=
-                                                      companyProvider
-                                                          .filter[index].total
-                                                  ? CustomButton(
-                                                      onPressed: () {
-                                                        companyProvider
-                                                            .markWorkerAsFinish(
-                                                                companyProvider
-                                                                        .filter[
-                                                                    index]);
-                                                        Navigator.pop(context);
-                                                      },
-                                                      text: "انتهي",
-                                                      icon: Icons.check,
-                                                    )
-                                                  : Container()
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
                                     cells: <DataCell>[
                                       DataCell(Text("${index + 1}")),
+                                      DataCell(Text(companyProvider
+                                          .finishedFilter[index].name)),
+                                      DataCell(Text(companyProvider
+                                          .finishedFilter[index].phone)),
+                                      DataCell(Text(companyProvider
+                                          .finishedFilter[index].drug)),
                                       DataCell(Text(
-                                          companyProvider.filter[index].name)),
+                                          "${companyProvider.finishedFilter[index].total}")),
                                       DataCell(Text(
-                                          companyProvider.filter[index].phone)),
-                                      DataCell(Text(
-                                          companyProvider.filter[index].drug)),
-                                      DataCell(Text(
-                                          "${companyProvider.filter[index].total}")),
-                                      DataCell(Text(
-                                          "${companyProvider.filter[index].out}")),
-                                      DataCell(Text(
-                                          companyProvider.filter[index].note)),
+                                          "${companyProvider.finishedFilter[index].out}")),
+                                      DataCell(Text(companyProvider
+                                          .finishedFilter[index].note)),
                                     ],
                                   );
                                 },

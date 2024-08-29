@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/Commons/CutomTheme.dart';
 import 'package:notes/screens/Accounting/AccountingScreen.dart';
+import 'package:notes/screens/Company/CompanyFinishScreen.dart';
 import 'package:notes/screens/Company/CompanyProfileScreen.dart';
 import 'package:notes/screens/Company/CompanyScreen.dart';
 import 'package:notes/screens/LandingScreen.dart';
@@ -14,7 +15,8 @@ class Appstart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: const Locale('ar', 'SA'), // Arabic, Saudi Arabia
+      locale: const Locale('ar', 'SA'),
+      // Arabic, Saudi Arabia
       supportedLocales: const [
         Locale('ar', 'SA'), // Add any other RTL locales you want to support
         // Other supported locales...
@@ -32,9 +34,9 @@ class Appstart extends StatelessWidget {
         Landingscreen.rout: (context) => Landingscreen(),
         CompanyScreen.rout: (context) => CompanyScreen(),
         CompanyProfileScreen.rout: (context) => CompanyProfileScreen(),
+        CompanyFinishScreen.rout: (context) => CompanyFinishScreen(),
         Accountingscreen.rout: (context) => Accountingscreen(),
         Moneytransactionscreen.rout: (context) => Moneytransactionscreen(),
-
       },
     );
   }

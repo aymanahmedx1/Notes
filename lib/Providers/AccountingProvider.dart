@@ -12,6 +12,9 @@ class AccountingProvider with ChangeNotifier {
   List<ExpenseModel> expenseList = [];
   List<ExpenseModel> filteredExpenseList = [];
 
+  double totalOut = 0;
+  double totalIn = 0;
+
   AccountingProvider() {
     fillAccountingList();
   }
@@ -25,6 +28,15 @@ class AccountingProvider with ChangeNotifier {
   fillExpenseList(SectionModel section) async {
     expenseList = await SectionDB().getSectionDetails(section);
     filteredExpenseList = List<ExpenseModel>.from(expenseList);
+    totalOut = 0.00 ;
+    totalIn = 0.00 ;
+    for (var i in filteredExpenseList) {
+      if (i.expenseType == ExpenseType.moneyIn) {
+        totalIn += i.amount ;
+      } else {
+        totalOut += i.amount ;
+      }
+    }
     notifyListeners();
   }
 
@@ -54,7 +66,15 @@ class AccountingProvider with ChangeNotifier {
               elementDate.compareTo(to) != 1) &&
           element.reason.contains(text ?? "");
     }).toList();
-    //ff
+    totalOut = 0.00 ;
+    totalIn = 0.00 ;
+    for (var i in filteredExpenseList) {
+      if (i.expenseType == ExpenseType.moneyIn) {
+        totalIn += i.amount ;
+      } else {
+        totalOut += i.amount ;
+      }
+    }
     notifyListeners();
   }
 

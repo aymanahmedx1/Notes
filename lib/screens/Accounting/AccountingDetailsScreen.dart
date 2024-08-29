@@ -6,6 +6,7 @@ import 'package:notes/CustomWidgets/CustomAutoComplete.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/Models/SectionModel.dart';
 import 'package:notes/Providers/AccountingProvider.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import '../../CustomWidgets/CustomButton.dart';
 import '../../CustomWidgets/CustomDatePicker.dart';
@@ -47,33 +48,13 @@ class AccountingDetailsScreen extends StatelessWidget {
                           label: "التاريخ من",
                           controller: dateFromController,
                         )),
-                    const SizedBox(
-                      width: 10,
-                    ),
+                    widthSpace,
                     SizedBox(
                         width: width / 12 * 4,
                         child: CustomDatePicker(
                           label: "التاريخ الي",
                           controller: dateToController,
                         )),
-                  ],
-                ),
-                heightSpace,
-                Row(
-                  children: [
-                    SizedBox(
-                      width: width / 12 * 8.1,
-                      child: CustomAutoComplete(
-                        options: Provider.of<AccountingProvider>(context,
-                                listen: false)
-                            .expenseList
-                            .map((e) => e.reason)
-                            .toSet()
-                            .toList(),
-                        label: "فلتر السبب",
-                        controller: filterController,
-                      ),
-                    ),
                     widthSpace,
                     CustomButton(
                       text: "بحث",
@@ -85,6 +66,50 @@ class AccountingDetailsScreen extends StatelessWidget {
                       },
                       icon: Icons.search,
                     )
+                  ],
+                ),
+                heightSpace,
+                Row(
+                  children: [
+                    SizedBox(
+                      width: width / 12 * 4,
+                      child: CustomAutoComplete(
+                        options: Provider.of<AccountingProvider>(context,
+                                listen: false)
+                            .expenseList
+                            .map((e) => e.reason)
+                            .toSet()
+                            .toList(),
+                        label: "فلتر السبب",
+                        controller: filterController,
+                        valueChange: (value) {
+                          accountingProvider.filterExpenseList(
+                              dateFromController.text,
+                              dateToController.text,
+                              value);
+                          return null;
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                heightSpace,
+                Row(
+                  children: [
+                    const Text("المصروف"),
+                    widthSpace,
+                    Text(
+                      formatNumber(Provider.of<AccountingProvider>(context).totalOut),
+                      style: const TextStyle(color: Colors.deepOrange),
+                    ),
+                    widthSpace,
+                    widthSpace,
+                    const Text("المقبوض"),
+                    widthSpace,
+                    Text(
+                      formatNumber(Provider.of<AccountingProvider>(context).totalIn),
+                      style: const TextStyle(color: Colors.deepOrange),
+                    ),
                   ],
                 ),
                 Expanded(
@@ -130,7 +155,16 @@ class AccountingDetailsScreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'المبلغ',
+                                        'المصروف',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ),
+                                  DataColumn(
+                                    label: Expanded(
+                                      child: Text(
+                                        'المستلم',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -168,7 +202,23 @@ class AccountingDetailsScreen extends StatelessWidget {
                                                 .filteredExpenseList[index]
                                                 .reason)),
                                         DataCell(Text(
-                                          "${formatNumber(accountingProvider.filteredExpenseList[index].amount)}",
+                                          accountingProvider
+                                                      .filteredExpenseList[
+                                                          index]
+                                                      .expenseType ==
+                                                  ExpenseType.moneyOut
+                                              ? "${formatNumber(accountingProvider.filteredExpenseList[index].amount)}"
+                                              : "0",
+                                          overflow: TextOverflow.ellipsis,
+                                        )),
+                                        DataCell(Text(
+                                          accountingProvider
+                                                      .filteredExpenseList[
+                                                          index]
+                                                      .expenseType ==
+                                                  ExpenseType.moneyIn
+                                              ? "${formatNumber(accountingProvider.filteredExpenseList[index].amount)}"
+                                              : "0",
                                           overflow: TextOverflow.ellipsis,
                                         )),
                                         DataCell(Text(
