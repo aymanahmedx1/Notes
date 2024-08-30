@@ -6,6 +6,8 @@ import 'Database.dart';
 
 class SectionDB {
   DatabaseHelper db = new DatabaseHelper();
+  static String additionOP = " + ";
+  static String subOp = " - ";
 
   addSection(SectionModel model) async {
     await db.insertData(
@@ -18,13 +20,16 @@ class SectionDB {
         [model.name, model.id]);
   }
 
-  updateAmount(SectionModel model, double amount , ExpenseType type) async {
-    String colName = type == ExpenseType.moneyIn ?"totalIn":"totalOut" ;
+  updateAmount(
+      SectionModel model, double amount, ExpenseType type, String op) async {
+    String colName = type == ExpenseType.moneyIn ? "totalIn" : "totalOut";
     await db.updateData(
-        " update section set $colName = $colName + ?  where id = ?  ",
+        " update section set $colName = $colName $op ?  where id = ?  ",
         [amount, model.id]);
   }
+  updateAmountWhenUpdateExpense(){
 
+  }
   Future<List<SectionModel>> getAllSections() async {
     List<Map> res = await db.readData('''  select * from  section''', []);
     List<SectionModel> list = [];
@@ -36,7 +41,7 @@ class SectionDB {
         totalOut: record['totalOut'],
       ));
     }
-    for(var i in  list){
+    for (var i in list) {
       log(i.toString());
     }
     return list;
@@ -77,10 +82,9 @@ class SectionDB {
     }
   }
 
-  getAllSectionDetails() async{
+  getAllSectionDetails() async {
     try {
-      List<Map> res = await db.readData(
-          '''  select * from  expense ''', []);
+      List<Map> res = await db.readData('''  select * from  expense ''', []);
       List<ExpenseModel> list = [];
       for (var record in res) {
         list.add(ExpenseModel(
@@ -97,5 +101,20 @@ class SectionDB {
     } catch (e) {
       log("$e");
     }
+  }
+
+  updateExpense(ExpenseModel ex) async {
+    await db.updateData(
+        ''' update expense set reason=?,amount=?,note =? where id = ? ''',
+        [ex.reason, ex.amount, ex.note, ex.id]);
+  }
+
+  Future<double> getExpenseAmount(int id) async {
+    List<Map> res = await db
+        .readData('''  select amount from  expense where id = ? ''', [id]);
+    for (var record in res) {
+      return record['amount'];
+    }
+    return 0;
   }
 }

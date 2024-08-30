@@ -5,7 +5,7 @@ class CustomAutoComplete extends StatelessWidget {
 
   final TextEditingController controller;
   final String label;
-  final String? Function(String? value)? valueChange;
+  final void Function(String? value)? valueChange;
 
   const CustomAutoComplete(
       {required this.controller,
@@ -22,16 +22,31 @@ class CustomAutoComplete extends StatelessWidget {
         });
       },
       onSelected: (String selection) {
-        controller.text = selection;
+        if (valueChange != null) {
+          valueChange!(selection);
+        }
       },
       fieldViewBuilder:
           (context, textEditingController, focusNode, onFieldSubmitted) {
         return TextField(
-          onChanged: valueChange ?? (value) => controller.text = value,
+          onChanged: (value) {
+            if (valueChange != null) {
+              valueChange!(value);
+            }
+          },
           controller: textEditingController,
           onEditingComplete: onFieldSubmitted,
           focusNode: focusNode,
-          decoration: InputDecoration(label: Text(label)),
+          decoration: InputDecoration(
+            label: Text(label),
+            suffixIcon: IconButton(
+                onPressed: () {
+                  valueChange!("");
+                  textEditingController.text = "";
+                  focusNode.unfocus();
+                },
+                icon: const Icon(Icons.highlight_remove_outlined)),
+          ),
         );
       },
     );

@@ -55,8 +55,22 @@ class AccountingDialog {
     );
   }
 
-  addExpenseOnSection(
-      BuildContext context, SectionModel section, ExpenseType type) async {
+  addExpenseOnSection(BuildContext context, SectionModel section,
+      ExpenseType type, ExpenseModel? expenseModel ) async {
+    final TextEditingController noteController =
+        TextEditingController(text: "");
+    final TextEditingController amountController =
+        TextEditingController(text: "");
+    final TextEditingController reasonController =
+        TextEditingController(text: "");
+    final TextEditingController dateController =
+        TextEditingController(text: "");
+    if (expenseModel != null) {
+      noteController.text = expenseModel.note;
+      amountController.text = expenseModel.amount.toString();
+      reasonController.text = expenseModel.reason;
+      dateController.text = expenseModel.date;
+    }
     String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
     List<String> reasonList =
         Provider.of<AccountingProvider>(context, listen: false)
@@ -67,14 +81,7 @@ class AccountingDialog {
             .map((e) => e.reason)
             .toSet()
             .toList();
-    final TextEditingController noteController =
-        TextEditingController(text: "");
-    final TextEditingController amountController =
-        TextEditingController(text: "");
-    final TextEditingController reasonController =
-        TextEditingController(text: "");
-    final TextEditingController dateController =
-        TextEditingController(text: "");
+
     dateController.text = formattedDate();
     await showDialog<String>(
       context: context,
@@ -130,8 +137,14 @@ class AccountingDialog {
                     section: section.id,
                     date: dateController.text,
                     expenseType: type);
-                Provider.of<AccountingProvider>(context, listen: false)
-                    .addNewExpense(ex, section, ex.amount, true);
+                if (expenseModel != null) {
+                  ex.id = expenseModel.id;
+                  Provider.of<AccountingProvider>(context, listen: false)
+                      .updateExpense(ex, section, ex.amount, true);
+                } else {
+                  Provider.of<AccountingProvider>(context, listen: false)
+                      .addNewExpense(ex, section, ex.amount, true);
+                }
 
                 Navigator.of(context).pop("1");
               },

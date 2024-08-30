@@ -22,7 +22,6 @@ class AccountingDetailsScreen extends StatelessWidget {
   final TextEditingController dateToController =
       TextEditingController(text: formattedDate());
   final TextEditingController filterController = TextEditingController();
-
   AccountingDetailsScreen(this.model);
 
   @override
@@ -62,7 +61,8 @@ class AccountingDetailsScreen extends StatelessWidget {
                         accountingProvider.filterExpenseList(
                             dateFromController.text,
                             dateToController.text,
-                            filterController.text);
+                            filterController.text,
+                            accountingProvider.selectedSection);
                       },
                       icon: Icons.search,
                     )
@@ -86,10 +86,52 @@ class AccountingDetailsScreen extends StatelessWidget {
                           accountingProvider.filterExpenseList(
                               dateFromController.text,
                               dateToController.text,
-                              value);
-                          return null;
+                              value,
+                              accountingProvider.selectedSection);
                         },
                       ),
+                    ),
+                    widthSpace,
+                    const Text("الكل"),
+                    Checkbox(
+                      value:
+                          accountingProvider.selectedSection == ExpenseType.all,
+                      onChanged: (value) {
+                        accountingProvider.changeCheckbox(ExpenseType.all);
+                        accountingProvider.filterExpenseList(
+                            dateFromController.text,
+                            dateToController.text,
+                            filterController.text,
+                            accountingProvider.selectedSection);
+                      },
+                    ),
+                    widthSpace,
+                    const Text("القبض"),
+                    Checkbox(
+                      value: accountingProvider.selectedSection ==
+                          ExpenseType.moneyIn,
+                      onChanged: (value) {
+                        accountingProvider.changeCheckbox(ExpenseType.moneyIn);
+                        accountingProvider.filterExpenseList(
+                            dateFromController.text,
+                            dateToController.text,
+                            filterController.text,
+                            accountingProvider.selectedSection);
+                      },
+                    ),
+                    widthSpace,
+                    const Text("المصروف"),
+                    Checkbox(
+                      value: accountingProvider.selectedSection ==
+                          ExpenseType.moneyOut,
+                      onChanged: (value) {
+                        accountingProvider.changeCheckbox(ExpenseType.moneyOut);
+                        accountingProvider.filterExpenseList(
+                            dateFromController.text,
+                            dateToController.text,
+                            filterController.text,
+                            accountingProvider.selectedSection);
+                      },
                     ),
                   ],
                 ),
@@ -99,7 +141,8 @@ class AccountingDetailsScreen extends StatelessWidget {
                     const Text("المصروف"),
                     widthSpace,
                     Text(
-                      formatNumber(Provider.of<AccountingProvider>(context).totalOut),
+                      formatNumber(
+                          Provider.of<AccountingProvider>(context).totalOut),
                       style: const TextStyle(color: Colors.deepOrange),
                     ),
                     widthSpace,
@@ -107,7 +150,8 @@ class AccountingDetailsScreen extends StatelessWidget {
                     const Text("المقبوض"),
                     widthSpace,
                     Text(
-                      formatNumber(Provider.of<AccountingProvider>(context).totalIn),
+                      formatNumber(
+                          Provider.of<AccountingProvider>(context).totalIn),
                       style: const TextStyle(color: Colors.deepOrange),
                     ),
                   ],
@@ -130,7 +174,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                       controller: controller,
                       child: Padding(
                           padding: const EdgeInsets.all(8.0),
-                          child: Container(
+                          child: SizedBox(
                             width: double.infinity,
                             child: DataTable(
                                 columns: const [
@@ -193,7 +237,13 @@ class AccountingDetailsScreen extends StatelessWidget {
                                   accountingProvider.filteredExpenseList.length,
                                   (index) {
                                     return DataRow(
-                                      onLongPress: () {},
+                                      onLongPress: () {
+                                        showOptionsDialog(
+                                            context,
+                                            accountingProvider
+                                                .filteredExpenseList[index],
+                                            model);
+                                      },
                                       cells: <DataCell>[
                                         DataCell(Text("${index + 1}")),
                                         DataCell(Text(
@@ -243,4 +293,39 @@ class AccountingDetailsScreen extends StatelessWidget {
       ),
     ));
   }
+}
+
+void showOptionsDialog(
+    BuildContext context, ExpenseModel expenseModel, SectionModel model) {
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text("اختر اجراء "),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              CustomButton(
+                  text: "تعديل",
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Provider.of<AccountingProvider>(context, listen: false)
+                        .showAddExpenseDialog(context, model,
+                            expenseModel.expenseType, expenseModel);
+                  },
+                  icon: Icons.edit),
+              CustomButton(
+                  text: "حذف",
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icons.delete_forever_sharp)
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

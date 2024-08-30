@@ -29,10 +29,10 @@ convertDate(String date) {
   }
 }
 
-
 class CustomDatePicker extends StatelessWidget {
   final TextEditingController controller;
   final String label;
+
   CustomDatePicker({required this.label, required this.controller});
 
   @override
@@ -43,7 +43,11 @@ class CustomDatePicker extends StatelessWidget {
         controller.text = selected;
       },
       child: CustomTextInput(
-        enabled: false,
+        onTab: () async {
+          String selected = await getDate(context, controller.text);
+          controller.text = selected;
+        },
+        enabled: true,
         label: label,
         controller: controller,
         textInputType: TextInputType.datetime,

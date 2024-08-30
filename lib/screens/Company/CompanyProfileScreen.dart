@@ -177,6 +177,14 @@ class CompanyProfileScreen extends StatelessWidget {
                                           fontWeight: FontWeight.bold),
                                     ),
                                   ),
+                                ), DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'تاريخ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
                                 ),
                               ],
                               rows: List.generate(
@@ -251,6 +259,8 @@ class CompanyProfileScreen extends StatelessWidget {
                                           "${companyProvider.filter[index].out}")),
                                       DataCell(Text(
                                           companyProvider.filter[index].note)),
+                                      DataCell(Text(companyProvider
+                                          .finishedFilter[index].date)),
                                     ],
                                   );
                                 },

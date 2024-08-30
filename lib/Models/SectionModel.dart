@@ -47,4 +47,4 @@ class ExpenseModel {
   }
 }
 
-enum ExpenseType { moneyIn, moneyOut }
+enum ExpenseType { all, moneyIn, moneyOut }

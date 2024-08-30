@@ -174,14 +174,14 @@ class Accountingscreen extends StatelessWidget {
         InkWell(
             onTap: () {
               Provider.of<AccountingProvider>(context, listen: false)
-                  .showAddExpenseDialog(context, section, ExpenseType.moneyIn);
+                  .showAddExpenseDialog(context, section, ExpenseType.moneyIn , null);
             },
             child: const Icon(Icons.add)),
         widthSpace,
         InkWell(
           onTap: () {
             Provider.of<AccountingProvider>(context, listen: false)
-                .showAddExpenseDialog(context, section, ExpenseType.moneyOut);
+                .showAddExpenseDialog(context, section, ExpenseType.moneyOut , null);
           },
           child: const Icon(Icons.remove),
         ),

@@ -43,7 +43,7 @@ class CompanyProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  filteredWorkerFilter(String value) {
+  finishedWorkerFilter(String value) {
     if (value != "") {
       finishedFilter.clear();
       finishedFilter = finishedWorkersModel

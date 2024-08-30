@@ -61,7 +61,7 @@ class CompanyFinishScreen extends StatelessWidget {
                     height: 70,
                     child: TextFormField(
                       onChanged: (value) {
-                        companyProvider.workerFilter(value);
+                        companyProvider.finishedWorkerFilter(value);
                       },
                       textAlign: TextAlign.center,
                       controller: searchController,
@@ -148,6 +148,15 @@ class CompanyFinishScreen extends StatelessWidget {
                                     ),
                                   ),
                                 ),
+                                DataColumn(
+                                  label: Expanded(
+                                    child: Text(
+                                      'تاريخ',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                ),
                               ],
                               rows: List.generate(
                                 companyProvider.finishedFilter.length,
@@ -167,6 +176,8 @@ class CompanyFinishScreen extends StatelessWidget {
                                           "${companyProvider.finishedFilter[index].out}")),
                                       DataCell(Text(companyProvider
                                           .finishedFilter[index].note)),
+                                      DataCell(Text(companyProvider
+                                          .finishedFilter[index].date)),
                                     ],
                                   );
                                 },
