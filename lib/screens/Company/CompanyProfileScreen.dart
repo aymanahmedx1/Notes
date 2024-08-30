@@ -260,7 +260,7 @@ class CompanyProfileScreen extends StatelessWidget {
                                       DataCell(Text(
                                           companyProvider.filter[index].note)),
                                       DataCell(Text(companyProvider
-                                          .finishedFilter[index].date)),
+                                          .filter[index].date)),
                                     ],
                                   );
                                 },
