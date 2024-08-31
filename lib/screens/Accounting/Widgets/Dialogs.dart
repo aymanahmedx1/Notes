@@ -65,11 +65,13 @@ class AccountingDialog {
         TextEditingController(text: "");
     final TextEditingController dateController =
         TextEditingController(text: "");
+    String? initValue ;
     if (expenseModel != null) {
       noteController.text = expenseModel.note;
       amountController.text = expenseModel.amount.toString();
       reasonController.text = expenseModel.reason;
       dateController.text = expenseModel.date;
+      initValue = expenseModel.reason;
     }
     String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
     List<String> reasonList =
@@ -101,6 +103,7 @@ class AccountingDialog {
             child: Column(
               children: [
                 CustomAutoComplete(
+                  initValue: initValue,
                   controller: reasonController,
                   label: "السبب",
                   options: reasonList,

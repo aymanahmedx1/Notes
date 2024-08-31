@@ -6,16 +6,19 @@ class CustomAutoComplete extends StatelessWidget {
   final TextEditingController controller;
   final String label;
   final void Function(String? value)? valueChange;
+  final String? initValue;
 
   const CustomAutoComplete(
       {required this.controller,
       required this.options,
       required this.label,
-      this.valueChange});
+      this.valueChange,
+      this.initValue});
 
   @override
   Widget build(BuildContext context) {
     return Autocomplete<String>(
+      initialValue: TextEditingValue(text: initValue ?? ""),
       optionsBuilder: (TextEditingValue textEditingValue) {
         return options.where((String option) {
           return option.contains(textEditingValue.text.toLowerCase());
@@ -30,6 +33,7 @@ class CustomAutoComplete extends StatelessWidget {
           (context, textEditingController, focusNode, onFieldSubmitted) {
         return TextField(
           onChanged: (value) {
+            controller.text = value;
             if (valueChange != null) {
               valueChange!(value);
             }
@@ -41,7 +45,7 @@ class CustomAutoComplete extends StatelessWidget {
             label: Text(label),
             suffixIcon: IconButton(
                 onPressed: () {
-                  valueChange!("");
+                  if (valueChange != null) (valueChange!(""));
                   textEditingController.text = "";
                   focusNode.unfocus();
                 },

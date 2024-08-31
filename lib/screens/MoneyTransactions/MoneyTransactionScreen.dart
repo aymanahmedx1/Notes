@@ -20,8 +20,7 @@ class Moneytransactionscreen extends StatelessWidget {
 
   final TextEditingController dateToController =
       TextEditingController(text: formattedDate());
-  final TextEditingController filterController =
-      TextEditingController();
+  final TextEditingController filterController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +57,22 @@ class Moneytransactionscreen extends StatelessWidget {
                           label: "التاريخ الي",
                           controller: dateToController,
                         )),
+                    widthSpace,
+                    CustomButton(
+                      text: "بحث",
+                      onPressed: () {
+                        moneyTransactionProvider.filter(dateFromController.text,
+                            dateToController.text, filterController.text);
+                      },
+                      icon: Icons.search,
+                    ),
                   ],
                 ),
                 heightSpace,
                 Row(
                   children: [
                     SizedBox(
-                      width: width / 12 * 8.1,
+                      width: width / 12 * 4,
                       child: CustomAutoComplete(
                         options: Provider.of<MoneyTransactionProvider>(context,
                                 listen: false)
@@ -77,14 +85,59 @@ class Moneytransactionscreen extends StatelessWidget {
                       ),
                     ),
                     widthSpace,
-                    CustomButton(
-                      text: "بحث",
-                      onPressed: () {
+                    const Text("الكل"),
+                    Checkbox(
+                      value: moneyTransactionProvider.selectedSection ==
+                          ExpenseType.all,
+                      onChanged: (value) {
+                        moneyTransactionProvider
+                            .changeCheckbox(ExpenseType.all);
                         moneyTransactionProvider.filter(dateFromController.text,
                             dateToController.text, filterController.text);
                       },
-                      icon: Icons.search,
-                    )
+                    ),
+                    widthSpace,
+                    const Text("القبض"),
+                    Checkbox(
+                      value: moneyTransactionProvider.selectedSection ==
+                          ExpenseType.moneyIn,
+                      onChanged: (value) {
+                        moneyTransactionProvider
+                            .changeCheckbox(ExpenseType.moneyIn);
+                        moneyTransactionProvider.filter(dateFromController.text,
+                            dateToController.text, filterController.text);
+                      },
+                    ),
+                    widthSpace,
+                    const Text("المصروف"),
+                    Checkbox(
+                      value: moneyTransactionProvider.selectedSection ==
+                          ExpenseType.moneyOut,
+                      onChanged: (value) {
+                        moneyTransactionProvider
+                            .changeCheckbox(ExpenseType.moneyOut);
+                        moneyTransactionProvider.filter(dateFromController.text,
+                            dateToController.text, filterController.text);
+                      },
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    const Text("المصروف"),
+                    widthSpace,
+                    Text(
+                      formatNumber(moneyTransactionProvider.totalOut),
+                      style: const TextStyle(color: Colors.deepOrange),
+                    ),
+                    widthSpace,
+                    widthSpace,
+                    const Text("المقبوض"),
+                    widthSpace,
+                    Text(
+                      formatNumber(moneyTransactionProvider.totalIn),
+                      style: const TextStyle(color: Colors.deepOrange),
+                    ),
                   ],
                 ),
                 Expanded(
@@ -172,7 +225,6 @@ class Moneytransactionscreen extends StatelessWidget {
                                           width: 20,
                                           child: Text("${index + 1}"),
                                         )),
-
                                         DataCell(Text(moneyTransactionProvider
                                             .filteredExpenseList[index].date)),
                                         DataCell(Text(moneyTransactionProvider

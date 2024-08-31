@@ -9,14 +9,30 @@ class MoneyTransactionProvider with ChangeNotifier {
   List<SectionModel> _accountingList = [];
   List<ExpenseModel> expenseList = [];
   List<ExpenseModel> filteredExpenseList = [];
+  ExpenseType selectedSection = ExpenseType.all;
+  double totalOut = 0;
+  double totalIn = 0;
+
+
+  void changeCheckbox(ExpenseType selected) {
+    selectedSection = selected;
+    notifyListeners();
+  }
 
   fillList() async {
-    filteredExpenseList = [] ;
+    filteredExpenseList = [];
     _accountingList = await SectionDB().getAllSections();
     expenseList = await SectionDB().getAllSectionDetails();
+    totalOut = 0.00;
+    totalIn = 0.00;
     for (var i in expenseList) {
       i.sectionModel = getSectionModel(i.section);
       filteredExpenseList.add(i);
+      if (i.expenseType == ExpenseType.moneyIn) {
+        totalIn += i.amount;
+      } else {
+        totalOut += i.amount;
+      }
     }
     notifyListeners();
   }
@@ -35,11 +51,20 @@ class MoneyTransactionProvider with ChangeNotifier {
       var elementDate = DateTime.parse(element.date);
       return (elementDate.compareTo(from) != -1 &&
               elementDate.compareTo(to) != 1) &&
-          element.sectionModel!.name.contains(text);
+          element.sectionModel!.name.contains(text) &&
+          (selectedSection != ExpenseType.all
+              ? element.expenseType == selectedSection
+              : element.expenseType.index != 9);
     }).toList();
-    log(text);
-    log(dateTo);
-    log(dateFrom);
+    totalOut = 0.00;
+    totalIn = 0.00;
+    for (var i in filteredExpenseList) {
+      if (i.expenseType == ExpenseType.moneyIn) {
+        totalIn += i.amount;
+      } else {
+        totalOut += i.amount;
+      }
+    }
     notifyListeners();
   }
 }
