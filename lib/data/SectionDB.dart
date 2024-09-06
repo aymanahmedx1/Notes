@@ -41,9 +41,6 @@ class SectionDB {
         totalOut: record['totalOut'],
       ));
     }
-    for (var i in list) {
-      log(i.toString());
-    }
     return list;
   }
 

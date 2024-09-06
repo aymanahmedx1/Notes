@@ -40,6 +40,7 @@ class CompanyProvider with ChangeNotifier {
     finishedWorkersModel = await CompanyDB().getAllWorkers(companyID, finish);
     finishedFilter = List<WorkerModel>.from(finishedWorkersModel);
     finishedFilter.sort((a, b) => (a.total - a.out).compareTo(b.total - b.out));
+
     notifyListeners();
   }
 

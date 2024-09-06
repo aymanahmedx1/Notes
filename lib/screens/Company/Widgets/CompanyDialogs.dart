@@ -26,16 +26,17 @@ class CompanyDialogs {
         TextEditingController(text: "");
     final TextEditingController noteController =
         TextEditingController(text: "");
-
+    String title = "اضافه شركة";
     if (model != null) {
       companyNameController.text = model.name;
       noteController.text = model.notes;
+      title = "تعديل شركة"  ;
     }
     await showDialog<String>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("اضافه شركة"),
+          title: Text(title),
           content: SingleChildScrollView(
             child: Column(
               children: [

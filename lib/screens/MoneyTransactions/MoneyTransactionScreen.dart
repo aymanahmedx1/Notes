@@ -74,6 +74,10 @@ class Moneytransactionscreen extends StatelessWidget {
                     SizedBox(
                       width: width / 12 * 4,
                       child: CustomAutoComplete(
+                        valueChange: (value) {
+                          moneyTransactionProvider.filter(dateFromController.text,
+                              dateToController.text, value??"");
+                        },
                         options: Provider.of<MoneyTransactionProvider>(context,
                                 listen: false)
                             .expenseList

@@ -15,7 +15,7 @@ void main() async {
     databaseFactoryOrNull = databaseFactoryFfi;
   }
   WidgetsFlutterBinding.ensureInitialized();
-  //DatabaseHelper().delete();
+  DatabaseHelper().delete();
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider<CompanyProvider>(
       create: (_) => CompanyProvider(),

@@ -10,7 +10,10 @@ import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import '../../CustomWidgets/CustomButton.dart';
 import '../../CustomWidgets/CustomDatePicker.dart';
+import '../../CustomWidgets/NoDataWidget.dart';
 import '../../data/SectionDB.dart';
+import 'Widgets/table_data.dart';
+import 'Widgets/table_header.dart';
 
 class AccountingDetailsScreen extends StatelessWidget {
   final SectionModel model;
@@ -156,136 +159,19 @@ class AccountingDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                AccountingTableHeader(width: width,),
                 Expanded(
-                  child: Scrollbar(
-                    /// Scroll Bar
-                    trackVisibility: true,
-                    // SHow
-                    interactive: true,
-                    // Interact
-                    thickness: 10,
-                    // Width Of Scroll bar
-                    controller: controller,
-                    // Controll scroll bar location
-                    thumbVisibility: true,
-                    // show all time
-                    child: SingleChildScrollView(
+                    child:accountingProvider.filteredExpenseList.isEmpty
+                        ? NoDataWidget()
+                        : SingleChildScrollView(
                       // scroll list
-                      controller: controller,
-                      child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: DataTable(
-                                columns: const [
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'No',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'السبب',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'المصروف',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'المستلم',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'التاريخ',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'ملاحظات',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                                rows: List.generate(
-                                  accountingProvider.filteredExpenseList.length,
-                                  (index) {
-                                    return DataRow(
-                                      onLongPress: () {
-                                        showOptionsDialog(
-                                            context,
-                                            accountingProvider
-                                                .filteredExpenseList[index],
-                                            model);
-                                      },
-                                      cells: <DataCell>[
-                                        DataCell(Text("${index + 1}")),
-                                        DataCell(Text(
-                                            overflow: TextOverflow.ellipsis,
-                                            accountingProvider
-                                                .filteredExpenseList[index]
-                                                .reason)),
-                                        DataCell(Text(
-                                          accountingProvider
-                                                      .filteredExpenseList[
-                                                          index]
-                                                      .expenseType ==
-                                                  ExpenseType.moneyOut
-                                              ? "${formatNumber(accountingProvider.filteredExpenseList[index].amount)}"
-                                              : "0",
-                                          overflow: TextOverflow.ellipsis,
-                                        )),
-                                        DataCell(Text(
-                                          accountingProvider
-                                                      .filteredExpenseList[
-                                                          index]
-                                                      .expenseType ==
-                                                  ExpenseType.moneyIn
-                                              ? "${formatNumber(accountingProvider.filteredExpenseList[index].amount)}"
-                                              : "0",
-                                          overflow: TextOverflow.ellipsis,
-                                        )),
-                                        DataCell(Text(
-                                            overflow: TextOverflow.ellipsis,
-                                            accountingProvider
-                                                .filteredExpenseList[index]
-                                                .date)),
-                                        DataCell(Text(accountingProvider
-                                            .filteredExpenseList[index].note))
-                                      ],
-                                    );
-                                  },
-                                )),
-                          )),
-                    ),
-                  ),
-                ),
+                      child: AccountingTableData(
+                        width: width,
+                        filter: accountingProvider.filteredExpenseList,
+                        controller: controller,
+                        section: model,
+                      ),
+                    ))
               ],
             ),
           );
@@ -295,37 +181,4 @@ class AccountingDetailsScreen extends StatelessWidget {
   }
 }
 
-void showOptionsDialog(
-    BuildContext context, ExpenseModel expenseModel, SectionModel model) {
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("اختر اجراء "),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CustomButton(
-                  text: "تعديل",
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Provider.of<AccountingProvider>(context, listen: false)
-                        .showAddExpenseDialog(context, model,
-                            expenseModel.expenseType, expenseModel);
-                  },
-                  icon: Icons.edit),
-              CustomButton(
-                  text: "حذف",
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icons.delete_forever_sharp)
-            ],
-          ),
-        ),
-      );
-    },
-  );
-}
+

@@ -15,15 +15,17 @@ class AccountingDialog {
   createSection(BuildContext context, SectionModel? model) async {
     final TextEditingController textController =
         TextEditingController(text: "");
+    String title = "اضافه قسم";
 
     if (model != null) {
       textController.text = model.name;
+      title = "تعديل قسم";
     }
     await showDialog<String>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("اضافه قسم"),
+          title: Text(title),
           content: CustomTextInput(
             label: "اسم القسم",
             controller: textController,

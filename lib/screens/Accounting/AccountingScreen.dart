@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:notes/Commons/Helpers.dart';
+import 'package:notes/CustomWidgets/CustomButton.dart';
 import 'package:notes/CustomWidgets/CutomTextInput.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/Models/SectionModel.dart';
@@ -171,23 +172,27 @@ class Accountingscreen extends StatelessWidget {
   Widget makeOperationRow(BuildContext context, SectionModel section) {
     return Row(
       children: [
-        InkWell(
-            onTap: () {
-              Provider.of<AccountingProvider>(context, listen: false)
-                  .showAddExpenseDialog(context, section, ExpenseType.moneyIn , null);
-            },
-            child: const Icon(Icons.add)),
-        widthSpace,
-        InkWell(
-          onTap: () {
+        CustomButton(
+          onPressed: () {
             Provider.of<AccountingProvider>(context, listen: false)
-                .showAddExpenseDialog(context, section, ExpenseType.moneyOut , null);
+                .showAddExpenseDialog(
+                    context, section, ExpenseType.moneyIn, null);
           },
-          child: const Icon(Icons.remove),
+          icon: Icons.add,
+          text: "",
         ),
         widthSpace,
-        InkWell(
-          onTap: () {
+        CustomButton(
+          onPressed: () =>
+              Provider.of<AccountingProvider>(context, listen: false)
+                  .showAddExpenseDialog(
+                      context, section, ExpenseType.moneyOut, null),
+          icon: Icons.remove,
+          text: "",
+        ),
+        widthSpace,
+        CustomButton(
+          onPressed: () {
             Provider.of<AccountingProvider>(context, listen: false)
                 .fillExpenseList(section);
             Navigator.push(
@@ -195,7 +200,8 @@ class Accountingscreen extends StatelessWidget {
                 MaterialPageRoute(
                     builder: (context) => AccountingDetailsScreen(section)));
           },
-          child: const Icon(Icons.search),
+          icon: Icons.search,
+          text: "",
         ),
       ],
     );
