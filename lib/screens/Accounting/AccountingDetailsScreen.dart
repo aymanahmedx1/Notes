@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../CustomWidgets/CustomButton.dart';
 import '../../CustomWidgets/CustomDatePicker.dart';
 import '../../CustomWidgets/NoDataWidget.dart';
+import '../../Models/PrintDetailsModel.dart';
 import '../../data/SectionDB.dart';
 import 'Widgets/table_data.dart';
 import 'Widgets/table_header.dart';
@@ -66,6 +67,28 @@ class AccountingDetailsScreen extends StatelessWidget {
                             dateToController.text,
                             filterController.text,
                             accountingProvider.selectedSection);
+                      },
+                      icon: Icons.search,
+                    ),
+                    widthSpace,
+                    CustomButton(
+                      text: "تصدير",
+                      onPressed: () async {
+                        var data = AccountingTableData(
+                          width: width,
+                          filter: accountingProvider.filteredExpenseList,
+                          controller: controller,
+                          section: model,
+                        );
+                        PrintDetailsModel c = PrintDetailsModel(
+                            data: data,
+                            dateFrom: "From",
+                            dateTo: "To",
+                            reasonFilter: "Reason",
+                            title: "Title",
+                            totalIn: 0,
+                            totalOut: 0);
+                        await accountingProvider.ExportPdf(c);
                       },
                       icon: Icons.search,
                     )
@@ -159,19 +182,21 @@ class AccountingDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                AccountingTableHeader(width: width,),
+                AccountingTableHeader(
+                  width: width,
+                ),
                 Expanded(
-                    child:accountingProvider.filteredExpenseList.isEmpty
+                    child: accountingProvider.filteredExpenseList.isEmpty
                         ? NoDataWidget()
                         : SingleChildScrollView(
-                      // scroll list
-                      child: AccountingTableData(
-                        width: width,
-                        filter: accountingProvider.filteredExpenseList,
-                        controller: controller,
-                        section: model,
-                      ),
-                    ))
+                            // scroll list
+                            child: AccountingTableData(
+                              width: width,
+                              filter: accountingProvider.filteredExpenseList,
+                              controller: controller,
+                              section: model,
+                            ),
+                          ))
               ],
             ),
           );
@@ -180,5 +205,3 @@ class AccountingDetailsScreen extends StatelessWidget {
     ));
   }
 }
-
-

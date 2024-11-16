@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
+import 'package:notes/Models/MovementModel.dart';
 
 import '../Models/CompanyModel.dart';
 import '../data/CompanyDB.dart';
@@ -13,7 +14,8 @@ class CompanyProvider with ChangeNotifier {
   List<WorkerModel> filter = [];
   List<WorkerModel> finishedWorkersModel = [];
   List<WorkerModel> finishedFilter = [];
-
+  List<MovementModel> movemensModels = [];
+  int workerId = 0;
   CompanyProvider() {
     fillCompanyList();
   }
@@ -22,6 +24,12 @@ class CompanyProvider with ChangeNotifier {
     _companyModels = await CompanyDB().getAll();
     filterdCompanyModels = List<CompanyModel>.from(_companyModels);
     notifyListeners();
+  }
+  fillMovements()async{
+    movemensModels = await CompanyDB().getAllMovement(workerId);
+    log(movemensModels.toString());
+    log(workerId.toString());
+    notifyListeners() ;
   }
 
   void createOrUpdate(BuildContext context, CompanyModel? data) async {

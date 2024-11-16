@@ -20,6 +20,7 @@ class WorkerModel{
   int out ;
   String note ;
   String date ;
+  String expDate ;
   int finish  ;
-  WorkerModel({ required this.id, required this.name,required this.phone ,required this.company ,required this.total ,required this.out ,required this.note , required this.drug , required this.date , required this.finish});
+  WorkerModel({ required this.id, required this.name,required this.phone ,required this.company ,required this.total ,required this.out ,required this.note , required this.drug , required this.date, required this.expDate , required this.finish});
 }

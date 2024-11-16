@@ -18,6 +18,7 @@ class CompanyDialogs {
   final TextEditingController noteController = TextEditingController(text: "");
   final TextEditingController outController = TextEditingController(text: "0");
   final TextEditingController dateController = TextEditingController(text: "");
+  final TextEditingController expController = TextEditingController(text: "");
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final ScrollController controller = ScrollController();
 
@@ -88,8 +89,9 @@ class CompanyDialogs {
       drugController.text = workerModel.drug;
       totalController.text = workerModel.total.toString();
       noteController.text = workerModel.note;
-      outController.text = workerModel.out.toString();
+      // outController.text = workerModel.out.toString();
       dateController.text = workerModel.date;
+      expController.text = workerModel.expDate;
     } else {
       dateController.text = formattedDate();
     }
@@ -185,6 +187,11 @@ class CompanyDialogs {
                     controller: dateController,
                     label: "التاريخ",
                   ),
+                  heightSizedBox,
+                  CustomDatePicker(
+                    controller: expController,
+                    label: "اكسباير",
+                  ),
                   const SizedBox(
                     height: 30,
                   ),
@@ -224,6 +231,7 @@ class CompanyDialogs {
           total: int.parse(totalController.text),
           drug: drugController.text,
           date: dateController.text,
+          expDate: expController.text,
           finish: 0);
       if (model == null) {
         Provider.of<CompanyProvider>(context, listen: false).saveWorker(toSave);

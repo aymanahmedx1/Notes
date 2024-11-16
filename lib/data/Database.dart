@@ -56,6 +56,7 @@ class DatabaseHelper {
                             "out" INTEGER,
                             "note" TEXT,
                             "date" TEXT , 
+                            "expDate" TEXT , 
                             "finish" INTEGER , 
                             PRIMARY KEY("id" AUTOINCREMENT)
                           );''');
@@ -63,6 +64,14 @@ class DatabaseHelper {
                         "id"	INTEGER,
                         "name"	TEXT,
                         "note"	TEXT,
+                        "date"	TEXT,
+                        PRIMARY KEY("id" AUTOINCREMENT)
+                          );''');
+
+    await db.execute('''CREATE TABLE "movements" (
+                        "id"	INTEGER,
+                        "workerId"	INTEGER,
+                        "qty"	INTEGER,
                         "date"	TEXT,
                         PRIMARY KEY("id" AUTOINCREMENT)
                           );''');

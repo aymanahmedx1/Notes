@@ -1,10 +1,16 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
 
+import 'package:pdf/widgets.dart' as pw;
+import '../Commons/Helpers.dart';
+import '../Models/PrintDetailsModel.dart';
 import '../Models/SectionModel.dart';
 import '../data/SectionDB.dart';
 import '../screens/Accounting/Widgets/Dialogs.dart';
+
 
 class AccountingProvider with ChangeNotifier {
   List<SectionModel> _accountingList = [];
@@ -115,5 +121,95 @@ class AccountingProvider with ChangeNotifier {
   void changeCheckbox(ExpenseType selected) {
     selectedSection = selected;
     notifyListeners();
+  }
+
+  ExportPdf(PrintDetailsModel model) async {
+    try {
+      final pdf = pw.Document();
+      var fontData = File('assets/font/Cairo-Regular.ttf').readAsBytesSync();
+
+      final ttf = pw.Font.ttf(fontData.buffer.asByteData());
+
+      pdf.addPage(
+        pw.Page(
+          build: (pw.Context context) =>  pw.Directionality(
+            textDirection: pw.TextDirection.rtl,
+            child: pw.Column(
+              children: [
+                pw.Row(
+                    children: [
+                      pw.Text("التاريخ من ${model.dateFrom} الي ${ model.dateTo }" ,  style: pw.TextStyle(font: ttf, fontSize: 16))
+                    ]
+                ),
+                pw.Row(
+                    children: [
+                      pw.Text("االسبب ${ model.reasonFilter }" ,  style: pw.TextStyle(font: ttf, fontSize: 16))
+                    ]
+                ),
+                pw.ListView.separated(
+                    separatorBuilder: (context, int index) { return pw.Divider(); },
+                    itemBuilder: (context, int index) { return pw.Text("ssss") ; },
+                    itemCount: model.data.filter.length
+
+                )
+              ],
+            ),
+          )
+        ),
+      );
+
+      final file = File('ttoottoo.pdf');
+      File f = await file.writeAsBytes(await pdf.save());
+      OpenFilex.open(f.path);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+
+  buildTableForPdf(PrintDetailsModel model){
+   return  ListView.separated(
+        shrinkWrap: true,
+        itemBuilder: (context, index) {
+          return makeRow(index, model.data.filter[index], context, 33 , new SectionModel(id: 0, name: "name", totalIn: totalIn, totalOut: totalOut));
+        },
+        separatorBuilder: (context, index) {
+          return const Divider();
+        },
+        itemCount: model.data.filter.length);
+
+  }
+
+  makeRow(int index, ExpenseModel expense, BuildContext context, double colSize,
+      SectionModel section) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        makeChild("${index + 1}", colSize * .5),
+        makeChild(expense.reason, colSize * 3),
+        makeChild(
+            expense.expenseType == ExpenseType.moneyOut
+                ? "${formatNumber(expense.amount)}"
+                : "0",
+            colSize * 2),
+        makeChild(
+            expense.expenseType == ExpenseType.moneyIn
+                ? "${formatNumber(expense.amount)}"
+                : "0",
+            colSize * 2),
+        makeChild(expense.date, colSize * 2),
+        makeChild(expense.note, colSize * 2),
+      ],
+    );
+  }
+  makeChild(String data, double width) {
+    return SizedBox(
+      width: width,
+      child: Text(
+        data,
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 }

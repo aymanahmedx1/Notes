@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:notes/Providers/CompanyProvider.dart';
+import 'package:notes/screens/Company/MovementsScreen.dart';
 import 'package:provider/provider.dart';
 
 import '../../../CustomWidgets/CustomButton.dart';
@@ -44,8 +45,22 @@ class TableData extends StatelessWidget {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: const Text("اختر اجراء للمتابعه"),
+              title: const Text("اختر إجراء للمتابعة"),
               actions: [
+                CustomButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Provider.of<CompanyProvider>(context,listen: false)
+                        .workerId = worker.id;
+                    Provider.of<CompanyProvider>(context,listen: false)
+                        .fillMovements();
+                    Navigator.of(context).pushNamed(Movementsscreen.rout);
+                  },
+                  text: "تفاصيل",
+                  icon: Icons.list,
+                ),
+                heightSpace,
+
                 CustomButton(
                   onPressed: () {
                     Navigator.pop(context);
@@ -91,7 +106,8 @@ class TableData extends StatelessWidget {
           makeChild(worker.drug, colSize * 1.5),
           makeChild("${worker.total}", colSize * 1),
           makeChild("${worker.out}", colSize * 1),
-          makeChild(worker.note, colSize * 2),
+          makeChild(worker.expDate, colSize * 1),
+          makeChild(worker.note, colSize * 1),
           makeChild(worker.date, colSize * 1.5),
         ],
       ),

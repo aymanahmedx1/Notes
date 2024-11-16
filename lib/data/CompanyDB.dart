@@ -1,7 +1,10 @@
 import 'dart:developer';
 
 import 'package:notes/Models/CompanyModel.dart';
+import 'package:notes/Models/MovementModel.dart';
 import 'package:notes/data/Database.dart';
+
+import '../Commons/Helpers.dart';
 
 class CompanyDB {
   DatabaseHelper db = new DatabaseHelper();
@@ -32,7 +35,7 @@ class CompanyDB {
 
   addWorker(WorkerModel model) async {
     await db.insertData(
-        ''' insert into worker (name,phone,company,total,out,note,drug,date,finish) values (?,?,?,?,?,?,?,?,?) ''',
+        ''' insert into worker (name,phone,company,total,out,note,drug,date,expDate,finish) values (?,?,?,?,?,?,?,?,?,?) ''',
         [
           model.name,
           model.phone,
@@ -42,6 +45,7 @@ class CompanyDB {
           model.note,
           model.drug,
           model.date,
+          model.expDate,
           0
         ]);
   }
@@ -63,6 +67,7 @@ class CompanyDB {
             note: record['note'],
             drug: record['drug'],
             date: record['date'],
+            expDate: record['expDate'],
             finish: record['finish']));
       }
       return list;
@@ -73,7 +78,7 @@ class CompanyDB {
 
   updateWorker(WorkerModel model) async {
     await db.updateData(
-        ''' update worker set name= ? ,phone= ? ,company= ?,total= ?,out= ?,note= ?,drug= ?,date=? where id = ? ''',
+        ''' update worker set name= ? ,phone= ? ,company= ?,total= ?,out =out+ ?,note= ?,drug= ?,date=?,expDate=? where id = ? ''',
         [
           model.name,
           model.phone,
@@ -83,8 +88,10 @@ class CompanyDB {
           model.note,
           model.drug,
           model.date,
+          model.expDate,
           model.id
         ]);
+    await addMovement(MovementModel(id:0, workerId: model.id, qty: model.out, date: formattedDate()));
   }
 
   markWorkerFinish(WorkerModel model) async {
@@ -104,4 +111,26 @@ class CompanyDB {
   deleteWorker(WorkerModel workerModel) async {
     await db.deleteData("delete from worker where id = ?", [workerModel.id]);
   }
+
+  // --------------    MOVEMENTS ---------------
+  addMovement(MovementModel model) async {
+    await db.insertData(
+        ''' insert into movements (workerId,qty,date) values (?,?,?) ''',
+        [model.workerId, model.qty, model.date]);
+  }
+
+  getAllMovement(int worker) async {
+    List<Map> res = await db.readData('''  select * from  movements where workerId =?''', [worker]);
+    List<MovementModel> list = [];
+    for (var record in res) {
+      list.add(MovementModel(
+          id: record['id'],
+          workerId: record['workerId'],
+          qty: record['qty'],
+          date: record['date']));
+    }
+    return list;
+  }
+
+
 }
