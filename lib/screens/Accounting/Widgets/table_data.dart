@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:notes/Models/SectionModel.dart';
 import 'package:notes/Providers/CompanyProvider.dart';
+import 'package:notes/data/SectionDB.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Commons/Helpers.dart';
@@ -97,7 +98,10 @@ class AccountingTableData extends StatelessWidget {
                 heightSpace,
                 CustomButton(
                     text: "حذف",
-                    onPressed: () {
+                    onPressed: ()async {
+                        await SectionDB().deleteExpense(expenseModel);
+                        Provider.of<AccountingProvider>(context, listen: false)
+                            .fillExpenseList(section);
                       Navigator.pop(context);
                     },
                     icon: Icons.delete_forever_sharp)

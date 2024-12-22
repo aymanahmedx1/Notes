@@ -56,7 +56,10 @@ class SectionDB {
           ex.expenseType.index
         ]);
   }
-
+  deleteExpense(ExpenseModel ex)async{
+    await db.insertData(
+        ''' DELETE FROM expense WHERE id = ? ''', [ex.id]);
+  }
   getSectionDetails(SectionModel model) async {
     try {
       List<Map> res = await db.readData(

@@ -15,6 +15,7 @@ class CompanyProvider with ChangeNotifier {
   List<WorkerModel> finishedWorkersModel = [];
   List<WorkerModel> finishedFilter = [];
   List<MovementModel> movemensModels = [];
+  bool nearExpire = false ;
   int workerId = 0;
   CompanyProvider() {
     fillCompanyList();
@@ -73,7 +74,11 @@ class CompanyProvider with ChangeNotifier {
           .where((i) => i.drug.contains(value) || i.name.contains(value))
           .toList();
       filter.sort((a, b) => (a.total - a.out).compareTo(b.total - b.out));
-    } else {
+    } else if (nearExpire){
+      filter.clear();
+      filter = workersModel.where((i)=>DateTime.parse(i.expDate).isBefore(DateTime.now().add(Duration(days: 30*4))) ).toList();
+    }
+    else {
       filter = new List<WorkerModel>.from(workersModel);
     }
     notifyListeners();
@@ -100,7 +105,13 @@ class CompanyProvider with ChangeNotifier {
     fillCompanyList();
     notifyListeners();
   }
+  updateNearExpire(value){
+      nearExpire = value ;
+      if(nearExpire){
 
+      }
+      notifyListeners();
+  }
   updateCompany(CompanyModel company) async {
     await CompanyDB().update(company);
     fillCompanyList();

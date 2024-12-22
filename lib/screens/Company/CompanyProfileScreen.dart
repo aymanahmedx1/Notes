@@ -104,6 +104,21 @@ class CompanyProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(
+                    width: 50,
+                  ),
+                  Row(
+                    children: [
+                      const Text("انتهاء قريب"),
+                      widthSpace,
+                      Checkbox(
+                        value: companyProvider.nearExpire,
+                        onChanged: (value) {
+                          companyProvider.updateNearExpire(value);
+                          companyProvider.workerFilter(searchController.text);
+                        },)
+                    ],
+                  )
                 ],
               ),
               TableHeader(width: width,),
