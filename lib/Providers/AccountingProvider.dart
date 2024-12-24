@@ -3,14 +3,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:open_filex/open_filex.dart';
+import 'package:pdf/pdf.dart';
 
 import 'package:pdf/widgets.dart' as pw;
 import '../Commons/Helpers.dart';
+import '../Models/PersonalPrintDetailsModel.dart';
 import '../Models/PrintDetailsModel.dart';
 import '../Models/SectionModel.dart';
 import '../data/SectionDB.dart';
 import '../screens/Accounting/Widgets/Dialogs.dart';
-
 
 class AccountingProvider with ChangeNotifier {
   List<SectionModel> _accountingList = [];
@@ -21,6 +22,9 @@ class AccountingProvider with ChangeNotifier {
   double totalOut = 0;
   double totalIn = 0;
   ExpenseType selectedSection = ExpenseType.all;
+  final fontSize = 12.00;
+
+  final horizontalPadding = 5.00;
 
   AccountingProvider() {
     fillAccountingList();
@@ -123,39 +127,181 @@ class AccountingProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  ExportPdf(PrintDetailsModel model) async {
+  exportPersonalPdf(PersonalPrintDetailsModel model) async {
     try {
       final pdf = pw.Document();
       var fontData = File('assets/font/Cairo-Regular.ttf').readAsBytesSync();
-
       final ttf = pw.Font.ttf(fontData.buffer.asByteData());
-
       pdf.addPage(
-        pw.Page(
-          build: (pw.Context context) =>  pw.Directionality(
+        pw.Page(build: (pw.Context context) {
+          final pageWidth = context.page.pageFormat.availableWidth;
+          return pw.Directionality(
             textDirection: pw.TextDirection.rtl,
             child: pw.Column(
               children: [
-                pw.Row(
-                    children: [
-                      pw.Text("التاريخ من ${model.dateFrom} الي ${ model.dateTo }" ,  style: pw.TextStyle(font: ttf, fontSize: 16))
-                    ]
-                ),
-                pw.Row(
-                    children: [
-                      pw.Text("االسبب ${ model.reasonFilter }" ,  style: pw.TextStyle(font: ttf, fontSize: 16))
-                    ]
+                pw.Row(children: [
+                  pw.Text("التاريخ من  ${model.dateFrom}  الي  ${model.dateTo}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16))
+                ]),
+                pw.Row(children: [
+                  pw.Text("السبب ${model.reasonFilter}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16))
+                ]),
+                pw.Row(children: [
+                  pw.Text("المصروف ${model.totalOut}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16)),
+                  pw.SizedBox(width: 20),
+                  pw.Text("المقبوض ${model.totalIn}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16)),
+                ]),
+                pw.Container(
+                  color: const PdfColor.fromInt(0xFF878787),
+                  child: pw.Row(
+                      crossAxisAlignment: pw.CrossAxisAlignment.center,
+                      mainAxisAlignment: pw.MainAxisAlignment.center,
+                      children: [
+                        pw.SizedBox(
+                          width: pageWidth * .1,
+                          child: pw.Text("م",
+                              style:
+                              pw.TextStyle(font: ttf, fontSize: fontSize)),
+                        ),
+                        pw.SizedBox(
+                            child: pw.Text("السبب",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .3),
+                        pw.Container(
+                            margin: pw.EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: pw.Text("المصروف",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .1),
+                        pw.Container(
+                            margin: pw.EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: pw.Text("المستلم",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .1),
+                        pw.SizedBox(
+                            child: pw.Text("التاريخ",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .2),
+                        pw.SizedBox(
+                            child: pw.Text("ملاحظات",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .2),
+                      ]),
                 ),
                 pw.ListView.separated(
-                    separatorBuilder: (context, int index) { return pw.Divider(); },
-                    itemBuilder: (context, int index) { return pw.Text("ssss") ; },
-                    itemCount: model.data.filter.length
-
-                )
+                    separatorBuilder: (context, int index) {
+                      return pw.Divider();
+                    },
+                    itemBuilder: (context, int index) {
+                      return makePdfFileRow(
+                          index, model.data.filter[index], ttf, pageWidth);
+                    },
+                    itemCount: model.data.filter.length)
               ],
             ),
-          )
-        ),
+          );
+        }),
+      );
+
+      final file = File('ttoottoo.pdf');
+      File f = await file.writeAsBytes(await pdf.save());
+      OpenFilex.open(f.path);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+  exportPdf(PrintDetailsModel model) async {
+    try {
+      final pdf = pw.Document();
+      var fontData = File('assets/font/Cairo-Regular.ttf').readAsBytesSync();
+      final ttf = pw.Font.ttf(fontData.buffer.asByteData());
+      pdf.addPage(
+        pw.Page(build: (pw.Context context) {
+          final pageWidth = context.page.pageFormat.availableWidth;
+          return pw.Directionality(
+            textDirection: pw.TextDirection.rtl,
+            child: pw.Column(
+              children: [
+                pw.Row(children: [
+                  pw.Text("التاريخ من  ${model.dateFrom}  الي  ${model.dateTo}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16))
+                ]),
+                pw.Row(children: [
+                  pw.Text("السبب ${model.reasonFilter}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16))
+                ]),
+                pw.Row(children: [
+                  pw.Text("المصروف ${model.totalOut}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16)),
+                  pw.SizedBox(width: 20),
+                  pw.Text("المقبوض ${model.totalIn}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16)),
+                ]),
+                pw.Container(
+                  color: const PdfColor.fromInt(0xFF878787),
+                  child: pw.Row(
+                      crossAxisAlignment: pw.CrossAxisAlignment.center,
+                      mainAxisAlignment: pw.MainAxisAlignment.center,
+                      children: [
+                        pw.SizedBox(
+                          width: pageWidth * .1,
+                          child: pw.Text("م",
+                              style:
+                                  pw.TextStyle(font: ttf, fontSize: fontSize)),
+                        ),
+                        pw.SizedBox(
+                            child: pw.Text("السبب",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .3),
+                        pw.Container(
+                            margin: pw.EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: pw.Text("المصروف",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .1),
+                        pw.Container(
+                            margin: pw.EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: pw.Text("المستلم",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .1),
+                        pw.SizedBox(
+                            child: pw.Text("التاريخ",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .2),
+                        pw.SizedBox(
+                            child: pw.Text("ملاحظات",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .2),
+                      ]),
+                ),
+                pw.ListView.separated(
+                    separatorBuilder: (context, int index) {
+                      return pw.Divider();
+                    },
+                    itemBuilder: (context, int index) {
+                      return makePdfFileRow(
+                          index, model.data.filter[index], ttf, pageWidth);
+                    },
+                    itemCount: model.data.filter.length)
+              ],
+            ),
+          );
+        }),
       );
 
       final file = File('ttoottoo.pdf');
@@ -166,18 +312,66 @@ class AccountingProvider with ChangeNotifier {
     }
   }
 
+  makePdfFileRow(int index, ExpenseModel model, pw.Font ttf, double pageWidth) {
+    return pw.Directionality(
+        textDirection: pw.TextDirection.rtl,
+        child: pw.Row(
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+            children: [
+              pw.SizedBox(
+                width: pageWidth * .1,
+                child: pw.Text("${index + 1}"),
+              ),
+              pw.SizedBox(
+                  child: pw.Text(model.reason,
+                      style: pw.TextStyle(font: ttf, fontSize: fontSize)),
+                  width: pageWidth * .3),
+              pw.Container(
+                  margin:
+                      pw.EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: pw.Text(
+                      model.expenseType == ExpenseType.moneyOut
+                          ? "${formatNumber(model.amount)}"
+                          : "0",
+                      style: pw.TextStyle(font: ttf, fontSize: fontSize)),
+                  width: pageWidth * .1),
+              pw.Container(
+                  margin:
+                      pw.EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  child: pw.Text(
+                      model.expenseType == ExpenseType.moneyIn
+                          ? "${formatNumber(model.amount)}"
+                          : "0",
+                      style: pw.TextStyle(font: ttf, fontSize: fontSize)),
+                  width: pageWidth * .1),
+              pw.SizedBox(
+                  child: pw.Text(model.date,
+                      style: pw.TextStyle(font: ttf, fontSize: fontSize)),
+                  width: pageWidth * .2),
+              pw.SizedBox(
+                  child: pw.Text(model.note,
+                      style: pw.TextStyle(font: ttf, fontSize: fontSize)),
+                  width: pageWidth * .2),
+            ]));
+  }
 
-  buildTableForPdf(PrintDetailsModel model){
-   return  ListView.separated(
+  buildTableForPdf(PrintDetailsModel model) {
+    return ListView.separated(
         shrinkWrap: true,
         itemBuilder: (context, index) {
-          return makeRow(index, model.data.filter[index], context, 33 , new SectionModel(id: 0, name: "name", totalIn: totalIn, totalOut: totalOut));
+          return makeRow(
+              index,
+              model.data.filter[index],
+              context,
+              33,
+              new SectionModel(
+                  id: 0, name: "name", totalIn: totalIn, totalOut: totalOut));
         },
         separatorBuilder: (context, index) {
           return const Divider();
         },
         itemCount: model.data.filter.length);
-
   }
 
   makeRow(int index, ExpenseModel expense, BuildContext context, double colSize,
@@ -203,6 +397,7 @@ class AccountingProvider with ChangeNotifier {
       ],
     );
   }
+
   makeChild(String data, double width) {
     return SizedBox(
       width: width,

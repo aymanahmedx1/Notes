@@ -77,6 +77,9 @@ class CompanyDB {
   }
 
   updateWorker(WorkerModel model) async {
+    var x = await getWorkerById(model.id);
+    int? oldQty = x?.out;
+
     await db.updateData(
         ''' update worker set name= ? ,phone= ? ,company= ?,total= ?,out =out+ ?,note= ?,drug= ?,date=?,expDate=? where id = ? ''',
         [
@@ -91,7 +94,36 @@ class CompanyDB {
           model.expDate,
           model.id
         ]);
-    await addMovement(MovementModel(id:0, workerId: model.id, qty: model.out, date: formattedDate()));
+    log("${oldQty} Old Qty ");
+    log("${model.out} model.out ");
+    log("${oldQty} oldQty ");
+    log("${(oldQty ?? 0 + model.out) != oldQty} (oldQty ?? 0 + model.out) != oldQty ");
+    if ((oldQty ?? 0 + model.out) != oldQty) {
+      log("message");
+      await addMovement(MovementModel(
+          id: 0, workerId: model.id, qty: model.out, date: formattedDate()));
+    }
+  }
+
+  Future<WorkerModel?> getWorkerById(int id) async {
+    List<Map> res =
+        await db.readData('''  select * from  worker where  id = ?''', [id]);
+    List<WorkerModel> list = [];
+    for (var record in res) {
+      return WorkerModel(
+          id: record['id'],
+          name: record['name'],
+          phone: record['phone'],
+          company: record['company'],
+          total: record['total'],
+          out: record['out'],
+          note: record['note'],
+          drug: record['drug'],
+          date: record['date'],
+          expDate: record['expDate'],
+          finish: record['finish']);
+    }
+    return null;
   }
 
   markWorkerFinish(WorkerModel model) async {
@@ -120,7 +152,8 @@ class CompanyDB {
   }
 
   getAllMovement(int worker) async {
-    List<Map> res = await db.readData('''  select * from  movements where workerId =?''', [worker]);
+    List<Map> res = await db
+        .readData('''  select * from  movements where workerId =?''', [worker]);
     List<MovementModel> list = [];
     for (var record in res) {
       list.add(MovementModel(
@@ -131,6 +164,4 @@ class CompanyDB {
     }
     return list;
   }
-
-
 }

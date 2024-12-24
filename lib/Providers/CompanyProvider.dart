@@ -28,8 +28,6 @@ class CompanyProvider with ChangeNotifier {
   }
   fillMovements()async{
     movemensModels = await CompanyDB().getAllMovement(workerId);
-    log(movemensModels.toString());
-    log(workerId.toString());
     notifyListeners() ;
   }
 

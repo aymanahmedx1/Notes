@@ -3,6 +3,7 @@ import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/screens/Accounting/AccountingScreen.dart';
 import 'package:notes/screens/MoneyTransactions/MoneyTransactionScreen.dart';
 import 'package:notes/screens/Company/CompanyScreen.dart';
+import 'package:notes/screens/PersonalAccounting/PersonalAccountingScreen.dart';
 
 class Landingscreen extends StatelessWidget {
   static const String rout = "LandingScreen";
@@ -104,6 +105,36 @@ class Landingscreen extends StatelessWidget {
                       children: [
                         Text(
                           "حركة الاموال",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        widthSpace,
+                        Icon(
+                          Icons.money_off,
+                          size: 30,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, PersonalAccountingscreen.rout);
+                  },
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: Colors.deepOrange,
+                    width: 200,
+                    height: 200,
+                    child: const Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "حسابات شخصية",
                           style: TextStyle(color: Colors.white),
                         ),
                         widthSpace,

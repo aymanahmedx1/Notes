@@ -11,12 +11,13 @@ import 'package:provider/provider.dart';
 import '../../CustomWidgets/CustomButton.dart';
 import '../../CustomWidgets/CustomDatePicker.dart';
 import '../../CustomWidgets/NoDataWidget.dart';
+import '../../Models/PersonalPrintDetailsModel.dart';
 import '../../Models/PrintDetailsModel.dart';
 import '../../data/SectionDB.dart';
 import 'Widgets/table_data.dart';
 import 'Widgets/table_header.dart';
 
-class AccountingDetailsScreen extends StatelessWidget {
+class PersonalAccountingDetailsScreen extends StatelessWidget {
   final SectionModel model;
 
   final ScrollController controller = ScrollController();
@@ -26,7 +27,7 @@ class AccountingDetailsScreen extends StatelessWidget {
   final TextEditingController dateToController =
       TextEditingController(text: formattedDate());
   final TextEditingController filterController = TextEditingController();
-  AccountingDetailsScreen(this.model);
+  PersonalAccountingDetailsScreen(this.model);
 
   @override
   Widget build(BuildContext context) {
@@ -74,13 +75,13 @@ class AccountingDetailsScreen extends StatelessWidget {
                     CustomButton(
                       text: "تصدير",
                       onPressed: () async {
-                        var data = AccountingTableData(
+                        var data = PersonalAccountingTableData(
                           width: width,
                           filter: accountingProvider.filteredExpenseList,
                           controller: controller,
                           section: model,
                         );
-                        PrintDetailsModel c = PrintDetailsModel(
+                        PersonalPrintDetailsModel c = PersonalPrintDetailsModel(
                             data: data,
                             dateFrom: dateFromController.text,
                             dateTo: dateToController.text,
@@ -88,7 +89,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                             title: "Title",
                             totalIn: Provider.of<AccountingProvider>(context,listen: false).totalIn.toInt(),
                             totalOut: Provider.of<AccountingProvider>(context,listen: false).totalOut.toInt());
-                        await accountingProvider.exportPdf(c);
+                        await accountingProvider.exportPersonalPdf(c);
                       },
                       icon: Icons.search,
                     )
@@ -182,7 +183,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                AccountingTableHeader(
+                PersonalAccountingTableHeader(
                   width: width,
                 ),
                 Expanded(
@@ -190,7 +191,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                         ? NoDataWidget()
                         : SingleChildScrollView(
                             // scroll list
-                            child: AccountingTableData(
+                            child: PersonalAccountingTableData(
                               width: width,
                               filter: accountingProvider.filteredExpenseList,
                               controller: controller,

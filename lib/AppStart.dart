@@ -7,6 +7,7 @@ import 'package:notes/screens/Company/CompanyScreen.dart';
 import 'package:notes/screens/Company/MovementsScreen.dart';
 import 'package:notes/screens/LandingScreen.dart';
 import 'package:notes/screens/MoneyTransactions/MoneyTransactionScreen.dart';
+import 'package:notes/screens/PersonalAccounting/PersonalAccountingScreen.dart';
 import 'package:notes/scrollBehavior.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -39,6 +40,7 @@ class Appstart extends StatelessWidget {
         Accountingscreen.rout: (context) => Accountingscreen(),
         Moneytransactionscreen.rout: (context) => Moneytransactionscreen(),
         Movementsscreen.rout: (context) => Movementsscreen(),
+        PersonalAccountingscreen.rout: (context) => PersonalAccountingscreen(),
       },
     );
   }

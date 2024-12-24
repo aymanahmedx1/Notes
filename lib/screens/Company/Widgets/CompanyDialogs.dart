@@ -172,6 +172,8 @@ class CompanyDialogs {
                         if ((int.tryParse(value) ?? 0) >
                             (int.tryParse(totalController.text) ?? 0)) {
                           return "الرقم المنصرف يجب ان يكون اصغر من الاجمالي";
+                        }else if(workerModel!=null && (int.tryParse(value) !=null ) && (int.parse(value) + workerModel.out ) > workerModel.total  ){
+                          return "الرقم المنصرف يجب ان يكون اصغر من الاجمالي";
                         }
                       }
                       return null;

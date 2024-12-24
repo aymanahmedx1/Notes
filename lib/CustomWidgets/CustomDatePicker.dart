@@ -11,8 +11,8 @@ Future<String> getDate(BuildContext context, String? currentDate) async {
   var current = convertDate(currentDate);
   DateTime? selected = await showDatePicker(
     context: context,
-    firstDate: DateTime(date.year - 2, date.month, date.day),
-    lastDate: DateTime(date.year + 2, date.month, date.day),
+    firstDate: DateTime(date.year - 20, date.month, date.day),
+    lastDate: DateTime(date.year + 20, date.month, date.day),
     initialDate: current,
   );
   selected ??= DateTime.now();
