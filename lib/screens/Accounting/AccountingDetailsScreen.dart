@@ -85,7 +85,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                             dateFrom: dateFromController.text,
                             dateTo: dateToController.text,
                             reasonFilter: filterController.text,
-                            title: "Title",
+                            title: model.name,
                             totalIn: Provider.of<AccountingProvider>(context,listen: false).totalIn.toInt(),
                             totalOut: Provider.of<AccountingProvider>(context,listen: false).totalOut.toInt());
                         await accountingProvider.exportPdf(c);

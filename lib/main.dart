@@ -9,6 +9,8 @@ import 'package:notes/data/Database.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import 'Providers/PersonalAccountingProvider.dart';
+
 void main() async {
   if (Platform.isWindows) {
     sqfliteFfiInit();
@@ -23,6 +25,10 @@ void main() async {
     ),
     ChangeNotifierProvider<AccountingProvider>(
       create: (_) => AccountingProvider(),
+      lazy: true,
+    ),
+    ChangeNotifierProvider<PersonalAccountingProvider>(
+      create: (_) => PersonalAccountingProvider(),
       lazy: true,
     ),
     ChangeNotifierProvider<MoneyTransactionProvider>(

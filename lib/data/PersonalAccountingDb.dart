@@ -4,19 +4,19 @@ import 'package:notes/Models/SectionModel.dart';
 
 import 'Database.dart';
 
-class SectionDB {
+class PersonalAccountingDB {
   DatabaseHelper db = new DatabaseHelper();
   static String additionOP = " + ";
   static String subOp = " - ";
 
   addSection(SectionModel model) async {
     await db.insertData(
-        ''' insert into section (name,totalIn,totalOut) values (?,?,?) ''',
+        ''' insert into personal (name,totalIn,totalOut) values (?,?,?) ''',
         [model.name, model.totalIn, model.totalOut]);
   }
 
   updateSection(SectionModel model) async {
-    await db.updateData(''' update section set name = ?  where id = ?  ''',
+    await db.updateData(''' update personal set name = ?  where id = ?  ''',
         [model.name, model.id]);
   }
 
@@ -24,14 +24,14 @@ class SectionDB {
       SectionModel model, double amount, ExpenseType type, String op) async {
     String colName = type == ExpenseType.moneyIn ? "totalIn" : "totalOut";
     await db.updateData(
-        " update section set $colName = $colName $op ?  where id = ?  ",
+        " update personal set $colName = $colName $op ?  where id = ?  ",
         [amount, model.id]);
   }
   updateAmountWhenUpdateExpense(){
 
   }
   Future<List<SectionModel>> getAllSections() async {
-    List<Map> res = await db.readData('''  select * from  section''', []);
+    List<Map> res = await db.readData('''  select * from  personal''', []);
     List<SectionModel> list = [];
     for (var record in res) {
       list.add(SectionModel(
@@ -46,7 +46,7 @@ class SectionDB {
 
   addExpense(ExpenseModel ex) async {
     await db.insertData(
-        ''' insert into expense (reason,amount,note , section ,date,expense_type) values (?,?,?,?,?,?) ''',
+        ''' insert into personal_expense (reason,amount,note , section ,date,expense_type) values (?,?,?,?,?,?) ''',
         [
           ex.reason,
           ex.amount,
@@ -63,7 +63,7 @@ class SectionDB {
   getSectionDetails(SectionModel model) async {
     try {
       List<Map> res = await db.readData(
-          '''  select * from  expense where  section = ?''', [model.id]);
+          '''  select * from  personal_expense where  section = ?''', [model.id]);
       List<ExpenseModel> list = [];
       for (var record in res) {
         list.add(ExpenseModel(
@@ -84,7 +84,7 @@ class SectionDB {
 
   getAllSectionDetails() async {
     try {
-      List<Map> res = await db.readData('''  select * from  expense ''', []);
+      List<Map> res = await db.readData('''  select * from  personal_expense ''', []);
       List<ExpenseModel> list = [];
       for (var record in res) {
         list.add(ExpenseModel(
@@ -105,29 +105,16 @@ class SectionDB {
 
   updateExpense(ExpenseModel ex) async {
     await db.updateData(
-        ''' update expense set reason=?,amount=?,note =? where id = ? ''',
+        ''' update personal_expense set reason=?,amount=?,note =? where id = ? ''',
         [ex.reason, ex.amount, ex.note, ex.id]);
   }
 
   Future<double> getExpenseAmount(int id) async {
     List<Map> res = await db
-        .readData('''  select amount from  expense where id = ? ''', [id]);
+        .readData('''  select amount from  personal_expense where id = ? ''', [id]);
     for (var record in res) {
       return record['amount'];
     }
     return 0;
-  }
-
-
-  Future<Set<String>> getExpenseReasonListForSuggest(ExpenseType expenseType)async{
-
-      List<Map> res = await db.readData(
-          '''  select reason from  expense where  expense_type = ?''', [expenseType.index]);
-      List<String> list = [];
-      for (var record in res) {
-        list.add(record['reason']);
-      }
-      return list.toSet();
-
   }
 }

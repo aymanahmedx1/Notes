@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:notes/CustomWidgets/CustomAutoComplete.dart';
 import 'package:notes/CustomWidgets/CustomDatePicker.dart';
@@ -58,7 +60,9 @@ class AccountingDialog {
   }
 
   addExpenseOnSection(BuildContext context, SectionModel section,
-      ExpenseType type, ExpenseModel? expenseModel ) async {
+      ExpenseType type, ExpenseModel? expenseModel) async {
+    final _formKey = GlobalKey<FormState>();
+
     final TextEditingController noteController =
         TextEditingController(text: "");
     final TextEditingController amountController =
@@ -67,7 +71,7 @@ class AccountingDialog {
         TextEditingController(text: "");
     final TextEditingController dateController =
         TextEditingController(text: "");
-    String? initValue ;
+    String? initValue;
     if (expenseModel != null) {
       noteController.text = expenseModel.note;
       amountController.text = expenseModel.amount.toString();
@@ -75,17 +79,17 @@ class AccountingDialog {
       dateController.text = expenseModel.date;
       initValue = expenseModel.reason;
     }
-    String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
-    List<String> reasonList =
-        Provider.of<AccountingProvider>(context, listen: false)
-            .filteredExpenseList
-            .where(
-              (element) => element.expenseType == type,
-            )
-            .map((e) => e.reason)
-            .toSet()
-            .toList();
-
+     String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
+    // List<String> reasonList =
+    //     Provider.of<AccountingProvider>(context, listen: false)
+    //         .filteredExpenseList
+    //         .where(
+    //           (element) => element.expenseType == type,
+    //         )
+    //         .map((e) => e.reason)
+    //         .toSet()
+    //         .toList();
+    List<String> reasonList =List.of(await SectionDB().getExpenseReasonListForSuggest(type));
     dateController.text = formattedDate();
     await showDialog<String>(
       context: context,
@@ -101,57 +105,71 @@ class AccountingDialog {
               )
             ],
           ),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                CustomAutoComplete(
-                  initValue: initValue,
-                  controller: reasonController,
-                  label: "السبب",
-                  options: reasonList,
-                ),
-                heightSpace,
-                CustomTextInput(
-                  label: "المبلغ",
-                  controller: amountController,
-                  textInputType: TextInputType.number,
-                ),
-                heightSpace,
-                CustomDatePicker(
-                  label: "التاريخ",
-                  controller: dateController,
-                ),
-                heightSpace,
-                CustomTextInput(
-                  label: "ملاحظات",
-                  controller: noteController,
-                ),
-                heightSpace,
-              ],
+          content: Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  CustomAutoComplete(
+                    initValue: initValue,
+                    controller: reasonController,
+                    label: "السبب",
+                    options: reasonList,
+                  ),
+                  heightSpace,
+                  CustomTextInput(
+                    label: "المبلغ",
+                    controller: amountController,
+                    textInputType: TextInputType.number,
+                    validateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null) {
+                        return "ادخل مبلغ صالح ";
+                      }
+                      if (int.tryParse(value) == null) {
+                        return "ادخل مبلغ صالح ";
+                      }
+                      return null;
+                    },
+                  ),
+                  heightSpace,
+                  CustomDatePicker(
+                    label: "التاريخ",
+                    controller: dateController,
+                  ),
+                  heightSpace,
+                  CustomTextInput(
+                    label: "ملاحظات",
+                    controller: noteController,
+                  ),
+                  heightSpace,
+                ],
+              ),
             ),
           ),
           actions: [
             CustomButton(
               icon: Icons.save,
               onPressed: () async {
-                var ex = ExpenseModel(
-                    id: 0,
-                    note: noteController.text,
-                    amount: double.parse(amountController.text),
-                    reason: reasonController.text,
-                    section: section.id,
-                    date: dateController.text,
-                    expenseType: type);
-                if (expenseModel != null) {
-                  ex.id = expenseModel.id;
-                  Provider.of<AccountingProvider>(context, listen: false)
-                      .updateExpense(ex, section, ex.amount, true);
-                } else {
-                  Provider.of<AccountingProvider>(context, listen: false)
-                      .addNewExpense(ex, section, ex.amount, true);
+                if (_formKey.currentState!.validate()) {
+                  var ex = ExpenseModel(
+                      id: 0,
+                      note: noteController.text,
+                      amount: double.parse(amountController.text),
+                      reason: reasonController.text,
+                      section: section.id,
+                      date: dateController.text,
+                      expenseType: type);
+                  if (expenseModel != null) {
+                    ex.id = expenseModel.id;
+                    Provider.of<AccountingProvider>(context, listen: false)
+                        .updateExpense(ex, section, ex.amount, true);
+                  } else {
+                    Provider.of<AccountingProvider>(context, listen: false)
+                        .addNewExpense(ex, section, ex.amount, true);
+                  }
+                  Navigator.of(context).pop("1");
                 }
-
-                Navigator.of(context).pop("1");
               },
               text: "حفظ",
             )

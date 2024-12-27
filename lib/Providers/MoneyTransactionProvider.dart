@@ -20,6 +20,7 @@ class MoneyTransactionProvider with ChangeNotifier {
   }
 
   fillList() async {
+    selectedSection =   ExpenseType.all;
     filteredExpenseList = [];
     _accountingList = await SectionDB().getAllSections();
     expenseList = await SectionDB().getAllSectionDetails();

@@ -10,10 +10,12 @@ import '../Commons/Helpers.dart';
 import '../Models/PersonalPrintDetailsModel.dart';
 import '../Models/PrintDetailsModel.dart';
 import '../Models/SectionModel.dart';
+import '../data/PersonalAccountingDb.dart';
 import '../data/SectionDB.dart';
 import '../screens/Accounting/Widgets/Dialogs.dart';
+import '../screens/PersonalAccounting/Widgets/Dialogs.dart';
 
-class AccountingProvider with ChangeNotifier {
+class PersonalAccountingProvider with ChangeNotifier {
   List<SectionModel> _accountingList = [];
   List<SectionModel> filteredAccountingList = [];
   List<ExpenseModel> expenseList = [];
@@ -26,18 +28,18 @@ class AccountingProvider with ChangeNotifier {
 
   final horizontalPadding = 5.00;
 
-  AccountingProvider() {
+  PersonalAccountingProvider() {
     fillAccountingList();
   }
 
   fillAccountingList() async {
-    _accountingList = await SectionDB().getAllSections();
+    _accountingList = await PersonalAccountingDB().getAllSections();
     filteredAccountingList = List<SectionModel>.from(_accountingList);
     notifyListeners();
   }
 
   fillExpenseList(SectionModel section) async {
-    expenseList = await SectionDB().getSectionDetails(section);
+    expenseList = await PersonalAccountingDB().getSectionDetails(section);
     filteredExpenseList = List<ExpenseModel>.from(expenseList);
     totalOut = 0.00;
     totalIn = 0.00;
@@ -52,19 +54,19 @@ class AccountingProvider with ChangeNotifier {
   }
 
   void addSection(SectionModel section) async {
-    await SectionDB().addSection(section);
+    await PersonalAccountingDB().addSection(section);
     fillAccountingList();
   }
 
   void updateSection(SectionModel model) async {
-    await SectionDB().updateSection(model);
+    await PersonalAccountingDB().updateSection(model);
     fillAccountingList();
   }
 
   void showAddExpenseDialog(BuildContext context, SectionModel section,
-      ExpenseType type, ExpenseModel? expenseModel) async {
-    await AccountingDialog()
-        .addExpenseOnSection(context, section, type, expenseModel);
+      ExpenseType type, ExpenseModel? expenseModel) async {  ////
+    await PersonalAccountingDialog()
+        .addExpenseOnPersonalSection(context, section, type, expenseModel);
     fillAccountingList();
   }
 
@@ -76,7 +78,7 @@ class AccountingProvider with ChangeNotifier {
       var to = DateTime.parse(dateTo);
       var elementDate = DateTime.parse(element.date);
       return (elementDate.compareTo(from) != -1 &&
-              elementDate.compareTo(to) != 1) &&
+          elementDate.compareTo(to) != 1) &&
           element.reason.contains(text ?? "") &&
           (type != ExpenseType.all
               ? element.expenseType == type
@@ -96,8 +98,8 @@ class AccountingProvider with ChangeNotifier {
 
   void addNewExpense(
       ExpenseModel ex, SectionModel section, double amount, bool isPlus) async {
-    await SectionDB().addExpense(ex);
-    await SectionDB()
+    await PersonalAccountingDB().addExpense(ex);
+    await PersonalAccountingDB()
         .updateAmount(section, ex.amount, ex.expenseType, SectionDB.additionOP);
     fillAccountingList();
   }
@@ -112,11 +114,11 @@ class AccountingProvider with ChangeNotifier {
 
   void updateExpense(
       ExpenseModel ex, SectionModel section, double amount, bool bool) async {
-    double oldValue = await SectionDB().getExpenseAmount(ex.id);
-    await SectionDB()
+    double oldValue = await PersonalAccountingDB().getExpenseAmount(ex.id);
+    await PersonalAccountingDB()
         .updateAmount(section, oldValue, ex.expenseType, SectionDB.subOp);
-    await SectionDB().updateExpense(ex);
-    await SectionDB()
+    await PersonalAccountingDB().updateExpense(ex);
+    await PersonalAccountingDB()
         .updateAmount(section, ex.amount, ex.expenseType, SectionDB.additionOP);
     fillExpenseList(section);
     fillAccountingList();
@@ -127,8 +129,7 @@ class AccountingProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
-  exportPdf(PrintDetailsModel model) async {
+  exportPersonalPdf(PersonalPrintDetailsModel model) async {
     try {
       final pdf = pw.Document();
       var fontData = File('assets/font/Cairo-Regular.ttf').readAsBytesSync();
@@ -140,27 +141,20 @@ class AccountingProvider with ChangeNotifier {
             textDirection: pw.TextDirection.rtl,
             child: pw.Column(
               children: [
-                pw.Row(
-                    crossAxisAlignment: pw.CrossAxisAlignment.center,
-                    mainAxisAlignment: pw.MainAxisAlignment.center,
-                    children: [
-                  pw.Text(model.title,
-                      style: pw.TextStyle(font: ttf, fontSize: 16, decoration: pw.TextDecoration.underline , fontWeight: pw.FontWeight.bold,))
-                ]),
                 pw.Row(children: [
                   pw.Text("التاريخ من  ${model.dateFrom}  الي  ${model.dateTo}",
-                      style: pw.TextStyle(font: ttf, fontSize: fontSize ))
+                      style: pw.TextStyle(font: ttf, fontSize: 16))
                 ]),
                 pw.Row(children: [
                   pw.Text("السبب ${model.reasonFilter}",
-                      style: pw.TextStyle(font: ttf, fontSize: fontSize))
+                      style: pw.TextStyle(font: ttf, fontSize: 16))
                 ]),
                 pw.Row(children: [
                   pw.Text("المصروف ${model.totalOut}",
-                      style: pw.TextStyle(font: ttf, fontSize: fontSize)),
+                      style: pw.TextStyle(font: ttf, fontSize: 16)),
                   pw.SizedBox(width: 20),
                   pw.Text("المقبوض ${model.totalIn}",
-                      style: pw.TextStyle(font: ttf, fontSize: fontSize)),
+                      style: pw.TextStyle(font: ttf, fontSize: 16)),
                 ]),
                 pw.Container(
                   color: const PdfColor.fromInt(0xFF878787),
@@ -172,7 +166,7 @@ class AccountingProvider with ChangeNotifier {
                           width: pageWidth * .1,
                           child: pw.Text("م",
                               style:
-                                  pw.TextStyle(font: ttf, fontSize: fontSize)),
+                              pw.TextStyle(font: ttf, fontSize: fontSize)),
                         ),
                         pw.SizedBox(
                             child: pw.Text("السبب",
@@ -220,7 +214,99 @@ class AccountingProvider with ChangeNotifier {
         }),
       );
 
-      final file = File('${model.title}.pdf');
+      final file = File('ttoottoo.pdf');
+      File f = await file.writeAsBytes(await pdf.save());
+      OpenFilex.open(f.path);
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+  exportPdf(PrintDetailsModel model) async {
+    try {
+      final pdf = pw.Document();
+      var fontData = File('assets/font/Cairo-Regular.ttf').readAsBytesSync();
+      final ttf = pw.Font.ttf(fontData.buffer.asByteData());
+      pdf.addPage(
+        pw.Page(build: (pw.Context context) {
+          final pageWidth = context.page.pageFormat.availableWidth;
+          return pw.Directionality(
+            textDirection: pw.TextDirection.rtl,
+            child: pw.Column(
+              children: [
+                pw.Row(children: [
+                  pw.Text("التاريخ من  ${model.dateFrom}  الي  ${model.dateTo}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16))
+                ]),
+                pw.Row(children: [
+                  pw.Text("السبب ${model.reasonFilter}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16))
+                ]),
+                pw.Row(children: [
+                  pw.Text("المصروف ${model.totalOut}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16)),
+                  pw.SizedBox(width: 20),
+                  pw.Text("المقبوض ${model.totalIn}",
+                      style: pw.TextStyle(font: ttf, fontSize: 16)),
+                ]),
+                pw.Container(
+                  color: const PdfColor.fromInt(0xFF878787),
+                  child: pw.Row(
+                      crossAxisAlignment: pw.CrossAxisAlignment.center,
+                      mainAxisAlignment: pw.MainAxisAlignment.center,
+                      children: [
+                        pw.SizedBox(
+                          width: pageWidth * .1,
+                          child: pw.Text("م",
+                              style:
+                              pw.TextStyle(font: ttf, fontSize: fontSize)),
+                        ),
+                        pw.SizedBox(
+                            child: pw.Text("السبب",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .3),
+                        pw.Container(
+                            margin: pw.EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: pw.Text("المصروف",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .1),
+                        pw.Container(
+                            margin: pw.EdgeInsets.symmetric(
+                                horizontal: horizontalPadding),
+                            child: pw.Text("المستلم",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .1),
+                        pw.SizedBox(
+                            child: pw.Text("التاريخ",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .2),
+                        pw.SizedBox(
+                            child: pw.Text("ملاحظات",
+                                style: pw.TextStyle(
+                                    font: ttf, fontSize: fontSize)),
+                            width: pageWidth * .2),
+                      ]),
+                ),
+                pw.ListView.separated(
+                    separatorBuilder: (context, int index) {
+                      return pw.Divider();
+                    },
+                    itemBuilder: (context, int index) {
+                      return makePdfFileRow(
+                          index, model.data.filter[index], ttf, pageWidth);
+                    },
+                    itemCount: model.data.filter.length)
+              ],
+            ),
+          );
+        }),
+      );
+
+      final file = File('ttoottoo.pdf');
       File f = await file.writeAsBytes(await pdf.save());
       OpenFilex.open(f.path);
     } catch (e) {
@@ -245,7 +331,7 @@ class AccountingProvider with ChangeNotifier {
                   width: pageWidth * .3),
               pw.Container(
                   margin:
-                      pw.EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  pw.EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: pw.Text(
                       model.expenseType == ExpenseType.moneyOut
                           ? "${formatNumber(model.amount)}"
@@ -254,7 +340,7 @@ class AccountingProvider with ChangeNotifier {
                   width: pageWidth * .1),
               pw.Container(
                   margin:
-                      pw.EdgeInsets.symmetric(horizontal: horizontalPadding),
+                  pw.EdgeInsets.symmetric(horizontal: horizontalPadding),
                   child: pw.Text(
                       model.expenseType == ExpenseType.moneyIn
                           ? "${formatNumber(model.amount)}"

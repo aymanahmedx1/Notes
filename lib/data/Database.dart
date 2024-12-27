@@ -75,6 +75,25 @@ class DatabaseHelper {
                         "date"	TEXT,
                         PRIMARY KEY("id" AUTOINCREMENT)
                           );''');
+
+    await db.execute('''
+                          CREATE TABLE "personal_expense" (
+                            "id"	INTEGER,
+                            "reason"	TEXT,
+                            "amount"	REAL,
+                            "note"	TEXT,
+                            "section" INTEGER ,
+                            "date" TEXT , 
+                            "expense_type" INTEGER ,
+                            PRIMARY KEY("id" AUTOINCREMENT)
+                          );''');
+    await db.execute('''  CREATE TABLE "personal" (
+                            "id"	INTEGER,
+                            "name"	TEXT,
+                            "totalIn"	REAL,
+                            "totalOut"	REAL,
+                            PRIMARY KEY("id" AUTOINCREMENT)
+                          );''');
   }
 
   readData(String Sql, List<dynamic> list) async {

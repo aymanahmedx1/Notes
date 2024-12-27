@@ -5,15 +5,12 @@ import 'package:notes/Commons/Helpers.dart';
 import 'package:notes/CustomWidgets/CustomAutoComplete.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/Models/SectionModel.dart';
-import 'package:notes/Providers/AccountingProvider.dart';
-import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import '../../CustomWidgets/CustomButton.dart';
 import '../../CustomWidgets/CustomDatePicker.dart';
 import '../../CustomWidgets/NoDataWidget.dart';
 import '../../Models/PersonalPrintDetailsModel.dart';
-import '../../Models/PrintDetailsModel.dart';
-import '../../data/SectionDB.dart';
+import '../../Providers/PersonalAccountingProvider.dart';
 import 'Widgets/table_data.dart';
 import 'Widgets/table_header.dart';
 
@@ -38,7 +35,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
         title: Text(" تفاصيل القسم  ${model.name}"),
         centerTitle: true,
       ),
-      body: Consumer<AccountingProvider>(
+      body: Consumer<PersonalAccountingProvider>(
         builder: (context, accountingProvider, child) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -87,8 +84,8 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                             dateTo: dateToController.text,
                             reasonFilter: filterController.text,
                             title: "Title",
-                            totalIn: Provider.of<AccountingProvider>(context,listen: false).totalIn.toInt(),
-                            totalOut: Provider.of<AccountingProvider>(context,listen: false).totalOut.toInt());
+                            totalIn: Provider.of<PersonalAccountingProvider>(context,listen: false).totalIn.toInt(),
+                            totalOut: Provider.of<PersonalAccountingProvider>(context,listen: false).totalOut.toInt());
                         await accountingProvider.exportPersonalPdf(c);
                       },
                       icon: Icons.search,
@@ -101,7 +98,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                     SizedBox(
                       width: width / 12 * 4,
                       child: CustomAutoComplete(
-                        options: Provider.of<AccountingProvider>(context,
+                        options: Provider.of<PersonalAccountingProvider>(context,
                                 listen: false)
                             .expenseList
                             .map((e) => e.reason)
@@ -169,7 +166,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                     widthSpace,
                     Text(
                       formatNumber(
-                          Provider.of<AccountingProvider>(context).totalOut),
+                          Provider.of<PersonalAccountingProvider>(context).totalOut),
                       style: const TextStyle(color: Colors.deepOrange),
                     ),
                     widthSpace,
@@ -178,7 +175,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                     widthSpace,
                     Text(
                       formatNumber(
-                          Provider.of<AccountingProvider>(context).totalIn),
+                          Provider.of<PersonalAccountingProvider>(context).totalIn),
                       style: const TextStyle(color: Colors.deepOrange),
                     ),
                   ],

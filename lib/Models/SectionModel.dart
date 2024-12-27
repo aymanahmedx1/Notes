@@ -43,7 +43,7 @@ class ExpenseModel {
   @override
   String toString() {
     // TODO: implement toString
-    return "$id , $section , $reason , $amount , $note , $date";
+    return "$id , $section , $reason , $amount , $note , $date , $expenseType";
   }
 }
 

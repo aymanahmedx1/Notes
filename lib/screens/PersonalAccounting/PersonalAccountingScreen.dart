@@ -5,10 +5,11 @@ import 'package:notes/CustomWidgets/CustomButton.dart';
 import 'package:notes/CustomWidgets/CutomTextInput.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/Models/SectionModel.dart';
-import 'package:notes/Providers/AccountingProvider.dart';
 import 'package:notes/screens/Accounting/Widgets/Dialogs.dart';
 import 'package:provider/provider.dart';
+import '../../Providers/PersonalAccountingProvider.dart';
 import 'PersoanlAccountingDetailsScreen.dart';
+import 'Widgets/Dialogs.dart';
 
 class PersonalAccountingscreen extends StatelessWidget {
   static const String rout = "PersonalAccountingscreen";
@@ -24,19 +25,19 @@ class PersonalAccountingscreen extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text("الاقسام"),
+        title: const Text("الحسابات الشخصيه"),
         centerTitle: true,
         actions: [
           ElevatedButton(
               onPressed: () async {
-                await AccountingDialog().createSection(context, null);
+                await PersonalAccountingDialog().createPersonalSection(context, null);
               },
               child: const Row(
                 children: [Text("جديد"), Icon(Icons.add)],
               )),
         ],
       ),
-      body: Consumer<AccountingProvider>(
+      body: Consumer<PersonalAccountingProvider>(
         builder: (context, accountingProvider, child) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -47,10 +48,10 @@ class PersonalAccountingscreen extends StatelessWidget {
                     SizedBox(
                         width: width / 12 * 4,
                         child: CustomTextInput(
-                          label: "فلتر القسم ",
+                          label: "فلتر الحسابات ",
                           controller: filterController,
                           valueChange: (value) {
-                            Provider.of<AccountingProvider>(context,
+                            Provider.of<PersonalAccountingProvider>(context,
                                     listen: false)
                                 .filterAccounts(value);
                           },
@@ -174,7 +175,7 @@ class PersonalAccountingscreen extends StatelessWidget {
       children: [
         CustomButton(
           onPressed: () {
-            Provider.of<AccountingProvider>(context, listen: false)
+            Provider.of<PersonalAccountingProvider>(context, listen: false)
                 .showAddExpenseDialog(
                     context, section, ExpenseType.moneyIn, null);
           },
@@ -184,7 +185,7 @@ class PersonalAccountingscreen extends StatelessWidget {
         widthSpace,
         CustomButton(
           onPressed: () =>
-              Provider.of<AccountingProvider>(context, listen: false)
+              Provider.of<PersonalAccountingProvider>(context, listen: false)
                   .showAddExpenseDialog(
                       context, section, ExpenseType.moneyOut, null),
           icon: Icons.remove,
@@ -193,7 +194,7 @@ class PersonalAccountingscreen extends StatelessWidget {
         widthSpace,
         CustomButton(
           onPressed: () {
-            Provider.of<AccountingProvider>(context, listen: false)
+            Provider.of<PersonalAccountingProvider>(context, listen: false)
                 .fillExpenseList(section);
             Navigator.push(
                 context,

@@ -3,23 +3,22 @@ import 'package:notes/CustomWidgets/CustomAutoComplete.dart';
 import 'package:notes/CustomWidgets/CustomDatePicker.dart';
 import 'package:notes/CustomWidgets/CutomTextInput.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
-import 'package:notes/Providers/AccountingProvider.dart';
+import 'package:notes/Providers/PersonalAccountingProvider.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Commons/Helpers.dart';
 import '../../../CustomWidgets/CustomButton.dart';
 import '../../../Models/SectionModel.dart';
-import '../../../data/SectionDB.dart';
 
 class PersonalAccountingDialog {
-  createSection(BuildContext context, SectionModel? model) async {
+  createPersonalSection(BuildContext context, SectionModel? model) async {
     final TextEditingController textController =
         TextEditingController(text: "");
-    String title = "اضافه قسم";
+    String title = "اضافه حساب";
 
     if (model != null) {
       textController.text = model.name;
-      title = "تعديل قسم";
+      title = "تعديل حساب";
     }
     await showDialog<String>(
       context: context,
@@ -27,7 +26,7 @@ class PersonalAccountingDialog {
         return AlertDialog(
           title: Text(title),
           content: CustomTextInput(
-            label: "اسم القسم",
+            label: "اسم الحساب",
             controller: textController,
           ),
           actions: [
@@ -36,7 +35,7 @@ class PersonalAccountingDialog {
               onPressed: () async {
                 if (model != null) {
                   model.name = textController.text;
-                  Provider.of<AccountingProvider>(context, listen: false)
+                  Provider.of<PersonalAccountingProvider>(context, listen: false)
                       .updateSection(model);
                 } else {
                   var section = SectionModel(
@@ -44,7 +43,7 @@ class PersonalAccountingDialog {
                       totalOut: 0,
                       id: 0,
                       name: textController.text);
-                  Provider.of<AccountingProvider>(context, listen: false)
+                  Provider.of<PersonalAccountingProvider>(context, listen: false)
                       .addSection(section);
                 }
                 Navigator.of(context).pop("1");
@@ -57,7 +56,7 @@ class PersonalAccountingDialog {
     );
   }
 
-  addExpenseOnSection(BuildContext context, SectionModel section,
+  addExpenseOnPersonalSection(BuildContext context, SectionModel section,
       ExpenseType type, ExpenseModel? expenseModel ) async {
     final TextEditingController noteController =
         TextEditingController(text: "");
@@ -77,7 +76,7 @@ class PersonalAccountingDialog {
     }
     String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
     List<String> reasonList =
-        Provider.of<AccountingProvider>(context, listen: false)
+        Provider.of<PersonalAccountingProvider>(context, listen: false)
             .filteredExpenseList
             .where(
               (element) => element.expenseType == type,
@@ -144,10 +143,10 @@ class PersonalAccountingDialog {
                     expenseType: type);
                 if (expenseModel != null) {
                   ex.id = expenseModel.id;
-                  Provider.of<AccountingProvider>(context, listen: false)
+                  Provider.of<PersonalAccountingProvider>(context, listen: false)
                       .updateExpense(ex, section, ex.amount, true);
                 } else {
-                  Provider.of<AccountingProvider>(context, listen: false)
+                  Provider.of<PersonalAccountingProvider>(context, listen: false)
                       .addNewExpense(ex, section, ex.amount, true);
                 }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 
 class CustomAutoComplete extends StatelessWidget {
@@ -25,6 +27,7 @@ class CustomAutoComplete extends StatelessWidget {
         });
       },
       onSelected: (String selection) {
+        controller.text= (selection);
         if (valueChange != null) {
           valueChange!(selection);
         }

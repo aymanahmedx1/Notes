@@ -8,6 +8,7 @@ import 'package:notes/Models/SectionModel.dart';
 import 'package:notes/Providers/AccountingProvider.dart';
 import 'package:notes/screens/Accounting/Widgets/Dialogs.dart';
 import 'package:provider/provider.dart';
+import '../../CustomWidgets/CustomColumnButton.dart';
 import 'AccountingDetailsScreen.dart';
 
 class Accountingscreen extends StatelessWidget {
@@ -172,26 +173,26 @@ class Accountingscreen extends StatelessWidget {
   Widget makeOperationRow(BuildContext context, SectionModel section) {
     return Row(
       children: [
-        CustomButton(
+        CustomColumnButton(
           onPressed: () {
             Provider.of<AccountingProvider>(context, listen: false)
                 .showAddExpenseDialog(
                     context, section, ExpenseType.moneyIn, null);
           },
           icon: Icons.add,
-          text: "",
+          text: "اضافة مبلغ",
         ),
         widthSpace,
-        CustomButton(
+        CustomColumnButton(
           onPressed: () =>
               Provider.of<AccountingProvider>(context, listen: false)
                   .showAddExpenseDialog(
                       context, section, ExpenseType.moneyOut, null),
           icon: Icons.remove,
-          text: "",
+          text: "صرف مبلغ",
         ),
         widthSpace,
-        CustomButton(
+        CustomColumnButton(
           onPressed: () {
             Provider.of<AccountingProvider>(context, listen: false)
                 .fillExpenseList(section);
@@ -200,8 +201,8 @@ class Accountingscreen extends StatelessWidget {
                 MaterialPageRoute(
                     builder: (context) => AccountingDetailsScreen(section)));
           },
-          icon: Icons.search,
-          text: "",
+          icon: Icons.more_horiz,
+          text: "تفاصيل",
         ),
       ],
     );
