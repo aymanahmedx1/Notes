@@ -151,16 +151,17 @@ class AccountingProvider with ChangeNotifier {
                   pw.Text("التاريخ من  ${model.dateFrom}  الي  ${model.dateTo}",
                       style: pw.TextStyle(font: ttf, fontSize: fontSize ))
                 ]),
-                pw.Row(children: [
-                  pw.Text("السبب ${model.reasonFilter}",
-                      style: pw.TextStyle(font: ttf, fontSize: fontSize))
-                ]),
+
                 pw.Row(children: [
                   pw.Text("المصروف ${model.totalOut}",
                       style: pw.TextStyle(font: ttf, fontSize: fontSize)),
                   pw.SizedBox(width: 20),
                   pw.Text("المقبوض ${model.totalIn}",
                       style: pw.TextStyle(font: ttf, fontSize: fontSize)),
+                ]),
+                model.reasonFilter==""? pw.SizedBox():   pw.Row(children: [
+                  pw.Text("السبب ${model.reasonFilter}",
+                      style: pw.TextStyle(font: ttf, fontSize: fontSize))
                 ]),
                 pw.Container(
                   color: const PdfColor.fromInt(0xFF878787),

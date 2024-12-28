@@ -117,4 +117,16 @@ class PersonalAccountingDB {
     }
     return 0;
   }
+
+  Future<Set<String>> getExpenseReasonListForSuggest(ExpenseType expenseType)async{
+
+    List<Map> res = await db.readData(
+        '''  select reason from  personal_expense where  expense_type = ?''', [expenseType.index]);
+    List<String> list = [];
+    for (var record in res) {
+      list.add(record['reason']);
+    }
+    return list.toSet();
+
+  }
 }

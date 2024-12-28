@@ -7,6 +7,7 @@ import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/Models/SectionModel.dart';
 import 'package:notes/screens/Accounting/Widgets/Dialogs.dart';
 import 'package:provider/provider.dart';
+import '../../CustomWidgets/CustomColumnButton.dart';
 import '../../Providers/PersonalAccountingProvider.dart';
 import 'PersoanlAccountingDetailsScreen.dart';
 import 'Widgets/Dialogs.dart';
@@ -101,16 +102,7 @@ class PersonalAccountingscreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'المصروف',
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  ),
-                                  DataColumn(
-                                    label: Expanded(
-                                      child: Text(
-                                        'قبض',
+                                        'الرصيد',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -145,11 +137,9 @@ class PersonalAccountingscreen extends StatelessWidget {
                                         DataCell(Text(formatNumber(
                                             accountingProvider
                                                 .filteredAccountingList[index]
-                                                .totalOut))),
-                                        DataCell(Text(formatNumber(
-                                            accountingProvider
+                                                .totalIn-accountingProvider
                                                 .filteredAccountingList[index]
-                                                .totalIn))),
+                                                .totalOut))),
                                         DataCell(makeOperationRow(
                                             context,
                                             accountingProvider
@@ -173,26 +163,26 @@ class PersonalAccountingscreen extends StatelessWidget {
   Widget makeOperationRow(BuildContext context, SectionModel section) {
     return Row(
       children: [
-        CustomButton(
+        CustomColumnButton(
           onPressed: () {
             Provider.of<PersonalAccountingProvider>(context, listen: false)
                 .showAddExpenseDialog(
                     context, section, ExpenseType.moneyIn, null);
           },
           icon: Icons.add,
-          text: "",
+          text: "اضافة مبلغ",
         ),
         widthSpace,
-        CustomButton(
+        CustomColumnButton(
           onPressed: () =>
               Provider.of<PersonalAccountingProvider>(context, listen: false)
                   .showAddExpenseDialog(
                       context, section, ExpenseType.moneyOut, null),
           icon: Icons.remove,
-          text: "",
+          text: "صرف مبلغ",
         ),
         widthSpace,
-        CustomButton(
+        CustomColumnButton(
           onPressed: () {
             Provider.of<PersonalAccountingProvider>(context, listen: false)
                 .fillExpenseList(section);
@@ -202,7 +192,7 @@ class PersonalAccountingscreen extends StatelessWidget {
                     builder: (context) => PersonalAccountingDetailsScreen(section)));
           },
           icon: Icons.search,
-          text: "",
+          text: "تفاصيل",
         ),
       ],
     );

@@ -4,11 +4,13 @@ import 'package:notes/CustomWidgets/CustomDatePicker.dart';
 import 'package:notes/CustomWidgets/CutomTextInput.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/Providers/PersonalAccountingProvider.dart';
+import 'package:notes/data/PersonalAccountingDb.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Commons/Helpers.dart';
 import '../../../CustomWidgets/CustomButton.dart';
 import '../../../Models/SectionModel.dart';
+import '../../../data/SectionDB.dart';
 
 class PersonalAccountingDialog {
   createPersonalSection(BuildContext context, SectionModel? model) async {
@@ -75,15 +77,16 @@ class PersonalAccountingDialog {
       initValue = expenseModel.reason;
     }
     String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
-    List<String> reasonList =
-        Provider.of<PersonalAccountingProvider>(context, listen: false)
-            .filteredExpenseList
-            .where(
-              (element) => element.expenseType == type,
-            )
-            .map((e) => e.reason)
-            .toSet()
-            .toList();
+    // List<String> reasonList =
+    //     Provider.of<PersonalAccountingProvider>(context, listen: false)
+    //         .filteredExpenseList
+    //         .where(
+    //           (element) => element.expenseType == type,
+    //         )
+    //         .map((e) => e.reason)
+    //         .toSet()
+    //         .toList();
+    List<String> reasonList =List.of(await PersonalAccountingDB().getExpenseReasonListForSuggest(type));
 
     dateController.text = formattedDate();
     await showDialog<String>(

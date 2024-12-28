@@ -76,6 +76,25 @@ class CompanyDB {
     }
   }
 
+  Future<Set<String>> getAllWorkerNames(int company) async {
+    List<Map> res = await db
+        .readData('''  select * from  worker where  company = ? ''', [company]);
+    List<String> list = [];
+    for (var record in res) {
+      list.add(record['name']);
+    }
+    return list.toSet();
+  }
+
+  Future<String> getWorkerPhoneByName(String name) async {
+    List<Map> res = await db
+        .readData('''  select * from  worker where  name = ? ''', [name]);
+    for (var record in res) {
+      return (record['phone']);
+    }
+    return "";
+  }
+
   updateWorker(WorkerModel model) async {
     var x = await getWorkerById(model.id);
     int? oldQty = x?.out;

@@ -51,6 +51,7 @@ class CustomAutoComplete extends StatelessWidget {
                   if (valueChange != null) (valueChange!(""));
                   textEditingController.text = "";
                   focusNode.unfocus();
+                  controller.text = "";
                 },
                 icon: const Icon(Icons.highlight_remove_outlined)),
           ),

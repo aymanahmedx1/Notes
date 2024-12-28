@@ -4,9 +4,11 @@ import 'package:notes/CustomWidgets/CustomDatePicker.dart';
 import 'package:notes/CustomWidgets/CutomTextInput.dart';
 import 'package:notes/Models/CompanyModel.dart';
 import 'package:notes/Providers/CompanyProvider.dart';
+import 'package:notes/data/CompanyDB.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Commons/Helpers.dart';
+import '../../../CustomWidgets/CustomAutoComplete.dart';
 import '../../../CustomWidgets/CustomButton.dart';
 
 class CompanyDialogs {
@@ -95,6 +97,7 @@ class CompanyDialogs {
     } else {
       dateController.text = formattedDate();
     }
+    List<String> names= List.from(await CompanyDB().getAllWorkerNames(companyModel.id));
     await showDialog(
       context: context,
       builder: (context) {
@@ -114,17 +117,14 @@ class CompanyDialogs {
                     enabled: false,
                   ),
                   heightSizedBox,
-                  CustomTextInput(
+                  CustomAutoComplete(
                     label: 'المندوب',
                     controller: nameController,
-                    validateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value == null || value == "") {
-                        return "الاسم مطلوب";
-                      } else if (value!.length < 3) {
-                        return "ادخل اسم صالح";
+                    options:names,
+                    valueChange: (value) async{
+                      if(value!=null){
+                        phoneController.text= await CompanyDB().getWorkerPhoneByName(value);
                       }
-                      return null;
                     },
                   ),
                   heightSizedBox,

@@ -3,12 +3,11 @@ class SectionModel {
   String name;
   double totalIn;
   double totalOut;
-
   SectionModel(
       {required this.id,
       required this.name,
       required this.totalIn,
-      required this.totalOut});
+      required this.totalOut });
 
   @override
   String toString() {
