@@ -2,11 +2,13 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:pdf/pdf.dart';
 
 import 'package:pdf/widgets.dart' as pw;
 import '../Commons/Helpers.dart';
+import '../Helpers/save_and_open_files.dart';
 import '../Models/PersonalPrintDetailsModel.dart';
 import '../Models/PrintDetailsModel.dart';
 import '../Models/SectionModel.dart';
@@ -131,7 +133,9 @@ class AccountingProvider with ChangeNotifier {
   exportPdf(PrintDetailsModel model) async {
     try {
       final pdf = pw.Document();
-      var fontData = File('assets/font/Cairo-Regular.ttf').readAsBytesSync();
+      final fontData = await rootBundle.load('assets/font/Cairo-Regular.ttf');
+
+      // var fontData = File('/assets/font/Cairo-Regular.ttf').readAsBytesSync();
       final ttf = pw.Font.ttf(fontData.buffer.asByteData());
       pdf.addPage(
         pw.Page(build: (pw.Context context) {
@@ -221,9 +225,14 @@ class AccountingProvider with ChangeNotifier {
         }),
       );
 
-      final file = File('${model.title}.pdf');
-      File f = await file.writeAsBytes(await pdf.save());
-      OpenFilex.open(f.path);
+
+      // final file = File('${model.title}.pdf');
+      // File f = await file.writeAsBytes(await pdf.save());
+      // OpenFilex.open(f.path);
+
+
+      final pdfBytes = await pdf.save(); // Save the PDF as bytes
+      await saveAndOpenPdf('example_pdf', pdfBytes); // Save and open
     } catch (e) {
       log(e.toString());
     }

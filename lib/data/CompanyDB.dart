@@ -113,11 +113,7 @@ class CompanyDB {
           model.expDate,
           model.id
         ]);
-    log("${oldQty} Old Qty ");
-    log("${model.out} model.out ");
-    log("${oldQty} oldQty ");
-    log("${(oldQty ?? 0 + model.out) != oldQty} (oldQty ?? 0 + model.out) != oldQty ");
-    if ((oldQty ?? 0 + model.out) != oldQty) {
+    if (((oldQty ?? 0) + model.out) != oldQty) {
       log("message");
       await addMovement(MovementModel(
           id: 0, workerId: model.id, qty: model.out, date: formattedDate()));

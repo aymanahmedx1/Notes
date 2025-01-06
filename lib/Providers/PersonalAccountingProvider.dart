@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:pdf/pdf.dart';
 
@@ -132,7 +133,7 @@ class PersonalAccountingProvider with ChangeNotifier {
   exportPersonalPdf(PersonalPrintDetailsModel model) async {
     try {
       final pdf = pw.Document();
-      var fontData = File('assets/font/Cairo-Regular.ttf').readAsBytesSync();
+      final fontData = await rootBundle.load('assets/font/Cairo-Regular.ttf');
       final ttf = pw.Font.ttf(fontData.buffer.asByteData());
       pdf.addPage(
         pw.Page(build: (pw.Context context) {
@@ -224,7 +225,9 @@ class PersonalAccountingProvider with ChangeNotifier {
   exportPdf(PrintDetailsModel model) async {
     try {
       final pdf = pw.Document();
-      var fontData = File('assets/font/Cairo-Regular.ttf').readAsBytesSync();
+      final fontData = await rootBundle.load('assets/font/Cairo-Regular.ttf');
+
+      //var fontData = File('/assets/font/Cairo-Regular.ttf').readAsBytesSync();
       final ttf = pw.Font.ttf(fontData.buffer.asByteData());
       pdf.addPage(
         pw.Page(build: (pw.Context context) {
