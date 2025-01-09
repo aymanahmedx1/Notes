@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:notes/data/LoginDb.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -94,6 +95,12 @@ class DatabaseHelper {
                             "totalOut"	REAL,
                             PRIMARY KEY("id" AUTOINCREMENT)
                           );''');
+    await db.execute('''  CREATE TABLE "user_password" (
+                            "id"	INTEGER,
+                            "user_pass"	TEXT,
+                            PRIMARY KEY("id" AUTOINCREMENT)
+                          );''');
+    // await LoginDb().addPassword("123456");
   }
 
   readData(String Sql, List<dynamic> list) async {
@@ -116,7 +123,7 @@ class DatabaseHelper {
 
   deleteData(String Sql, List<dynamic> list) async {
     Database db = await database;
-    int result = await db.rawDelete(Sql, list);
-    return result;
+    await db.execute(Sql, list);
+    return 0;
   }
 }

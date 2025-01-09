@@ -51,7 +51,22 @@ class PersonalAccountingDialog {
                 Navigator.of(context).pop("1");
               },
               text: "حفظ",
+            ), heightSpace,
+            model != null
+                ? CustomButton(
+              icon: Icons.delete,
+              color: Colors.red,
+              onPressed: () async {
+                if (model != null) {
+                  model.name = textController.text;
+                  await  Provider.of<PersonalAccountingProvider>(context, listen: false)
+                      .deleteSection(model);
+                }
+                Navigator.of(context).pop("1");
+              },
+              text: "حذف",
             )
+                : SizedBox(),
           ],
         );
       },

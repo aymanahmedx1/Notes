@@ -412,4 +412,10 @@ class PersonalAccountingProvider with ChangeNotifier {
       ),
     );
   }
+
+
+  deleteSection(SectionModel model) async {
+    await PersonalAccountingDB().deleteSectionWithExpenses(model);
+    await fillAccountingList();
+  }
 }

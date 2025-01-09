@@ -129,7 +129,6 @@ class AccountingProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
   exportPdf(PrintDetailsModel model) async {
     try {
       final pdf = pw.Document();
@@ -148,14 +147,18 @@ class AccountingProvider with ChangeNotifier {
                     crossAxisAlignment: pw.CrossAxisAlignment.center,
                     mainAxisAlignment: pw.MainAxisAlignment.center,
                     children: [
-                  pw.Text(model.title,
-                      style: pw.TextStyle(font: ttf, fontSize: 16, decoration: pw.TextDecoration.underline , fontWeight: pw.FontWeight.bold,))
-                ]),
+                      pw.Text(model.title,
+                          style: pw.TextStyle(
+                            font: ttf,
+                            fontSize: 16,
+                            decoration: pw.TextDecoration.underline,
+                            fontWeight: pw.FontWeight.bold,
+                          ))
+                    ]),
                 pw.Row(children: [
                   pw.Text("التاريخ من  ${model.dateFrom}  الي  ${model.dateTo}",
-                      style: pw.TextStyle(font: ttf, fontSize: fontSize ))
+                      style: pw.TextStyle(font: ttf, fontSize: fontSize))
                 ]),
-
                 pw.Row(children: [
                   pw.Text("المصروف ${model.totalOut}",
                       style: pw.TextStyle(font: ttf, fontSize: fontSize)),
@@ -163,10 +166,12 @@ class AccountingProvider with ChangeNotifier {
                   pw.Text("المقبوض ${model.totalIn}",
                       style: pw.TextStyle(font: ttf, fontSize: fontSize)),
                 ]),
-                model.reasonFilter==""? pw.SizedBox():   pw.Row(children: [
-                  pw.Text("السبب ${model.reasonFilter}",
-                      style: pw.TextStyle(font: ttf, fontSize: fontSize))
-                ]),
+                model.reasonFilter == ""
+                    ? pw.SizedBox()
+                    : pw.Row(children: [
+                        pw.Text("السبب ${model.reasonFilter}",
+                            style: pw.TextStyle(font: ttf, fontSize: fontSize))
+                      ]),
                 pw.Container(
                   color: const PdfColor.fromInt(0xFF878787),
                   child: pw.Row(
@@ -225,11 +230,9 @@ class AccountingProvider with ChangeNotifier {
         }),
       );
 
-
       // final file = File('${model.title}.pdf');
       // File f = await file.writeAsBytes(await pdf.save());
       // OpenFilex.open(f.path);
-
 
       final pdfBytes = await pdf.save(); // Save the PDF as bytes
       await saveAndOpenPdf('example_pdf', pdfBytes); // Save and open
@@ -332,5 +335,10 @@ class AccountingProvider with ChangeNotifier {
         textAlign: TextAlign.center,
       ),
     );
+  }
+
+  deleteSection(SectionModel model) async {
+    await SectionDB().deleteSectionWithExpenses(model);
+    await fillAccountingList();
   }
 }

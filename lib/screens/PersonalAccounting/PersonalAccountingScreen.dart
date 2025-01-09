@@ -124,7 +124,7 @@ class PersonalAccountingscreen extends StatelessWidget {
                                   (index) {
                                     return DataRow(
                                       onLongPress: () {
-                                        AccountingDialog().createSection(
+                                        PersonalAccountingDialog().createPersonalSection(
                                             context,
                                             accountingProvider
                                                 .filteredAccountingList[index]);

@@ -8,6 +8,8 @@ import '../../CustomWidgets/CustomAutoComplete.dart';
 import '../../CustomWidgets/CustomButton.dart';
 import '../../CustomWidgets/CustomDatePicker.dart';
 import '../../CustomWidgets/Spacers.dart';
+import '../../Models/PrintDetailsModel.dart';
+import '../Accounting/Widgets/table_data.dart';
 
 class Moneytransactionscreen extends StatelessWidget {
   static const String rout = "Moneytransactionscreen";
@@ -66,6 +68,28 @@ class Moneytransactionscreen extends StatelessWidget {
                       },
                       icon: Icons.search,
                     ),
+                    widthSpace,
+                    CustomButton(
+                      text: "تصدير",
+                      onPressed: () async {
+                        var data = AccountingTableData(
+                          width: width,
+                          filter: moneyTransactionProvider.filteredExpenseList,
+                          controller: controller,
+                          section: new SectionModel(id: 0, name: "name", totalIn: 0, totalOut: 0),
+                        );
+                        PrintDetailsModel c = PrintDetailsModel(
+                            data: data,
+                            dateFrom: dateFromController.text,
+                            dateTo: dateToController.text,
+                            reasonFilter: filterController.text,
+                            title: "model.name",
+                            totalIn: Provider.of<MoneyTransactionProvider>(context,listen: false).totalIn.toInt(),
+                            totalOut: Provider.of<MoneyTransactionProvider>(context,listen: false).totalOut.toInt());
+                        await moneyTransactionProvider.exportPdf(c);
+                      },
+                      icon: Icons.search,
+                    )
                   ],
                 ),
                 heightSpace,

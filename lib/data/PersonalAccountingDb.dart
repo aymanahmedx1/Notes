@@ -129,4 +129,13 @@ class PersonalAccountingDB {
     return list.toSet();
 
   }
+  deleteSectionWithExpenses(SectionModel model)async{
+    var r =  await db.deleteData(
+        ''' DELETE FROM personal_expense WHERE section = ? ''', [model.id]);
+    log(r.toString());
+    var s= await db.deleteData(
+        ''' DELETE FROM personal WHERE id = ? ''', [model.id]);
+
+  }
 }
+

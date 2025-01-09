@@ -56,10 +56,12 @@ class SectionDB {
           ex.expenseType.index
         ]);
   }
+
   deleteExpense(ExpenseModel ex)async{
     await db.insertData(
         ''' DELETE FROM expense WHERE id = ? ''', [ex.id]);
   }
+
   getSectionDetails(SectionModel model) async {
     try {
       List<Map> res = await db.readData(
@@ -128,6 +130,15 @@ class SectionDB {
         list.add(record['reason']);
       }
       return list.toSet();
+  }
+
+
+  deleteSectionWithExpenses(SectionModel model)async{
+   var r =  await db.deleteData(
+        ''' DELETE FROM expense WHERE section = ? ''', [model.id]);
+   log(r.toString());
+   var s= await db.deleteData(
+        ''' DELETE FROM section WHERE id = ? ''', [model.id]);
 
   }
 }

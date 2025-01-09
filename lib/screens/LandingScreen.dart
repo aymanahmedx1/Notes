@@ -1,18 +1,60 @@
 import 'package:flutter/material.dart';
+import 'package:notes/CustomWidgets/CustomButton.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
+import 'package:notes/data/LoginDb.dart';
 import 'package:notes/screens/Accounting/AccountingScreen.dart';
+import 'package:notes/screens/LoginScreen.dart';
 import 'package:notes/screens/MoneyTransactions/MoneyTransactionScreen.dart';
 import 'package:notes/screens/Company/CompanyScreen.dart';
 import 'package:notes/screens/PersonalAccounting/PersonalAccountingScreen.dart';
 
+import '../CustomWidgets/CutomTextInput.dart';
+
 class Landingscreen extends StatelessWidget {
   static const String rout = "LandingScreen";
+  final TextEditingController passwordController =
+      TextEditingController(text: "");
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
         title: const Text("الرئيسيه"),
+        actions: [
+          CustomButton(
+              text: "تغيير الرقم السري",
+              onPressed: () async {
+                await showDialog<String>(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: Text("تغيير الرقم السري"),
+                      content: CustomTextInput(
+                        label: "الرقم الجديد ",
+                        controller: passwordController,
+                      ),
+                      actions: [
+                        CustomButton(
+                          icon: Icons.save,
+                          onPressed: () async {
+                            await LoginDb()
+                                .updatePassword(passwordController.text);
+                            Navigator.of(context).pop();
+                          },
+                          text: "حفظ",
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              icon: Icons.password),
+          widthSpace,
+          CustomButton(text: "خروج", onPressed: () {
+            Navigator.pushReplacementNamed(context, LoginScreen.rout);
+          }, icon: Icons.logout  )
+        ],
       ),
       body: Container(
         alignment: Alignment.center,

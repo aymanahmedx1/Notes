@@ -52,7 +52,23 @@ class AccountingDialog {
                 Navigator.of(context).pop("1");
               },
               text: "حفظ",
-            )
+            ),
+            heightSpace,
+            model != null
+                ? CustomButton(
+                    icon: Icons.delete,
+                    color: Colors.red,
+                    onPressed: () async {
+                      if (model != null) {
+                        model.name = textController.text;
+                      await  Provider.of<AccountingProvider>(context, listen: false)
+                            .deleteSection(model);
+                      }
+                      Navigator.of(context).pop("1");
+                    },
+                    text: "حذف",
+                  )
+                : SizedBox(),
           ],
         );
       },
@@ -79,7 +95,7 @@ class AccountingDialog {
       dateController.text = expenseModel.date;
       initValue = expenseModel.reason;
     }
-     String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
+    String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
     // List<String> reasonList =
     //     Provider.of<AccountingProvider>(context, listen: false)
     //         .filteredExpenseList
@@ -89,7 +105,8 @@ class AccountingDialog {
     //         .map((e) => e.reason)
     //         .toSet()
     //         .toList();
-    List<String> reasonList =List.of(await SectionDB().getExpenseReasonListForSuggest(type));
+    List<String> reasonList =
+        List.of(await SectionDB().getExpenseReasonListForSuggest(type));
     dateController.text = formattedDate();
     await showDialog<String>(
       context: context,
