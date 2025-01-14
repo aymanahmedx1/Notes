@@ -59,8 +59,7 @@ class PersonalAccountingDialog {
               onPressed: () async {
                 if (model != null) {
                   model.name = textController.text;
-                  await  Provider.of<PersonalAccountingProvider>(context, listen: false)
-                      .deleteSection(model);
+                  await showDeleteDialog(context, model);
                 }
                 Navigator.of(context).pop("1");
               },
@@ -73,6 +72,42 @@ class PersonalAccountingDialog {
     );
   }
 
+
+   showDeleteDialog(BuildContext context,SectionModel? model) async{
+   await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog (
+          icon: const Icon(
+            Icons.dangerous,
+            size: 40,
+            color: Colors.red,
+          ),
+          actions: [
+            CustomButton(
+              icon: Icons.check,
+              onPressed: ()async {
+                await  Provider.of<PersonalAccountingProvider>(context, listen: false)
+                    .deleteSection(model!);
+                Navigator.pop(context);
+              },
+              text: "تاكيد",
+            ),
+            heightSpace,
+            CustomButton(
+              icon: Icons.cancel,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              text: "رجوع",
+            )
+          ],
+          title: const Text(
+              "هل انت متاكد من الحذف "),
+        );
+      },
+    );
+  }
   addExpenseOnPersonalSection(BuildContext context, SectionModel section,
       ExpenseType type, ExpenseModel? expenseModel ) async {
     final TextEditingController noteController =
@@ -91,7 +126,7 @@ class PersonalAccountingDialog {
       dateController.text = expenseModel.date;
       initValue = expenseModel.reason;
     }
-    String label = type == ExpenseType.moneyIn ? "اضافة مبلغ" : "اضافه مصروف";
+    String label = type == ExpenseType.moneyIn ? "أستلام مبلغ من " : "أعطاء مبلغ الى ";
     // List<String> reasonList =
     //     Provider.of<PersonalAccountingProvider>(context, listen: false)
     //         .filteredExpenseList

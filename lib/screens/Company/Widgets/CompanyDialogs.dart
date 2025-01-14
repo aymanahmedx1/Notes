@@ -29,7 +29,7 @@ class CompanyDialogs {
         TextEditingController(text: "");
     final TextEditingController noteController =
         TextEditingController(text: "");
-    String title = "اضافه شركة";
+    String title = "اضافة شركة";
     if (model != null) {
       companyNameController.text = model.name;
       noteController.text = model.notes;
@@ -102,7 +102,7 @@ class CompanyDialogs {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("اضافه مندوب"),
+          title: const Text("اضافة مندوب"),
           content: SingleChildScrollView(
             child: Form(
               key: formKey,
@@ -171,9 +171,9 @@ class CompanyDialogs {
                       if (value != null) {
                         if ((int.tryParse(value) ?? 0) >
                             (int.tryParse(totalController.text) ?? 0)) {
-                          return "الرقم المنصرف يجب ان يكون اصغر من الاجمالي";
+                          return "الرقم المصروف يجب ان يكون اصغر من الكلي";
                         }else if(workerModel!=null && (int.tryParse(value) !=null ) && (int.parse(value) + workerModel.out ) > workerModel.total  ){
-                          return "الرقم المنصرف يجب ان يكون اصغر من الاجمالي";
+                          return "الرقم المصروف يجب ان يكون اصغر من الكلي";
                         }
                       }
                       return null;

@@ -26,7 +26,7 @@ class PersonalAccountingscreen extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: const Text("الحسابات الشخصيه"),
+        title: const Text("الحسابات الشخصية"),
         centerTitle: true,
         actions: [
           ElevatedButton(
@@ -93,7 +93,7 @@ class PersonalAccountingscreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'القسم',
+                                        'أسم الحساب',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -170,7 +170,7 @@ class PersonalAccountingscreen extends StatelessWidget {
                     context, section, ExpenseType.moneyIn, null);
           },
           icon: Icons.add,
-          text: "اضافة مبلغ",
+          text: "أستلام مبلغ",
         ),
         widthSpace,
         CustomColumnButton(
@@ -179,7 +179,7 @@ class PersonalAccountingscreen extends StatelessWidget {
                   .showAddExpenseDialog(
                       context, section, ExpenseType.moneyOut, null),
           icon: Icons.remove,
-          text: "صرف مبلغ",
+          text: "أعطاء مبلغ",
         ),
         widthSpace,
         CustomColumnButton(
@@ -197,4 +197,5 @@ class PersonalAccountingscreen extends StatelessWidget {
       ],
     );
   }
+
 }

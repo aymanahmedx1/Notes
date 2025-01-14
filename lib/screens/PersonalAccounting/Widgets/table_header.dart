@@ -22,8 +22,8 @@ class PersonalAccountingTableHeader extends StatelessWidget {
         children: [
           makeChild("م", colSize * .5),
           makeChild("السبب", colSize * 3),
-          makeChild("المصروف", colSize * 2),
-          makeChild("المستلم", colSize * 2),
+          makeChild("المبلغ المعطى", colSize * 2),
+          makeChild("المبلغ المستلم", colSize * 2),
           makeChild("التاريخ", colSize * 2),
           makeChild("ملاحظات", colSize * 2),
         ],

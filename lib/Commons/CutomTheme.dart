@@ -8,7 +8,7 @@ class CustomTheme {
   static const Color _onSurfaceColor = Color(0xFF000000);
   static const Color _onSurfaceVariant = Color(0xFFFF6578);
   static const Color _onPrimaryColor = Color(0xFFA5E179);
-  static const Color _surfaceColor = Color(0xFF646464);
+  static const Color _surfaceColor = Colors.white; //Color(0xFF646464);
   static const Color _backgroundColor = Color(0xFFffffff);
   static const Color _onSecondaryColor = Color(0xFFE1E3E4);
   static const Color _onBackgroundColor = Color(0xFF828A9A);
@@ -95,6 +95,5 @@ class CustomTheme {
   static const textMoreStyle = TextStyle(
     color: Colors.white,
     fontSize: 16,
-
   );
 }

@@ -2,15 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:notes/Models/SectionModel.dart';
-import 'package:notes/Providers/CompanyProvider.dart';
-import 'package:notes/data/SectionDB.dart';
+import 'package:notes/data/PersonalAccountingDb.dart';
 import 'package:provider/provider.dart';
 
 import '../../../Commons/Helpers.dart';
 import '../../../CustomWidgets/CustomButton.dart';
 import '../../../CustomWidgets/Spacers.dart';
-import '../../../Models/CompanyModel.dart';
-import '../../../Providers/AccountingProvider.dart';
+import '../../../Providers/PersonalAccountingProvider.dart';
 
 class PersonalAccountingTableData extends StatelessWidget {
   final double width;
@@ -90,7 +88,7 @@ class PersonalAccountingTableData extends StatelessWidget {
                     text: "تعديل",
                     onPressed: () {
                       Navigator.pop(context);
-                      Provider.of<AccountingProvider>(context, listen: false)
+                      Provider.of<PersonalAccountingProvider>(context, listen: false)
                           .showAddExpenseDialog(context, model,
                               expenseModel.expenseType, expenseModel);
                     },
@@ -99,9 +97,11 @@ class PersonalAccountingTableData extends StatelessWidget {
                 CustomButton(
                     text: "حذف",
                     onPressed: ()async {
-                        await SectionDB().deleteExpense(expenseModel);
-                        Provider.of<AccountingProvider>(context, listen: false)
+                        await PersonalAccountingDB().deleteExpense(expenseModel);
+                        Provider.of<PersonalAccountingProvider>(context, listen: false)
                             .fillExpenseList(section);
+                        Provider.of<PersonalAccountingProvider>(context, listen: false)
+                            .fillAccountingList();
                       Navigator.pop(context);
                     },
                     icon: Icons.delete_forever_sharp)

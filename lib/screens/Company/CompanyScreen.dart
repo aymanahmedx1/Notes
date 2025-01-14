@@ -43,7 +43,7 @@ class CompanyScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(width: 50, child: Text("بحث")),
+                 //   const SizedBox(width: 50, child: Text("بحث")),
                     const SizedBox(
                       width: 10,
                     ),
@@ -56,7 +56,7 @@ class CompanyScreen extends StatelessWidget {
                         textAlign: TextAlign.center,
                         keyboardType: TextInputType.text,
                         decoration: const InputDecoration(
-                          hintText: "اسم الشركة",
+                          hintText: "بحث بأسم الشركة",
                         ),
                       ),
                     ),
@@ -98,7 +98,7 @@ class CompanyScreen extends StatelessWidget {
                                         DataColumn(
                                           label: Expanded(
                                             child: Text(
-                                              'الشركه',
+                                              'الشركة',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
@@ -107,7 +107,7 @@ class CompanyScreen extends StatelessWidget {
                                         DataColumn(
                                           label: Expanded(
                                             child: Text(
-                                              'ملاحظه',
+                                              'ملاحظة',
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),

@@ -55,7 +55,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                     SizedBox(
                         width: width / 12 * 4,
                         child: CustomDatePicker(
-                          label: "التاريخ الي",
+                          label: "التاريخ الى",
                           controller: dateToController,
                         )),
                     widthSpace,
@@ -72,7 +72,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                     ),
                     widthSpace,
                     CustomButton(
-                      text: "تصدير",
+                      text: "تصدير pdf",
                       onPressed: () async {
                         var data = AccountingTableData(
                           width: width,
@@ -118,7 +118,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     widthSpace,
-                    const Text("الكل"),
+                    const Text("عرض الكل"),
                     Checkbox(
                       value:
                           accountingProvider.selectedSection == ExpenseType.all,
@@ -132,7 +132,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                       },
                     ),
                     widthSpace,
-                    const Text("القبض"),
+                    const Text("عرض المبالغ المستلمة فقط"),
                     Checkbox(
                       value: accountingProvider.selectedSection ==
                           ExpenseType.moneyIn,
@@ -146,7 +146,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                       },
                     ),
                     widthSpace,
-                    const Text("المصروف"),
+                    const Text("عرض المبالغ المصروفة فقط"),
                     Checkbox(
                       value: accountingProvider.selectedSection ==
                           ExpenseType.moneyOut,
@@ -164,7 +164,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                 heightSpace,
                 Row(
                   children: [
-                    const Text("المصروف"),
+                    const Text("مجموع المصروف"),
                     widthSpace,
                     Text(
                       formatNumber(
@@ -173,7 +173,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                     ),
                     widthSpace,
                     widthSpace,
-                    const Text("المقبوض"),
+                    const Text("مجموع المستلم"),
                     widthSpace,
                     Text(
                       formatNumber(
@@ -182,6 +182,7 @@ class AccountingDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                heightSpace,
                 AccountingTableHeader(
                   width: width,
                 ),

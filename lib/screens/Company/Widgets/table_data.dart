@@ -86,7 +86,7 @@ class TableData extends StatelessWidget {
                               .markWorkerAsFinish(worker);
                           Navigator.pop(context);
                         },
-                        text: "انتهي",
+                        text: "أكتمل",
                         icon: Icons.check,
                       )
                     : Container()

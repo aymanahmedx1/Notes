@@ -27,9 +27,9 @@ class PersonalAccountingDB {
         " update personal set $colName = $colName $op ?  where id = ?  ",
         [amount, model.id]);
   }
-  updateAmountWhenUpdateExpense(){
 
-  }
+  updateAmountWhenUpdateExpense() {}
+
   Future<List<SectionModel>> getAllSections() async {
     List<Map> res = await db.readData('''  select * from  personal''', []);
     List<SectionModel> list = [];
@@ -56,14 +56,20 @@ class PersonalAccountingDB {
           ex.expenseType.index
         ]);
   }
-  deleteExpense(ExpenseModel ex)async{
-    await db.insertData(
-        ''' DELETE FROM expense WHERE id = ? ''', [ex.id]);
+
+  deleteExpense(ExpenseModel ex) async {
+    SectionModel m =
+        SectionModel(id: ex.section, name: "name", totalIn: 0, totalOut: 0);
+    await updateAmount(m, ex.amount, ex.expenseType, "-");
+    await db
+        .insertData(''' DELETE FROM personal_expense WHERE id = ? ''', [ex.id]);
   }
+
   getSectionDetails(SectionModel model) async {
     try {
       List<Map> res = await db.readData(
-          '''  select * from  personal_expense where  section = ?''', [model.id]);
+          '''  select * from  personal_expense where  section = ?''',
+          [model.id]);
       List<ExpenseModel> list = [];
       for (var record in res) {
         list.add(ExpenseModel(
@@ -84,7 +90,8 @@ class PersonalAccountingDB {
 
   getAllSectionDetails() async {
     try {
-      List<Map> res = await db.readData('''  select * from  personal_expense ''', []);
+      List<Map> res =
+          await db.readData('''  select * from  personal_expense ''', []);
       List<ExpenseModel> list = [];
       for (var record in res) {
         list.add(ExpenseModel(
@@ -110,32 +117,31 @@ class PersonalAccountingDB {
   }
 
   Future<double> getExpenseAmount(int id) async {
-    List<Map> res = await db
-        .readData('''  select amount from  personal_expense where id = ? ''', [id]);
+    List<Map> res = await db.readData(
+        '''  select amount from  personal_expense where id = ? ''', [id]);
     for (var record in res) {
       return record['amount'];
     }
     return 0;
   }
 
-  Future<Set<String>> getExpenseReasonListForSuggest(ExpenseType expenseType)async{
-
+  Future<Set<String>> getExpenseReasonListForSuggest(
+      ExpenseType expenseType) async {
     List<Map> res = await db.readData(
-        '''  select reason from  personal_expense where  expense_type = ?''', [expenseType.index]);
+        '''  select reason from  personal_expense where  expense_type = ?''',
+        [expenseType.index]);
     List<String> list = [];
     for (var record in res) {
       list.add(record['reason']);
     }
     return list.toSet();
-
   }
-  deleteSectionWithExpenses(SectionModel model)async{
-    var r =  await db.deleteData(
+
+  deleteSectionWithExpenses(SectionModel model) async {
+    var r = await db.deleteData(
         ''' DELETE FROM personal_expense WHERE section = ? ''', [model.id]);
     log(r.toString());
-    var s= await db.deleteData(
-        ''' DELETE FROM personal WHERE id = ? ''', [model.id]);
-
+    var s = await db
+        .deleteData(''' DELETE FROM personal WHERE id = ? ''', [model.id]);
   }
 }
-

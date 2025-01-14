@@ -110,7 +110,7 @@ class Accountingscreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'قبض',
+                                        'المستلم',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),

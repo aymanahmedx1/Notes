@@ -33,7 +33,7 @@ class CompanyProfileScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  "تفاصيل شركة ",
+                  "تفاصيل شركة  ",
                 ),
                 Text(
                   companyModel.name,
@@ -50,7 +50,7 @@ class CompanyProfileScreen extends StatelessWidget {
                   return [
                     PopupMenuItem(
                       child: CustomButton(
-                        text: "اضافه مندوب",
+                        text: "أضافة مندوب",
                         icon: Icons.add,
                         onPressed: () async {
                           Navigator.pop(context);
@@ -61,7 +61,7 @@ class CompanyProfileScreen extends StatelessWidget {
                     ),
                     PopupMenuItem(
                         child: CustomButton(
-                            text: "المنتهي",
+                            text: "العمليات المكتملة",
                             onPressed: () {
                               Navigator.pop(context);
                               Navigator.pushNamed(
@@ -85,7 +85,7 @@ class CompanyProfileScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(width: 50, child: Text("بحث")),
+                //  const SizedBox(width: 50, child: Text("بحث")),
                   const SizedBox(
                     width: 10,
                   ),
@@ -100,7 +100,7 @@ class CompanyProfileScreen extends StatelessWidget {
                       controller: searchController,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
-                        hintText: "اسم المندوب او العلاج",
+                        hintText: "بحث بأسم الشركة ",
                       ),
                     ),
                   ),
@@ -109,7 +109,7 @@ class CompanyProfileScreen extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      const Text("انتهاء قريب"),
+                      const Text("عرض العمليات قريبة الاكسباير (اقرب 4 اشهر)"),
                       widthSpace,
                       Checkbox(
                         value: companyProvider.nearExpire,

@@ -56,7 +56,7 @@ class Moneytransactionscreen extends StatelessWidget {
                     SizedBox(
                         width: width / 12 * 4,
                         child: CustomDatePicker(
-                          label: "التاريخ الي",
+                          label: "التاريخ الى",
                           controller: dateToController,
                         )),
                     widthSpace,
@@ -70,7 +70,7 @@ class Moneytransactionscreen extends StatelessWidget {
                     ),
                     widthSpace,
                     CustomButton(
-                      text: "تصدير",
+                      text: "تصدير pdf",
                       onPressed: () async {
                         var data = AccountingTableData(
                           width: width,
@@ -113,7 +113,7 @@ class Moneytransactionscreen extends StatelessWidget {
                       ),
                     ),
                     widthSpace,
-                    const Text("الكل"),
+                    const Text("عرض الكل"),
                     Checkbox(
                       value: moneyTransactionProvider.selectedSection ==
                           ExpenseType.all,
@@ -125,7 +125,7 @@ class Moneytransactionscreen extends StatelessWidget {
                       },
                     ),
                     widthSpace,
-                    const Text("القبض"),
+                    const Text("عرض المبالغ المستلمة فقط"),
                     Checkbox(
                       value: moneyTransactionProvider.selectedSection ==
                           ExpenseType.moneyIn,
@@ -137,7 +137,7 @@ class Moneytransactionscreen extends StatelessWidget {
                       },
                     ),
                     widthSpace,
-                    const Text("المصروف"),
+                    const Text("عرض المبالغ المصروفة فقط"),
                     Checkbox(
                       value: moneyTransactionProvider.selectedSection ==
                           ExpenseType.moneyOut,
@@ -150,9 +150,10 @@ class Moneytransactionscreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                heightSpace,
                 Row(
                   children: [
-                    const Text("المصروف"),
+                    const Text("مجموع المبلغ المصروف"),
                     widthSpace,
                     Text(
                       formatNumber(moneyTransactionProvider.totalOut),
@@ -160,7 +161,7 @@ class Moneytransactionscreen extends StatelessWidget {
                     ),
                     widthSpace,
                     widthSpace,
-                    const Text("المقبوض"),
+                    const Text(" مجموع المبلغ المستلم"),
                     widthSpace,
                     Text(
                       formatNumber(moneyTransactionProvider.totalIn),
@@ -220,7 +221,7 @@ class Moneytransactionscreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'مصروف',
+                                        'المبلغ المصروف',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
@@ -229,7 +230,7 @@ class Moneytransactionscreen extends StatelessWidget {
                                   DataColumn(
                                     label: Expanded(
                                       child: Text(
-                                        'مستلم',
+                                        'المبلغ المستلم',
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),

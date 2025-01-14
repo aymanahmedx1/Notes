@@ -32,7 +32,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
     return SafeArea(
         child: Scaffold(
       appBar: AppBar(
-        title: Text(" تفاصيل القسم  ${model.name}"),
+        title: Text(" التفاصيل الخاصة ب    ${model.name}"),
         centerTitle: true,
       ),
       body: Consumer<PersonalAccountingProvider>(
@@ -53,7 +53,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                     SizedBox(
                         width: width / 12 * 4,
                         child: CustomDatePicker(
-                          label: "التاريخ الي",
+                          label: "التاريخ الى",
                           controller: dateToController,
                         )),
                     widthSpace,
@@ -70,7 +70,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                     ),
                     widthSpace,
                     CustomButton(
-                      text: "تصدير",
+                      text: "تصدير pdf",
                       onPressed: () async {
                         var data = PersonalAccountingTableData(
                           width: width,
@@ -116,7 +116,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                       ),
                     ),
                     widthSpace,
-                    const Text("الكل"),
+                    const Text("عرض الكل"),
                     Checkbox(
                       value:
                           accountingProvider.selectedSection == ExpenseType.all,
@@ -130,7 +130,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                       },
                     ),
                     widthSpace,
-                    const Text("القبض"),
+                    const Text(" عرض المبالغ المستلمة فقط"),
                     Checkbox(
                       value: accountingProvider.selectedSection ==
                           ExpenseType.moneyIn,
@@ -144,7 +144,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                       },
                     ),
                     widthSpace,
-                    const Text("المصروف"),
+                    const Text(" عرض المبالغ المعطاة فقط"),
                     Checkbox(
                       value: accountingProvider.selectedSection ==
                           ExpenseType.moneyOut,
@@ -162,7 +162,7 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                 heightSpace,
                 Row(
                   children: [
-                    const Text("المصروف"),
+                    const Text("مجموع المبالغ المعطاة"),
                     widthSpace,
                     Text(
                       formatNumber(
@@ -171,7 +171,11 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                     ),
                     widthSpace,
                     widthSpace,
-                    const Text("المقبوض"),
+                    widthSpace,
+                    widthSpace,
+                    widthSpace,
+
+                    const Text("مجموع المبالغ المستلمة"),
                     widthSpace,
                     Text(
                       formatNumber(
@@ -180,6 +184,8 @@ class PersonalAccountingDetailsScreen extends StatelessWidget {
                     ),
                   ],
                 ),
+                heightSpace,
+
                 PersonalAccountingTableHeader(
                   width: width,
                 ),

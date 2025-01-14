@@ -30,7 +30,7 @@ class CompanyFinishScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  "تفاصيل منتهي شركة ",
+                  "تفاصيل العمليات المكتملة لشركة    ",
                 ),
                 Text(
                   companyModel.name,
@@ -52,7 +52,7 @@ class CompanyFinishScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(width: 50, child: Text("بحث")),
+                 // const SizedBox(width: 50, child: Text("بحث")),
                   const SizedBox(
                     width: 10,
                   ),
@@ -67,7 +67,7 @@ class CompanyFinishScreen extends StatelessWidget {
                       controller: searchController,
                       keyboardType: TextInputType.text,
                       decoration: const InputDecoration(
-                        hintText: "اسم المندوب او العلاج",
+                        hintText: "بحث بأسم المندوب أو ألمنتج",
                       ),
                     ),
                   ),
@@ -102,7 +102,7 @@ class CompanyFinishScreen extends StatelessWidget {
                                 DataColumn(
                                   label: Expanded(
                                     child: Text(
-                                      'الجوال',
+                                      'رقم الموبايل',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -133,7 +133,7 @@ class CompanyFinishScreen extends StatelessWidget {
                                     child: Text(
                                       textAlign: TextAlign.center,
                                       softWrap: true,
-                                      'العدد المنصرف',
+                                      'العدد المصروف',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
@@ -142,7 +142,7 @@ class CompanyFinishScreen extends StatelessWidget {
                                 DataColumn(
                                   label: Expanded(
                                     child: Text(
-                                      'ملاحظه',
+                                      'ملاحظة',
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),
