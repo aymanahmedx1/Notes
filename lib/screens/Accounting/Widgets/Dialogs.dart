@@ -61,8 +61,7 @@ class AccountingDialog {
                     onPressed: () async {
                       if (model != null) {
                         model.name = textController.text;
-                      await  Provider.of<AccountingProvider>(context, listen: false)
-                            .deleteSection(model);
+                      await showDeleteDialog(context, model);
                       }
                       Navigator.of(context).pop("1");
                     },
@@ -74,6 +73,43 @@ class AccountingDialog {
       },
     );
   }
+
+  showDeleteDialog(BuildContext context,SectionModel? model) async{
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog (
+          icon: const Icon(
+            Icons.dangerous,
+            size: 40,
+            color: Colors.red,
+          ),
+          actions: [
+            CustomButton(
+              icon: Icons.check,
+              onPressed: ()async {
+                await  Provider.of<AccountingProvider>(context, listen: false)
+                    .deleteSection(model!);
+                Navigator.pop(context);
+              },
+              text: "تاكيد",
+            ),
+            heightSpace,
+            CustomButton(
+              icon: Icons.cancel,
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              text: "رجوع",
+            )
+          ],
+          title: const Text(
+              "هل انت متاكد من الحذف "),
+        );
+      },
+    );
+  }
+
 
   addExpenseOnSection(BuildContext context, SectionModel section,
       ExpenseType type, ExpenseModel? expenseModel) async {

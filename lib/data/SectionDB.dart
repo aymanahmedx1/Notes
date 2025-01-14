@@ -58,6 +58,9 @@ class SectionDB {
   }
 
   deleteExpense(ExpenseModel ex)async{
+    SectionModel m =
+    SectionModel(id: ex.section, name: "name", totalIn: 0, totalOut: 0);
+    await updateAmount(m, ex.amount, ex.expenseType, "-");
     await db.insertData(
         ''' DELETE FROM expense WHERE id = ? ''', [ex.id]);
   }

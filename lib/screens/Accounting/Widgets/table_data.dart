@@ -102,6 +102,8 @@ class AccountingTableData extends StatelessWidget {
                         await SectionDB().deleteExpense(expenseModel);
                         Provider.of<AccountingProvider>(context, listen: false)
                             .fillExpenseList(section);
+                        Provider.of<AccountingProvider>(context, listen: false)
+                            .fillAccountingList();
                       Navigator.pop(context);
                     },
                     icon: Icons.delete_forever_sharp)
