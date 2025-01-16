@@ -8,6 +8,7 @@ import 'package:pdf/pdf.dart';
 
 import 'package:pdf/widgets.dart' as pw;
 import '../Commons/Helpers.dart';
+import '../Helpers/save_and_open_files.dart';
 import '../Models/PersonalPrintDetailsModel.dart';
 import '../Models/PrintDetailsModel.dart';
 import '../Models/SectionModel.dart';
@@ -214,10 +215,9 @@ class PersonalAccountingProvider with ChangeNotifier {
           );
         }),
       );
+      final pdfBytes = await pdf.save(); // Save the PDF as bytes
+      await saveAndOpenPdf('example_pdf', pdfBytes); // Save and open
 
-      final file = File('ttoottoo.pdf');
-      File f = await file.writeAsBytes(await pdf.save());
-      OpenFilex.open(f.path);
     } catch (e) {
       log(e.toString());
     }
