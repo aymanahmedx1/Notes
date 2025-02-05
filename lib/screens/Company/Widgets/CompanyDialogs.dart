@@ -21,6 +21,7 @@ class CompanyDialogs {
   final TextEditingController outController = TextEditingController(text: "0");
   final TextEditingController dateController = TextEditingController(text: "");
   final TextEditingController expController = TextEditingController(text: "");
+  final TextEditingController priceController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final ScrollController controller = ScrollController();
 
@@ -94,6 +95,7 @@ class CompanyDialogs {
       // outController.text = workerModel.out.toString();
       dateController.text = workerModel.date;
       expController.text = workerModel.expDate;
+      priceController.text = workerModel.price.toString();
     } else {
       dateController.text = formattedDate();
     }
@@ -181,6 +183,19 @@ class CompanyDialogs {
                   ),
                   heightSizedBox,
                   CustomTextInput(
+                    label: 'السعر ',
+                    controller: priceController,
+                    textInputType: TextInputType.number,
+                    validateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value != null) {
+
+                      }
+                      return null;
+                    },
+                  ),
+                  heightSizedBox,
+                  CustomTextInput(
                     label: 'ملاحظة',
                     controller: noteController,
                   ),
@@ -234,7 +249,9 @@ class CompanyDialogs {
           drug: drugController.text,
           date: dateController.text,
           expDate: expController.text,
-          finish: 0);
+          finish: 0,
+          price: double.parse(priceController.text)
+      );
       if (model == null) {
         Provider.of<CompanyProvider>(context, listen: false).saveWorker(toSave);
       } else {

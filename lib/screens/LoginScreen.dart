@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
+import 'package:notes/data/Database.dart';
 import 'package:notes/data/LoginDb.dart';
 
 import 'LandingScreen.dart';
@@ -17,7 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool _isObscure = true;
-
   void _login() async {
     try {
       String password = _passwordController.text;
@@ -36,6 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: Text("تسجيل الدخول"),

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:notes/data/LoginDb.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'dart:convert';
 
 class DatabaseHelper {
   Database? db;
@@ -16,16 +17,19 @@ class DatabaseHelper {
     try {
       var databasesPath = await getDatabasesPath();
       String path = join(databasesPath, 'notes.db');
-      return await openDatabase(path, onCreate: _onCreate, version: 1);
+      return await openDatabase(path,
+          onCreate: _onCreate, version: 2, onUpgrade: _onUpgrade);
     } catch (e) {
       log(e.toString());
     }
   }
 
-  delete() async {
-    var databasesPath = await getDatabasesPath();
-    String path = join(databasesPath, 'notes.db');
-    await deleteDatabase(path);
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+      ALTER TABLE worker ADD COLUMN price FLOAT DEFAULT 0.0
+    ''');
+    }
   }
 
   _onCreate(Database db, int versoin) async {
@@ -59,6 +63,7 @@ class DatabaseHelper {
                             "date" TEXT , 
                             "expDate" TEXT , 
                             "finish" INTEGER , 
+                            "price" FLOAT DEFAULT 0.0,
                             PRIMARY KEY("id" AUTOINCREMENT)
                           );''');
     await db.execute('''CREATE TABLE "company" (
@@ -100,7 +105,68 @@ class DatabaseHelper {
                             "user_pass"	TEXT,
                             PRIMARY KEY("id" AUTOINCREMENT)
                           );''');
-    // await LoginDb().addPassword("123456");
+  }
+
+
+  Future<String> getDatabaseBackup() async {
+
+
+    // List of all tables in your database
+    List<String> tables = [
+      'worker',
+      'company',
+      'movements',
+      'expense',
+      'section',
+      'personal_expense',
+      'personal',
+      'user_password'
+    ];
+
+    // Create a JSON structure
+    Map<String, dynamic> backupData = {};
+
+    // Fetch data from each table and store it in the JSON object
+    for (String table in tables) {
+      Database db = await database;
+      List<Map<String, dynamic>> tableData = await db.query(table);
+      backupData[table] = tableData;
+    }
+
+    // Convert the backup data to JSON string
+    String jsonBackup = jsonEncode(backupData);
+
+    return jsonBackup;
+  }
+
+  Future<void> restoreDatabaseFromBackup(String jsonBackup) async {
+    final db = await initDatabase();
+    Map<String, dynamic> backupData = jsonDecode(jsonBackup);
+
+    await db.transaction((txn) async {
+      for (String table in backupData.keys) {
+        List<dynamic> records = backupData[table];
+
+        for (var record in records) {
+          // Convert dynamic Map<String, dynamic>
+          Map<String, dynamic> row = Map<String, dynamic>.from(record);
+
+          // Remove 'id' to let SQLite auto-generate it (optional)
+          row.remove("id");
+
+          // Insert into table
+          await txn.insert(table, row);
+        }
+      }
+    });
+  }
+
+
+
+  delete() async {
+    var databasesPath = await getDatabasesPath();
+    String path = join(databasesPath, 'notes.db');
+    await deleteDatabase(path);
   }
 
   readData(String Sql, List<dynamic> list) async {

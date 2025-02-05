@@ -35,7 +35,7 @@ class CompanyDB {
 
   addWorker(WorkerModel model) async {
     await db.insertData(
-        ''' insert into worker (name,phone,company,total,out,note,drug,date,expDate,finish) values (?,?,?,?,?,?,?,?,?,?) ''',
+        ''' insert into worker (name,phone,company,total,out,note,drug,date,expDate,finish,price) values (?,?,?,?,?,?,?,?,?,?,?) ''',
         [
           model.name,
           model.phone,
@@ -46,7 +46,8 @@ class CompanyDB {
           model.drug,
           model.date,
           model.expDate,
-          0
+          0,
+          model.price
         ]);
   }
 
@@ -58,17 +59,19 @@ class CompanyDB {
       List<WorkerModel> list = [];
       for (var record in res) {
         list.add(WorkerModel(
-            id: record['id'],
-            name: record['name'],
-            phone: record['phone'],
-            company: record['company'],
-            total: record['total'],
-            out: record['out'],
-            note: record['note'],
-            drug: record['drug'],
-            date: record['date'],
-            expDate: record['expDate'],
-            finish: record['finish']));
+          id: record['id'],
+          name: record['name'],
+          phone: record['phone'],
+          company: record['company'],
+          total: record['total'],
+          out: record['out'],
+          note: record['note'],
+          drug: record['drug'],
+          date: record['date'],
+          expDate: record['expDate'],
+          finish: record['finish'],
+          price: (record['price'] ?? 0.0).toDouble(),
+        ));
       }
       return list;
     } catch (e) {
@@ -100,7 +103,7 @@ class CompanyDB {
     int? oldQty = x?.out;
 
     await db.updateData(
-        ''' update worker set name= ? ,phone= ? ,company= ?,total= ?,out =out+ ?,note= ?,drug= ?,date=?,expDate=? where id = ? ''',
+        ''' update worker set name= ? ,phone= ? ,company= ?,total= ?,out =out+ ?,note= ?,drug= ?,date=?,expDate=?,price=? where id = ? ''',
         [
           model.name,
           model.phone,
@@ -111,6 +114,7 @@ class CompanyDB {
           model.drug,
           model.date,
           model.expDate,
+          model.price,
           model.id
         ]);
     if (((oldQty ?? 0) + model.out) != oldQty) {
@@ -126,17 +130,19 @@ class CompanyDB {
     List<WorkerModel> list = [];
     for (var record in res) {
       return WorkerModel(
-          id: record['id'],
-          name: record['name'],
-          phone: record['phone'],
-          company: record['company'],
-          total: record['total'],
-          out: record['out'],
-          note: record['note'],
-          drug: record['drug'],
-          date: record['date'],
-          expDate: record['expDate'],
-          finish: record['finish']);
+        id: record['id'],
+        name: record['name'],
+        phone: record['phone'],
+        company: record['company'],
+        total: record['total'],
+        out: record['out'],
+        note: record['note'],
+        drug: record['drug'],
+        date: record['date'],
+        expDate: record['expDate'],
+        finish: record['finish'],
+        price: record['price'],
+      );
     }
     return null;
   }

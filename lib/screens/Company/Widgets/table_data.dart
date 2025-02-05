@@ -26,8 +26,8 @@ class TableData extends StatelessWidget {
   Widget build(BuildContext context) {
     final double colSize = width / 12;
     return ListView.separated(
-      controller: controller,
-      shrinkWrap: true,
+        controller: controller,
+        shrinkWrap: true,
         itemBuilder: (context, index) {
           return makeRow(index, filter[index], context, companyModel, colSize);
         },
@@ -50,9 +50,9 @@ class TableData extends StatelessWidget {
                 CustomButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    Provider.of<CompanyProvider>(context,listen: false)
+                    Provider.of<CompanyProvider>(context, listen: false)
                         .workerId = worker.id;
-                    Provider.of<CompanyProvider>(context,listen: false)
+                    Provider.of<CompanyProvider>(context, listen: false)
                         .fillMovements();
                     Navigator.of(context).pushNamed(Movementsscreen.rout);
                   },
@@ -63,7 +63,7 @@ class TableData extends StatelessWidget {
                 CustomButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    Provider.of<CompanyProvider>(context,listen: false)
+                    Provider.of<CompanyProvider>(context, listen: false)
                         .createWorker(context, companyModel, worker);
                   },
                   text: "تعديل",
@@ -73,7 +73,7 @@ class TableData extends StatelessWidget {
                 CustomButton(
                     text: "حذف",
                     onPressed: () {
-                      Provider.of<CompanyProvider>(context,listen: false)
+                      Provider.of<CompanyProvider>(context, listen: false)
                           .deleteWorker(worker);
                       Navigator.pop(context);
                     },
@@ -82,7 +82,7 @@ class TableData extends StatelessWidget {
                 worker.out >= worker.total
                     ? CustomButton(
                         onPressed: () {
-                          Provider.of<CompanyProvider>(context,listen: false)
+                          Provider.of<CompanyProvider>(context, listen: false)
                               .markWorkerAsFinish(worker);
                           Navigator.pop(context);
                         },
@@ -96,20 +96,21 @@ class TableData extends StatelessWidget {
         );
       },
       child: Container(
-        color: DateTime.parse(worker.expDate).isBefore(DateTime.now().add(Duration(days: 30*4)))? Colors.deepOrange:Colors.white,
+        color: getColor(worker.expDate),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             makeChild("${index + 1}", colSize * .5),
             makeChild(worker.name, colSize * 2),
-            makeChild(worker.phone, colSize * 1.5),
+            makeChild(worker.phone, colSize * 1),
             makeChild(worker.drug, colSize * 1.5),
             makeChild("${worker.total}", colSize * 1),
             makeChild("${worker.out}", colSize * 1),
+            makeChild("${worker.price}", colSize * 1),
             makeChild(worker.expDate, colSize * 1),
             makeChild(worker.note, colSize * 1),
-            makeChild(worker.date, colSize * 1.5),
+            makeChild(worker.date, colSize * 1),
           ],
         ),
       ),
@@ -124,5 +125,15 @@ class TableData extends StatelessWidget {
         textAlign: TextAlign.center,
       ),
     );
+  }
+
+  getColor(String? worker) {
+    if (worker!="") {
+      return DateTime.parse(worker!)
+              .isBefore(DateTime.now().add(Duration(days: 30 * 4)))
+          ? Colors.deepOrange
+          : Colors.white;
+    }
+    return Colors.white;
   }
 }

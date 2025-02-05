@@ -9,6 +9,7 @@ import 'package:notes/data/Database.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+import 'Providers/BackupRestoreProvider.dart';
 import 'Providers/PersonalAccountingProvider.dart';
 
 void main() async {
@@ -33,6 +34,10 @@ void main() async {
     ),
     ChangeNotifierProvider<MoneyTransactionProvider>(
       create: (_) => MoneyTransactionProvider(),
+      lazy: true,
+    ),
+    ChangeNotifierProvider<BackupRestoreProvider>(
+      create: (_) => BackupRestoreProvider(),
       lazy: true,
     ),
   ], child: Appstart()));

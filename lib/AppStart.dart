@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/Commons/CutomTheme.dart';
 import 'package:notes/screens/Accounting/AccountingScreen.dart';
+import 'package:notes/screens/BackupAndRestoreHome.dart';
 import 'package:notes/screens/Company/CompanyFinishScreen.dart';
 import 'package:notes/screens/Company/CompanyProfileScreen.dart';
 import 'package:notes/screens/Company/CompanyScreen.dart';
@@ -43,6 +44,7 @@ class Appstart extends StatelessWidget {
         Movementsscreen.rout: (context) => Movementsscreen(),
         PersonalAccountingscreen.rout: (context) => PersonalAccountingscreen(),
         LoginScreen.rout: (context) => LoginScreen(),
+        BackupAndRestoreHome.rout: (context) => BackupAndRestoreHome(),
       },
     );
   }

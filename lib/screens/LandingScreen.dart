@@ -1,14 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:notes/CustomWidgets/CustomButton.dart';
 import 'package:notes/CustomWidgets/Spacers.dart';
 import 'package:notes/data/LoginDb.dart';
 import 'package:notes/screens/Accounting/AccountingScreen.dart';
+import 'package:notes/screens/BackupAndRestoreHome.dart';
 import 'package:notes/screens/LoginScreen.dart';
 import 'package:notes/screens/MoneyTransactions/MoneyTransactionScreen.dart';
 import 'package:notes/screens/Company/CompanyScreen.dart';
 import 'package:notes/screens/PersonalAccounting/PersonalAccountingScreen.dart';
 
 import '../CustomWidgets/CutomTextInput.dart';
+import '../data/Database.dart';
 
 class Landingscreen extends StatelessWidget {
   static const String rout = "LandingScreen";
@@ -22,6 +26,13 @@ class Landingscreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text("الرئيسيه"),
         actions: [
+          CustomButton(
+              text: "النسخ الاحتياطي والاستعادة",
+              onPressed: ()  {
+                Navigator.pushNamed(context, BackupAndRestoreHome.rout);
+              },
+              icon: Icons.backup),
+          widthSpace,
           CustomButton(
               text: "تغيير الرقم السري",
               onPressed: () async {

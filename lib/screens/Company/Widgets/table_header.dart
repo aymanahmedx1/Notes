@@ -22,13 +22,14 @@ class TableHeader extends StatelessWidget {
         children: [
           makeChild("م", colSize * .5),
           makeChild("الاسم", colSize * 2),
-          makeChild("الهاتف", colSize * 1.5),
+          makeChild("الهاتف", colSize * 1),
           makeChild("الادوية", colSize * 1.5),
           makeChild("المجموع", colSize * 1),
           makeChild("المصروف", colSize * 1),
+          makeChild("لسعر", colSize * 1),
           makeChild("الاكسباير", colSize * 1),
           makeChild("ملاحظات", colSize * 1),
-          makeChild("التاريخ", colSize * 1.5),
+          makeChild("التاريخ", colSize * 1),
         ],
       ),
     );
