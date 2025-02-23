@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restart_app/restart_app.dart';
 
 import '../CustomWidgets/Spacers.dart';
 import '../Providers/BackupRestoreProvider.dart';
@@ -41,6 +42,10 @@ class BackupAndRestoreHome extends StatelessWidget {
                           InkWell(
                             onTap: () async {
                               await value.makeBackup();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('تم النسخ بنجاح')),
+                              );
+                                  Restart.restartApp();
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -70,7 +75,7 @@ class BackupAndRestoreHome extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () async {
-                              await value.restoreBackup();
+                              await value.restoreBackupFromFile();
                             },
                             child: Container(
                               alignment: Alignment.center,

@@ -1,41 +1,86 @@
+import 'dart:convert';
 import 'dart:developer';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-
+import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:restart_app/restart_app.dart';
 import '../data/Database.dart';
-
-
-var data ='''
-{"worker":[{"id":4,"name":"شسيشسيشسي","phone":"13545666","company":1,"drug":"شسيشسيشسي","total":100,"out":100,"note":"","date":"2025-02-05","expDate":"2025-02-18","finish":0,"price":300.0}],"company":[{"id":1,"name":"فغ","note":"","date":"2025-01-14"}],"movements":[{"id":1,"workerId":3,"qty":500,"date":"2025-02-05"},{"id":2,"workerId":2,"qty":33,"date":"2025-02-05"}],"expense":[],"section":[],"personal_expense":[],"personal":[],"user_password":[{"id":1,"user_pass":"123456"}]}
-''';
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
 
 class BackupRestoreProvider with ChangeNotifier {
   bool loading = false;
 
   makeBackup() async {
-    loading = true ;
+    loading = true;
     notifyListeners();
     var dataToBackup = await DatabaseHelper().getDatabaseBackup();
-    await Future.delayed(Duration(seconds: 5));
-
-    log(dataToBackup);
-    loading = false ;
+    await saveBackupToFile(dataToBackup);
+    loading = false;
     notifyListeners();
 
     // await DatabaseHelper().restoreDatabaseFromBackup(data);
     // var data =
   }
 
-
-  restoreBackup()async{
-    loading = true ;
+  restoreBackup(data) async {
+    loading = true;
     notifyListeners();
     await DatabaseHelper().restoreDatabaseFromBackup(data);
-    await Future.delayed(Duration(seconds: 5));
-
-    loading = false ;
+    loading = false;
     notifyListeners();
 
-
   }
+
+  Future<void> saveBackupToFile(String jsonBackup) async {
+    // Request storage permission
+    if (await Permission.storage.request().isGranted) {
+      // Get directory to save file
+
+      String downloadsPath = '/storage/emulated/0/Download';
+      // Create the file path
+      String filePath = '$downloadsPath/database_backup.json';
+      // Save JSON string to file
+      File file = File(filePath);
+      await file.writeAsString(jsonBackup);
+      print('Backup saved at: $filePath');
+    } else {
+      print('Storage permission denied.');
+    }
+  }
+
+
+
+
+
+  Future<void> restoreBackupFromFile() async {
+    // Request storage permission
+    if (await Permission.storage.request().isGranted) {
+      // Let user pick the file (handles permission issues and SAF automatically)
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['json'],
+      );
+
+      if (result != null && result.files.single.path != null) {
+        String filePath = result.files.single.path!;
+        File backupFile = File(filePath);
+
+        try {
+          String jsonBackup = await backupFile.readAsString();
+          await restoreBackup(jsonBackup);
+          // 🚀 Restart the app after successful restore
+          Restart.restartApp();
+        } catch (e) {
+          print('❌ Error restoring backup: $e');
+        }
+      } else {
+        print('❌ No file selected.');
+      }
+    } else {
+      print('❌ Storage permission denied.');
+    }
+  }
+
 }

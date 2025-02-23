@@ -155,7 +155,8 @@ class DatabaseHelper {
           row.remove("id");
 
           // Insert into table
-          await txn.insert(table, row);
+          var x = await txn.insert(table, row);
+          log(x.toString());
         }
       }
     });
