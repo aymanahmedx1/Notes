@@ -12,11 +12,11 @@ import 'package:permission_handler/permission_handler.dart';
 class BackupRestoreProvider with ChangeNotifier {
   bool loading = false;
 
-  makeBackup() async {
+  makeBackup(BuildContext context) async {
     loading = true;
     notifyListeners();
     var dataToBackup = await DatabaseHelper().getDatabaseBackup();
-    await saveBackupToFile(dataToBackup);
+    await saveBackupToFile(dataToBackup, context);
     loading = false;
     notifyListeners();
 
@@ -30,33 +30,54 @@ class BackupRestoreProvider with ChangeNotifier {
     await DatabaseHelper().restoreDatabaseFromBackup(data);
     loading = false;
     notifyListeners();
-
   }
 
-  Future<void> saveBackupToFile(String jsonBackup) async {
-    // Request storage permission
-    if (await Permission.storage.request().isGranted) {
-      // Get directory to save file
 
-      String downloadsPath = '/storage/emulated/0/Download';
-      // Create the file path
-      String filePath = '$downloadsPath/database_backup.json';
-      // Save JSON string to file
-      File file = File(filePath);
-      await file.writeAsString(jsonBackup);
-      print('Backup saved at: $filePath');
-    } else {
-      print('Storage permission denied.');
+  Future<void> saveBackupToFile(String jsonBackup, BuildContext context) async {
+    try {
+      // Request storage permission (For Android 9 and below)
+      if (await requestStoragePermission()) {
+        // Ask user to select a directory
+        String? selectedPath = await FilePicker.platform.getDirectoryPath();
+
+        if (selectedPath == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('لم يتم تحديد مسار.')),
+          );
+          return;
+        }
+
+        // 🔹 Use the correct method to write the file safely
+        File file = File('$selectedPath/database_backup.json');
+        await file.create(recursive: true);
+        // Check if the path is accessible
+        if (await file.exists()) {
+          await file.writeAsString(jsonBackup);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('تم الحفظ في : $selectedPath')),
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("لا يمكن الحفظ في هذا المكان.")),
+          );
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('صلاحية الملفات غير مفعله.')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('خطا : ${e.toString()}')),
+      );
+      print("خطا في الحفظ: $e");
     }
   }
 
 
-
-
-
-  Future<void> restoreBackupFromFile() async {
+  Future<void> restoreBackupFromFile(BuildContext context) async {
     // Request storage permission
-    if (await Permission.storage.request().isGranted) {
+    if (await requestStoragePermission()) {
       // Let user pick the file (handles permission issues and SAF automatically)
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -73,14 +94,42 @@ class BackupRestoreProvider with ChangeNotifier {
           // 🚀 Restart the app after successful restore
           Restart.restartApp();
         } catch (e) {
-          print('❌ Error restoring backup: $e');
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('❌ Error restoring backup: $e')),
+          );
         }
       } else {
-        print('❌ No file selected.');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('❌ No file selected.')),
+        );
       }
     } else {
-      print('❌ Storage permission denied.');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('❌ Storage permission denied.')),
+      );
     }
   }
 
+  Future<bool> requestStoragePermission() async {
+
+    if (Platform.isAndroid) {
+      var x = await Permission.storage.request() ;
+      log(x.isGranted.toString());
+      log(x.isDenied.toString());
+      log(x.isLimited.toString());
+      log(x.isPermanentlyDenied.toString());
+      log(x.isProvisional.toString());
+      log(x.isRestricted.toString());
+      if (x.isGranted) {
+        return true;
+      } else if (await Permission.storage.request().isPermanentlyDenied) {
+        openAppSettings();
+        return false;
+      } else {
+        return false;
+
+      }
+    }
+    return true; // No permission needed for iOS
+  }
 }

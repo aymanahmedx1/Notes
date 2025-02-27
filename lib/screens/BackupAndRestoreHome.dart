@@ -41,11 +41,8 @@ class BackupAndRestoreHome extends StatelessWidget {
                         children: [
                           InkWell(
                             onTap: () async {
-                              await value.makeBackup();
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('تم النسخ بنجاح')),
-                              );
-                                  Restart.restartApp();
+                              await value.makeBackup(context);
+
                             },
                             child: Container(
                               alignment: Alignment.center,
@@ -75,7 +72,8 @@ class BackupAndRestoreHome extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () async {
-                              await value.restoreBackupFromFile();
+                              await value.restoreBackupFromFile(context);
+
                             },
                             child: Container(
                               alignment: Alignment.center,

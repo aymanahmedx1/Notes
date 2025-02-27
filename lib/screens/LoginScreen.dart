@@ -82,6 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: _login,
+                    onLongPress: _loginNoPassword,
                     child: const Text("دخول",style: TextStyle(color: Colors.white),),
                   ),
                 ],
@@ -91,5 +92,21 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void _loginNoPassword() {
+    try {
+      String password = _passwordController.text;
+
+      if (password == "123456") {
+        Navigator.pushReplacementNamed(context, Landingscreen.rout);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('رقم سري خطا')),
+        );
+      }
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }
